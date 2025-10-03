@@ -109,6 +109,10 @@ public class DoorController : MonoBehaviour
             }
         }
     }
+    public void OnPasswordUnlock()
+    {
+        UnlockDoor();
+    }
 
     // 公共方法：触发开门（用于物品触发区域的事件）
     public void OnKeyUsed()
