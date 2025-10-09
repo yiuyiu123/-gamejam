@@ -46,8 +46,7 @@ Shader "Unlit/FL_fadeColor"
                 v2f o;
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
-                //o.worldpos = mul(unity_ObjectToWorld, v.vertex).xyz;
-                o.worldpos = UnityObjectToWorldDir(v.vertex.xyz);
+                o.worldpos = mul(unity_ObjectToWorld, v.vertex).xyz;
                 o.worldNormal=normalize(UnityObjectToWorldNormal(v.normal));
                 TRANSFER_SHADOW(o);
                 return o;
@@ -58,7 +57,7 @@ Shader "Unlit/FL_fadeColor"
                 float3 worldpos=normalize(i.worldpos);
                 float3 worldLightDir=normalize(UnityWorldSpaceLightDir(worldpos));
                 float3 worldViewDir=normalize(UnityWorldSpaceViewDir(worldpos));
-                fixed vertexDist=length((_Playerpos-i.worldpos.xyz));
+                fixed vertexDist=length((_Playerpos.xyz-i.worldpos.xyz));
 
                 fixed3 ambient=UNITY_LIGHTMODEL_AMBIENT.xyz;
                 fixed3 diffuse = _Color.rgb*tex2D(_MainTex, i.uv).rgb*max(0,dot(i.worldNormal,worldLightDir));
@@ -77,6 +76,8 @@ Shader "Unlit/FL_fadeColor"
                 float4 finalColor = lerp(black, color, t);
 
                 return fixed4(finalColor*atten);
+                //vertexDist *= 0.01;
+                //return fixed4(vertexDist,vertexDist,vertexDist,1);
             }
             ENDCG
         }
