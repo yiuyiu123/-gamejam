@@ -81,7 +81,7 @@ Material:
     - _fadeDist: 15
     - _fadeRange: 1
     m_Colors:
-    - _Color: {r: 0.12893075, g: 0.47842973, b: 1, a: 1}
+    - _Color: {r: 1, g: 0.13226774, b: 0.12941176, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Playerpos: {r: 0, g: 0, b: 0, a: 0}
     - _Specular: {r: 1, g: 1, b: 1, a: 1}

@@ -330,7 +330,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &126903802
 RectTransform:
   m_ObjectHideFlags: 0
@@ -347,7 +347,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -489, y: 1}
+  m_AnchoredPosition: {x: -488, y: 1}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &126903803
@@ -1187,7 +1187,7 @@ GameObject:
   - component: {fileID: 568864542}
   - component: {fileID: 568864541}
   m_Layer: 0
-  m_Name: "player\uFF081\uFF09"
+  m_Name: player2
   m_TagString: Player2
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2659,7 +2659,7 @@ Transform:
   m_GameObject: {fileID: 1025015519}
   serializedVersion: 2
   m_LocalRotation: {x: 0.6840836, y: 0.17896849, z: -0.17896849, w: 0.6840836}
-  m_LocalPosition: {x: -0.139, y: -0.38, z: 0.403}
+  m_LocalPosition: {x: -0.028, y: -0.335, z: 0.089}
   m_LocalScale: {x: 0.8451544, y: 0.8451544, z: 0.84515435}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2801,7 +2801,7 @@ GameObject:
   - component: {fileID: 1087077521}
   - component: {fileID: 1087077525}
   m_Layer: 0
-  m_Name: player(2)
+  m_Name: player1
   m_TagString: Player1
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3671,7 +3671,7 @@ Transform:
   m_GameObject: {fileID: 1639163118}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 21.718689, y: -8.796953, z: -38.816845}
+  m_LocalPosition: {x: 21.718689, y: -10.53, z: -39.65}
   m_LocalScale: {x: 1.4160848, y: 1.4160848, z: 1.4160848}
   m_ConstrainProportionsScale: 0
   m_Children: []
