@@ -2330,6 +2330,18 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 7.21
       objectReference: {fileID: 0}
+    - target: {fileID: 3205931599009585427, guid: 70cbb7ea35e6aa3428d24341439fd298, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3205931599009585427, guid: 70cbb7ea35e6aa3428d24341439fd298, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 1290c5a2c25a7f14c93db70784042e42, type: 2}
+    - target: {fileID: 5230794149834472788, guid: 70cbb7ea35e6aa3428d24341439fd298, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 3645836440456348336, guid: 70cbb7ea35e6aa3428d24341439fd298, type: 3}
@@ -3753,6 +3765,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 4611834266da3b244a5bd9c21e3bc6fc, type: 2}
+  - {fileID: 2100000, guid: 1290c5a2c25a7f14c93db70784042e42, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
