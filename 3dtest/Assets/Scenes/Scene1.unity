@@ -359,7 +359,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1519320195}
+      - m_Target: {fileID: 1519320196}
         m_TargetAssemblyTypeName: UI_Manager, Assembly-CSharp
         m_MethodName: OnClickBack
         m_Mode: 1
@@ -650,7 +650,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1519320195}
+      - m_Target: {fileID: 1519320196}
         m_TargetAssemblyTypeName: UI_Manager, Assembly-CSharp
         m_MethodName: OnClickBack
         m_Mode: 1
@@ -783,9 +783,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2090050186}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: QuitGame
+      - m_Target: {fileID: 1519320196}
+        m_TargetAssemblyTypeName: UI_Manager, Assembly-CSharp
+        m_MethodName: OnClickQuit
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -984,7 +984,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1519320195}
+      - m_Target: {fileID: 1519320196}
         m_TargetAssemblyTypeName: UI_Manager, Assembly-CSharp
         m_MethodName: ShowSetMenu
         m_Mode: 1
@@ -1521,7 +1521,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1519320195}
+      - m_Target: {fileID: 1519320196}
         m_TargetAssemblyTypeName: UI_Manager, Assembly-CSharp
         m_MethodName: ShowTeamMenu
         m_Mode: 1
@@ -1822,6 +1822,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1519320194}
   - component: {fileID: 1519320195}
+  - component: {fileID: 1519320196}
   m_Layer: 0
   m_Name: UI_Manager
   m_TagString: Untagged
@@ -1856,13 +1857,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc655d6f3a4dc17479eff89a6224a5dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1519320196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1519320193}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eeb523c549c5ac64bb44267c3ef12a98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   _0_skip: {fileID: 0}
-  _1_begin: {fileID: 0}
+  _1_back: {fileID: 0}
   _1_set: {fileID: 1293500230}
   _1_team: {fileID: 1043840226}
-  pauseMenu: {fileID: 0}
-  LoseUI: {fileID: 0}
-  victoryUI: {fileID: 0}
+  victoryPanel: {fileID: 0}
+  losePanel: {fileID: 0}
+  restartPanel: {fileID: 0}
 --- !u!1 &1576961083
 GameObject:
   m_ObjectHideFlags: 0
@@ -2112,6 +2125,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2090050185}
   - component: {fileID: 2090050186}
+  - component: {fileID: 2090050187}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -2146,7 +2160,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72ec5c99ffbb42b4baf950439ac0f7e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <newState>k__BackingField: 0
+--- !u!114 &2090050187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2090050184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fee564e709b84f647ad826ed09231c3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
