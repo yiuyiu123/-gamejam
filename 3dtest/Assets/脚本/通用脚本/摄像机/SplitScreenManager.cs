@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SplitScreenManager : MonoBehaviour
 {
-
+    #region 绿色的注释
     //[Header("玩家设置")]
     //public Transform player1;
     //public Transform player2;
@@ -187,6 +187,7 @@ public class SplitScreenManager : MonoBehaviour
     //    Debug.Log($"玩家1角度: {player1Camera?.GetCurrentAngle()}, 玩家2角度: {player2Camera?.GetCurrentAngle()}");
     //    Debug.Log("=====================");
     //}
+    #endregion
     [Header("玩家设置")]
     public Transform player1;
     public Transform player2;

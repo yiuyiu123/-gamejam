@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerCamera : MonoBehaviour
 {
-
+    #region 注释部分
     //    [Header("目标设置")]
     //    public Transform target;  // 要跟随的玩家
 
@@ -299,6 +299,7 @@ public class PlayerCamera : MonoBehaviour
     //#endif
     //        Debug.LogError("无法创建CameraCollision层，请手动创建！");
     //    }
+    #endregion 
     [Header("目标设置")]
     public Transform target;  // 要跟随的玩家
 
