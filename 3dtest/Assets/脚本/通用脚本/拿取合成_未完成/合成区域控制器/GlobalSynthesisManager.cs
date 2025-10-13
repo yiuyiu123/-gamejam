@@ -20,7 +20,8 @@ public class GlobalSynthesisManager : MonoBehaviour
         LastZone,       // 在最后一个区域生成  
         SpecificZone,   // 在指定区域生成
         CustomPosition, // 在自定义位置生成
-        RandomZone      // 在随机区域生成
+        RandomZone,     // 在随机区域生成
+        UseGlobalSetting // 使用全局设置
     }
 
     private List<SynthesisZone> allZones = new List<SynthesisZone>();
@@ -84,21 +85,68 @@ public class GlobalSynthesisManager : MonoBehaviour
         }
 
         Debug.Log($"全局物品检测: {allItemsInAllZones.Count} 个物品在 {allZones.Count} 个区域中");
-
-        // 显示每个物品的详细状态
-        foreach (var item in allItemsInAllZones)
-        {
-            if (item != null)
-            {
-                Debug.Log($"物品 {item.itemName} - 可拾取: {item.canBePickedUp}, 交换中: {item.isInExchangeProcess}, 被持有: {item.isBeingHeld}");
-            }
-        }
-
         return new List<InteractableItem>(allItemsInAllZones);
     }
 
-    // 获取合成物品的出生位置
-    private Vector3 GetSpawnPosition()
+    // 根据配方获取合成物品的出生位置
+    private Vector3 GetRecipeSpawnPosition(CraftingRecipe recipe)
+    {
+        // 如果配方设置为使用全局设置，则使用全局设置
+        if (recipe.spawnMode == SynthesisResultSpawnMode.UseGlobalSetting)
+        {
+            return GetGlobalSpawnPosition();
+        }
+
+        // 否则使用配方的特定设置
+        switch (recipe.spawnMode)
+        {
+            case SynthesisResultSpawnMode.FirstZone:
+                if (allZones.Count > 0)
+                {
+                    SynthesisZone zone = allZones[0];
+                    return zone.itemSpawnPoint != null ? zone.itemSpawnPoint.position : zone.throwTarget.position + Vector3.up * 2f;
+                }
+                break;
+
+            case SynthesisResultSpawnMode.LastZone:
+                if (allZones.Count > 0)
+                {
+                    SynthesisZone zone = allZones[allZones.Count - 1];
+                    return zone.itemSpawnPoint != null ? zone.itemSpawnPoint.position : zone.throwTarget.position + Vector3.up * 2f;
+                }
+                break;
+
+            case SynthesisResultSpawnMode.SpecificZone:
+                if (recipe.specificSpawnZone != null)
+                {
+                    return recipe.specificSpawnZone.itemSpawnPoint != null ?
+                        recipe.specificSpawnZone.itemSpawnPoint.position :
+                        recipe.specificSpawnZone.throwTarget.position + Vector3.up * 2f;
+                }
+                break;
+
+            case SynthesisResultSpawnMode.CustomPosition:
+                if (recipe.customSpawnPoint != null)
+                {
+                    return recipe.customSpawnPoint.position;
+                }
+                break;
+
+            case SynthesisResultSpawnMode.RandomZone:
+                if (allZones.Count > 0)
+                {
+                    SynthesisZone randomZone = allZones[Random.Range(0, allZones.Count)];
+                    return randomZone.itemSpawnPoint != null ? randomZone.itemSpawnPoint.position : randomZone.throwTarget.position + Vector3.up * 2f;
+                }
+                break;
+        }
+
+        // 默认回退到全局设置
+        return GetGlobalSpawnPosition();
+    }
+
+    // 获取全局合成物品的出生位置 - 改为 public
+    public Vector3 GetGlobalSpawnPosition()
     {
         switch (spawnMode)
         {
@@ -151,8 +199,37 @@ public class GlobalSynthesisManager : MonoBehaviour
         return Vector3.zero;
     }
 
-    // 获取用于生成物品的合成区域（用于播放效果等）
-    private SynthesisZone GetSpawnZone()
+    // 根据配方获取用于生成物品的合成区域
+    private SynthesisZone GetRecipeSpawnZone(CraftingRecipe recipe)
+    {
+        // 如果配方设置为使用全局设置，则使用全局设置
+        if (recipe.spawnMode == SynthesisResultSpawnMode.UseGlobalSetting)
+        {
+            return GetGlobalSpawnZone();
+        }
+
+        // 否则使用配方的特定设置
+        switch (recipe.spawnMode)
+        {
+            case SynthesisResultSpawnMode.FirstZone:
+                return allZones.Count > 0 ? allZones[0] : null;
+
+            case SynthesisResultSpawnMode.LastZone:
+                return allZones.Count > 0 ? allZones[allZones.Count - 1] : null;
+
+            case SynthesisResultSpawnMode.SpecificZone:
+                return recipe.specificSpawnZone;
+
+            case SynthesisResultSpawnMode.RandomZone:
+                return allZones.Count > 0 ? allZones[Random.Range(0, allZones.Count)] : null;
+
+            default:
+                return GetGlobalSpawnZone();
+        }
+    }
+
+    // 获取全局用于生成物品的合成区域
+    private SynthesisZone GetGlobalSpawnZone()
     {
         switch (spawnMode)
         {
@@ -193,7 +270,6 @@ public class GlobalSynthesisManager : MonoBehaviour
         List<InteractableItem> allItems = GetAllItemsInAllZones();
 
         // 清理无效物品 - 只过滤被持有和null的物品
-        // 不要过滤 isInExchangeProcess，因为合成失败后需要重新检测
         allItems.RemoveAll(item => item == null || item.isBeingHeld);
 
         Debug.Log($"全局合成检查: {allItems.Count} 个有效物品");
@@ -222,44 +298,17 @@ public class GlobalSynthesisManager : MonoBehaviour
         foreach (var item in itemsToCombine)
         {
             combineItems += $"{item.itemName} ";
-
-            // 重要：不要在这里锁定物品的物理状态！
-            // 只设置状态标记，不修改物理属性
             item.isInExchangeProcess = true;
             item.canBePickedUp = false;
-
-            // 注释掉物理锁定，让物品保持物理状态
-            // if (item.Rb != null)
-            // {
-            //     item.Rb.isKinematic = true;
-            //     item.Rb.velocity = Vector3.zero;
-            // }
-
             Debug.Log($"设置合成状态: {item.itemName} (交换中: {item.isInExchangeProcess}, 可拾取: {item.canBePickedUp})");
         }
         Debug.Log($"将要全局合成的物品: {combineItems}");
 
-        // 获取生成区域和位置
-        SynthesisZone spawnZone = GetSpawnZone();
-        Vector3 spawnPosition = GetSpawnPosition();
-
-        Debug.Log($"合成物品将在 {spawnMode} 模式生成，位置: {spawnPosition}");
-
-        // 播放合成效果
-        if (spawnZone != null && spawnZone.synthesisEffect != null)
-        {
-            spawnZone.synthesisEffect.Play();
-        }
-
-        float delay = spawnZone != null ? spawnZone.synthesisDelay : 1f;
-        Debug.Log($"等待合成延迟: {delay}秒");
-        yield return new WaitForSeconds(delay);
-
-        // 使用 CraftingManager 获取合成结果
+        // 使用 CraftingManager 获取合成结果 - 现在返回 CraftingRecipe
         Debug.Log($"向 CraftingManager 请求合成...");
-        GameObject resultPrefab = CraftingManager.Instance.CombineItems(itemsToCombine);
+        CraftingRecipe matchedRecipe = CraftingManager.Instance.CombineItems(itemsToCombine);
 
-        if (resultPrefab != null)
+        if (matchedRecipe != null && matchedRecipe.resultItemPrefab != null)
         {
             Debug.Log("=== 全局合成成功！ ===");
 
@@ -278,9 +327,15 @@ public class GlobalSynthesisManager : MonoBehaviour
                 }
             }
 
+            // 获取配方特定的出生位置和区域
+            Vector3 spawnPosition = GetRecipeSpawnPosition(matchedRecipe);
+            SynthesisZone spawnZone = GetRecipeSpawnZone(matchedRecipe);
+
+            Debug.Log($"配方 {matchedRecipe.recipeName} 将在 {matchedRecipe.spawnMode} 模式生成，位置: {spawnPosition}");
+
             // 生成新物品
             Debug.Log($"在位置 {spawnPosition} 生成新物品...");
-            yield return StartCoroutine(SpawnResultItem(resultPrefab, spawnPosition, spawnZone));
+            yield return StartCoroutine(SpawnResultItem(matchedRecipe.resultItemPrefab, spawnPosition, spawnZone));
 
             Debug.Log("=== 全局合成过程完成 ===");
         }
@@ -288,42 +343,34 @@ public class GlobalSynthesisManager : MonoBehaviour
         {
             Debug.LogWarning("=== 全局合成失败：没有匹配的配方 ===");
 
-            // 重要：完全解锁物品
+            // 解锁物品
             foreach (var item in itemsToCombine)
             {
                 if (item != null)
                 {
-                    // 重置所有状态
                     item.isInExchangeProcess = false;
                     item.canBePickedUp = true;
-
-                    // 确保物理状态正常（即使之前没有修改）
                     if (item.Rb != null)
                     {
                         item.Rb.isKinematic = false;
                         item.Rb.useGravity = true;
                     }
-
-                    // 确保碰撞体正常
                     Collider itemCollider = item.ItemCollider;
                     if (itemCollider != null)
                     {
                         itemCollider.enabled = true;
                     }
-
-                    Debug.Log($"完全解锁物品: {item.itemName} (交换中: {item.isInExchangeProcess}, 可拾取: {item.canBePickedUp})");
+                    Debug.Log($"完全解锁物品: {item.itemName}");
                 }
             }
         }
 
         isGlobalCombining = false;
-
-        // 合成完成后再次检查
         yield return new WaitForSeconds(0.5f);
         CheckGlobalSynthesis();
     }
 
-    // 修改生成方法，接受位置参数
+    // 修改生成方法，接受位置参数和区域参数
     IEnumerator SpawnResultItem(GameObject resultPrefab, Vector3 spawnPosition, SynthesisZone spawnZone)
     {
         GameObject newItemObj = Instantiate(resultPrefab, spawnPosition, Quaternion.identity);

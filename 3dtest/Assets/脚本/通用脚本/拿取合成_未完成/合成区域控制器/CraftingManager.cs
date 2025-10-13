@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static GlobalSynthesisManager;
 
 [System.Serializable]
 public class CraftingRecipe
@@ -9,6 +10,11 @@ public class CraftingRecipe
     public List<string> requiredItems;
     public GameObject resultItemPrefab;
     public bool exactOrder = false;
+
+    [Header("合成物品出生位置")]
+    public SynthesisResultSpawnMode spawnMode = SynthesisResultSpawnMode.FirstZone;
+    public SynthesisZone specificSpawnZone; // 当选择特定区域时使用
+    public Transform customSpawnPoint; // 当选择自定义位置时使用
 }
 
 public class CraftingManager : MonoBehaviour
@@ -35,7 +41,8 @@ public class CraftingManager : MonoBehaviour
         }
     }
 
-    public GameObject CombineItems(List<InteractableItem> items)
+    // 修改返回类型为 CraftingRecipe，这样我们可以获取配方的出生位置设置
+    public CraftingRecipe CombineItems(List<InteractableItem> items)
     {
         // 获取物品名称列表
         List<string> itemNames = new List<string>();
@@ -63,7 +70,7 @@ public class CraftingManager : MonoBehaviour
         if (matchedRecipe != null && matchedRecipe.resultItemPrefab != null)
         {
             Debug.Log($"合成成功！配方: {matchedRecipe.recipeName}");
-            return matchedRecipe.resultItemPrefab;
+            return matchedRecipe; // 返回整个配方对象，包含出生位置设置
         }
         else if (matchedRecipe != null && matchedRecipe.resultItemPrefab == null)
         {
@@ -127,7 +134,6 @@ public class CraftingManager : MonoBehaviour
         }
     }
 
-
     // 添加示例配方
     [ContextMenu("添加示例配方")]
     void AddExampleRecipes()
@@ -142,12 +148,13 @@ public class CraftingManager : MonoBehaviour
 
         craftingRecipes.Add(new CraftingRecipe()
         {
-            recipeName = "木材+石头=斧头",
-            requiredItems = new List<string> { "木材", "石头" },
+            recipeName = "矿泉水+空喷壶=花洒",
+            requiredItems = new List<string> { "矿泉水", "空喷壶" },
             resultItemPrefab = null, // 需要在Inspector中设置
             exactOrder = false
         });
     }
+
     [ContextMenu("添加测试配方")]
     void AddTestRecipe()
     {

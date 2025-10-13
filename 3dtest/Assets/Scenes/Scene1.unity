@@ -132,7 +132,7 @@ GameObject:
   m_Component:
   - component: {fileID: 58442966}
   m_Layer: 0
-  m_Name: "\u573A\u666F2"
+  m_Name: "\u573A\u666F1"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1960,8 +1960,10 @@ GameObject:
   - component: {fileID: 1259558011}
   - component: {fileID: 1259558010}
   - component: {fileID: 1259558009}
+  - component: {fileID: 1259558013}
+  - component: {fileID: 1259558012}
   m_Layer: 0
-  m_Name: 1
+  m_Name: 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2053,6 +2055,55 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1259558007}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!54 &1259558012
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1259558007}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &1259558013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1259558007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4db78b98f27e804eb70d016468cf412, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: "\u7269\u54C1"
+  canBePickedUp: 1
+  holdOffset: {x: 0, y: 1, z: 1}
+  canBeExchanged: 1
+  isExchangeLocked: 0
+  lastExchangeZone: 
+  isBeingHeld: 0
+  isInExchangeProcess: 0
+  currentHolder: {fileID: 0}
+  showDebugInfo: 0
 --- !u!1 &1281782020
 GameObject:
   m_ObjectHideFlags: 0
@@ -2065,8 +2116,10 @@ GameObject:
   - component: {fileID: 1281782024}
   - component: {fileID: 1281782023}
   - component: {fileID: 1281782022}
+  - component: {fileID: 1281782026}
+  - component: {fileID: 1281782025}
   m_Layer: 0
-  m_Name: 2
+  m_Name: 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2158,6 +2211,55 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1281782020}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!54 &1281782025
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1281782020}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &1281782026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1281782020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4db78b98f27e804eb70d016468cf412, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: "\u7269\u54C1"
+  canBePickedUp: 1
+  holdOffset: {x: 0, y: 1, z: 1}
+  canBeExchanged: 1
+  isExchangeLocked: 0
+  lastExchangeZone: 
+  isBeingHeld: 0
+  isInExchangeProcess: 0
+  currentHolder: {fileID: 0}
+  showDebugInfo: 0
 --- !u!1 &1289906409
 GameObject:
   m_ObjectHideFlags: 0
@@ -2895,6 +2997,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactKey: 102
   interactionRange: 2
+  throwRange: 10
   showInputDebug: 0
   showInteractionDebug: 1
   playerName: player1
@@ -3288,6 +3391,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactKey: 104
   interactionRange: 2
+  throwRange: 10
   showInputDebug: 0
   showInteractionDebug: 1
   playerName: player2

@@ -11,6 +11,9 @@ GameObject:
   - component: {fileID: 7108918542335038831}
   - component: {fileID: 5604782391522555137}
   - component: {fileID: 2267523894856538203}
+  - component: {fileID: 5924175692238781429}
+  - component: {fileID: 3040933935428433177}
+  - component: {fileID: 4434541378856629544}
   m_Layer: 0
   m_Name: "\u6BDB\u7B14"
   m_TagString: Untagged
@@ -83,3 +86,73 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!54 &5924175692238781429
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5335744909464136783}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!65 &3040933935428433177
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5335744909464136783}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.01391311, y: 0.166705, z: 0.0139131015}
+  m_Center: {x: 0.000000003496317, y: 0.06647097, z: 4.6566134e-10}
+--- !u!114 &4434541378856629544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5335744909464136783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4db78b98f27e804eb70d016468cf412, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: "\u7B14"
+  canBePickedUp: 1
+  holdOffset: {x: 0, y: 1, z: 1}
+  canBeExchanged: 1
+  isExchangeLocked: 0
+  lastExchangeZone: 
+  isBeingHeld: 0
+  isInExchangeProcess: 0
+  currentHolder: {fileID: 0}
+  showDebugInfo: 0

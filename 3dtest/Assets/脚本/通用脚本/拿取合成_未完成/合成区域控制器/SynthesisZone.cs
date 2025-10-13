@@ -50,7 +50,6 @@ public class SynthesisZone : MonoBehaviour
         }
     }
 
-
     void EnsureColliderSize()
     {
         Collider collider = GetComponent<Collider>();
@@ -108,6 +107,7 @@ public class SynthesisZone : MonoBehaviour
             }
         }
     }
+
     void OnDestroy()
     {
         // 取消注册
@@ -116,6 +116,7 @@ public class SynthesisZone : MonoBehaviour
             GlobalSynthesisManager.Instance.UnregisterZone(this);
         }
     }
+
     // 添加公共方法供全局管理器调用
     public List<InteractableItem> GetItemsInZone()
     {
@@ -123,9 +124,7 @@ public class SynthesisZone : MonoBehaviour
         // 因为合成失败后物品需要被重新检测
         itemsInZone.RemoveAll(item =>
             item == null ||
-            item.isBeingHeld//||
-            //item.isInExchangeProcess || 
-            //!item.canBePickedUp         
+            item.isBeingHeld
         );
 
         // 返回所有在区域内的物品，让全局管理器自己处理状态检查
@@ -142,6 +141,7 @@ public class SynthesisZone : MonoBehaviour
             Debug.Log($"从区域 {zoneID} 移除物品: {item.itemName}");
         }
     }
+
     void OnTriggerStay(Collider other)
     {
         InteractableItem item = other.GetComponent<InteractableItem>();
@@ -212,7 +212,20 @@ public class SynthesisZone : MonoBehaviour
 
     void CheckForSynthesis()
     {
-        // ... 现有的本地合成检查代码 ...
+        // 检查本地合成条件
+        List<InteractableItem> validItems = new List<InteractableItem>();
+        foreach (var item in itemsInZone)
+        {
+            if (item != null && !item.isBeingHeld && !item.isInExchangeProcess)
+            {
+                validItems.Add(item);
+            }
+        }
+
+        if (validItems.Count >= 2 && !isCombining)
+        {
+            StartCoroutine(PerformSynthesis());
+        }
 
         // 同时触发全局合成检查
         if (GlobalSynthesisManager.Instance != null)
@@ -224,7 +237,7 @@ public class SynthesisZone : MonoBehaviour
     IEnumerator PerformSynthesis()
     {
         isCombining = true;
-        Debug.Log("=== 开始合成过程 ===");
+        Debug.Log("=== 开始本地合成过程 ===");
 
         // 使用当前有效的物品列表
         List<InteractableItem> itemsToCombine = new List<InteractableItem>();
@@ -270,11 +283,12 @@ public class SynthesisZone : MonoBehaviour
 
         yield return new WaitForSeconds(synthesisDelay);
 
-        GameObject resultPrefab = CraftingManager.Instance.CombineItems(itemsToCombine);
+        // 使用 CraftingManager 获取合成结果 - 现在返回 CraftingRecipe
+        CraftingRecipe matchedRecipe = CraftingManager.Instance.CombineItems(itemsToCombine);
 
-        if (resultPrefab != null)
+        if (matchedRecipe != null && matchedRecipe.resultItemPrefab != null)
         {
-            Debug.Log("=== 合成成功！ ===");
+            Debug.Log("=== 本地合成成功！ ===");
 
             // 从所有相关列表中移除物品
             foreach (var item in itemsToCombine)
@@ -287,12 +301,16 @@ public class SynthesisZone : MonoBehaviour
                 }
             }
 
-            yield return StartCoroutine(SpawnResultItem(resultPrefab));
-            Debug.Log("=== 合成过程完成 ===");
+            // 使用配方特定的出生位置
+            Vector3 spawnPosition = GetRecipeSpawnPosition(matchedRecipe);
+            Debug.Log($"配方 {matchedRecipe.recipeName} 将在位置 {spawnPosition} 生成");
+
+            yield return StartCoroutine(SpawnResultItemWithPosition(matchedRecipe.resultItemPrefab, spawnPosition));
+            Debug.Log("=== 本地合成过程完成 ===");
         }
         else
         {
-            Debug.LogWarning("=== 合成失败：没有匹配的配方 ===");
+            Debug.LogWarning("=== 本地合成失败：没有匹配的配方 ===");
             foreach (var item in itemsToCombine)
             {
                 if (item != null)
@@ -308,9 +326,60 @@ public class SynthesisZone : MonoBehaviour
         CheckForSynthesis();
     }
 
+    // 根据配方获取出生位置
+    private Vector3 GetRecipeSpawnPosition(CraftingRecipe recipe)
+    {
+        // 如果全局管理器存在，使用它的方法
+        if (GlobalSynthesisManager.Instance != null)
+        {
+            // 创建一个临时的区域列表，只包含当前区域
+            List<SynthesisZone> tempZones = new List<SynthesisZone> { this };
+
+            // 根据配方设置计算出生位置
+            switch (recipe.spawnMode)
+            {
+                case GlobalSynthesisManager.SynthesisResultSpawnMode.FirstZone:
+                case GlobalSynthesisManager.SynthesisResultSpawnMode.LastZone:
+                case GlobalSynthesisManager.SynthesisResultSpawnMode.RandomZone:
+                    // 对于这些模式，使用当前区域
+                    return itemSpawnPoint != null ? itemSpawnPoint.position : throwTarget.position + Vector3.up * 2f;
+
+                case GlobalSynthesisManager.SynthesisResultSpawnMode.SpecificZone:
+                    if (recipe.specificSpawnZone != null)
+                    {
+                        return recipe.specificSpawnZone.itemSpawnPoint != null ?
+                            recipe.specificSpawnZone.itemSpawnPoint.position :
+                            recipe.specificSpawnZone.throwTarget.position + Vector3.up * 2f;
+                    }
+                    break;
+
+                case GlobalSynthesisManager.SynthesisResultSpawnMode.CustomPosition:
+                    if (recipe.customSpawnPoint != null)
+                    {
+                        return recipe.customSpawnPoint.position;
+                    }
+                    break;
+
+                case GlobalSynthesisManager.SynthesisResultSpawnMode.UseGlobalSetting:
+                    // 使用全局设置
+                    return GlobalSynthesisManager.Instance.GetGlobalSpawnPosition();
+            }
+        }
+
+        // 默认回退到当前区域的出生点
+        return itemSpawnPoint != null ? itemSpawnPoint.position : throwTarget.position + Vector3.up * 2f;
+    }
+
+    // 原始生成方法（保持兼容性）
     public IEnumerator SpawnResultItem(GameObject resultPrefab)
     {
         Vector3 spawnPosition = itemSpawnPoint != null ? itemSpawnPoint.position : throwTarget.position + Vector3.up * 2f;
+        yield return StartCoroutine(SpawnResultItemWithPosition(resultPrefab, spawnPosition));
+    }
+
+    // 新的生成方法，接受位置参数
+    public IEnumerator SpawnResultItemWithPosition(GameObject resultPrefab, Vector3 spawnPosition)
+    {
         GameObject newItemObj = Instantiate(resultPrefab, spawnPosition, Quaternion.identity);
 
         Rigidbody rb = newItemObj.GetComponent<Rigidbody>();
@@ -323,7 +392,7 @@ public class SynthesisZone : MonoBehaviour
         InteractableItem newItem = newItemObj.GetComponent<InteractableItem>();
         if (newItem != null)
         {
-            Debug.Log($"新道具已生成: {newItem.itemName}");
+            Debug.Log($"新道具已生成: {newItem.itemName} 在位置: {spawnPosition}");
         }
 
         yield return new WaitForSeconds(0.5f);
@@ -441,6 +510,7 @@ public class SynthesisZone : MonoBehaviour
             Gizmos.DrawWireSphere(throwTarget.position, 0.5f);
         }
     }
+
     // 添加紧急解锁所有物品的方法
     [ContextMenu("紧急解锁所有物品")]
     public void EmergencyUnlockAllItems()
