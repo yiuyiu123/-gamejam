@@ -269,6 +269,14 @@ public class InteractableItem : MonoBehaviour
     private Vector3 originalScale;
     private ExchangeZone currentZone;
 
+
+    // 添加公共属性来访问私有字段
+    public Rigidbody Rb => rb;
+    public Collider ItemCollider => itemCollider;
+    public Vector3 OriginalPosition => originalPosition;
+    public Quaternion OriginalRotation => originalRotation;
+    public Vector3 OriginalScale => originalScale;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -297,9 +305,10 @@ public class InteractableItem : MonoBehaviour
         }
     }
 
+    // 在 Interact 方法中添加检查
     public void Interact(GameObject player)
     {
-        if (!canBePickedUp || isInExchangeProcess) return;
+        if (!canBePickedUp || isInExchangeProcess) return; // 添加 canBePickedUp 检查
 
         if (!isBeingHeld)
         {
@@ -313,6 +322,9 @@ public class InteractableItem : MonoBehaviour
 
     void PickUp(GameObject player)
     {
+        if (!canBePickedUp) return; // 额外检查
+
+        // 设置持有状态 - 这是缺失的关键代码！
         isBeingHeld = true;
         currentHolder = player;
 
@@ -342,9 +354,28 @@ public class InteractableItem : MonoBehaviour
 
         Debug.Log($"{player.name} 拿起了 {itemName}");
     }
+    public void ResetItemState()
+    {
+        isBeingHeld = false;
+        isInExchangeProcess = false;
+        canBePickedUp = true;
+        currentHolder = null;
 
+        if (rb != null)
+        {
+            rb.isKinematic = false;
+            rb.useGravity = true;
+        }
+
+        if (itemCollider != null)
+        {
+            itemCollider.enabled = true;
+        }
+    }
     public void PutDown()
     {
+        if (!isBeingHeld) return; // 如果已经不是持有状态，直接返回
+
         isBeingHeld = false;
 
         // 恢复物理效果
@@ -360,19 +391,20 @@ public class InteractableItem : MonoBehaviour
             itemCollider.enabled = true;
         }
 
-        // 不需要解除父物体，因为根本没有设置
-        // transform.SetParent(null);
-
         // 最终确认缩放
         transform.localScale = originalScale;
 
-        Debug.Log($"{currentHolder.name} 放下了 {itemName}");
+        Debug.Log($"{currentHolder?.name} 放下了 {itemName}");
         currentHolder = null;
     }
 
     void FollowHolder()
     {
-        if (currentHolder == null) return;
+        if (currentHolder == null)
+        {
+            Debug.LogWarning($"物品 {itemName} 的 currentHolder 为 null，无法跟随");
+            return;
+        }
 
         Vector3 targetPosition = currentHolder.transform.position +
                                 currentHolder.transform.forward * holdOffset.z +
@@ -387,7 +419,16 @@ public class InteractableItem : MonoBehaviour
 
         // 在跟随过程中强制保持缩放
         transform.localScale = originalScale;
+
+        // 调试信息
+        if (showDebugInfo)
+        {
+            Debug.Log($"物品 {itemName} 跟随玩家: 位置={transform.position}, 目标位置={targetPosition}");
+        }
     }
+
+    [Header("调试选项")]
+    public bool showDebugInfo = false;
 
     // 检查是否离开了交换区域
     void CheckIfLeftZone()
@@ -471,7 +512,30 @@ public class InteractableItem : MonoBehaviour
             rb.angularVelocity = Vector3.zero;
         }
     }
+    // 添加强制释放方法
+    public void ForceRelease()
+    {
+        if (isBeingHeld)
+        {
+            isBeingHeld = false;
+            currentHolder = null;
 
+            // 恢复物理效果
+            if (rb != null)
+            {
+                rb.isKinematic = false;
+                rb.useGravity = true;
+            }
+
+            // 恢复碰撞体
+            if (itemCollider != null)
+            {
+                itemCollider.enabled = true;
+            }
+
+            Debug.Log($"强制释放物品: {itemName}");
+        }
+    }
     void OnDrawGizmosSelected()
     {
         if (isBeingHeld && currentHolder != null)
