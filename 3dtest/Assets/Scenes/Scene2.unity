@@ -874,7 +874,7 @@ GameObject:
   m_Component:
   - component: {fileID: 939400271}
   m_Layer: 0
-  m_Name: "\u5B66\u6821\u573A\u666F"
+  m_Name: "\u5B66\u6821\u573A\u666F\uFF08\u767D\uFF09"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1096,7 +1096,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: -876546973899608171, guid: 78bf499be4dea9c47aa2bd1a3e0845b1, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1709,7 +1709,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1565651927}
   m_Layer: 0
-  m_Name: "\u529E\u516C\u5BA4\u573A\u666F"
+  m_Name: "\u529E\u516C\u5BA4\u573A\u666F\uFF08\u9ED1\uFF09"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
