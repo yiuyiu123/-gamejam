@@ -125,7 +125,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4db78b98f27e804eb70d016468cf412, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: "\"\u94A5\u5319\"\u201C"
+  itemName: "\"\u94A5\u5319\""
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
   holdRotationOffset: {x: 0, y: 0, z: 0}

@@ -1142,6 +1142,7 @@ MonoBehaviour:
   interactKey: 102
   interactionRange: 2
   throwRange: 10
+  wateringCanItemName: "\u6C34\u58F6"
   showInputDebug: 0
   showInteractionDebug: 1
   playerName: player1
@@ -1305,6 +1306,7 @@ MonoBehaviour:
   interactKey: 104
   interactionRange: 2
   throwRange: 10
+  wateringCanItemName: "\u6C34\u58F6"
   showInputDebug: 0
   showInteractionDebug: 1
   playerName: player2
@@ -1615,8 +1617,8 @@ MonoBehaviour:
   height: 10
   distance: 8
   rotationSpeed: 90
-  rotateLeftKey: 100
-  rotateRightKey: 97
+  rotateLeftKey: 101
+  rotateRightKey: 113
   positionSmoothTime: 0
   rotationSmoothTime: 0
   _obstructionMask:
@@ -2058,8 +2060,8 @@ MonoBehaviour:
   height: 10
   distance: 8
   rotationSpeed: 90
-  rotateLeftKey: 108
-  rotateRightKey: 106
+  rotateLeftKey: 111
+  rotateRightKey: 117
   positionSmoothTime: 0
   rotationSmoothTime: 0
   _obstructionMask:

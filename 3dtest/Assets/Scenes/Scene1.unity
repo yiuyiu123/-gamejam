@@ -332,8 +332,8 @@ MonoBehaviour:
   height: 5.92
   distance: 9.18
   rotationSpeed: 90
-  rotateLeftKey: 108
-  rotateRightKey: 106
+  rotateLeftKey: 111
+  rotateRightKey: 117
   positionSmoothTime: 0
   rotationSmoothTime: 0
   _obstructionMask:
@@ -943,8 +943,8 @@ MonoBehaviour:
   height: 5.92
   distance: 9.18
   rotationSpeed: 90
-  rotateLeftKey: 100
-  rotateRightKey: 97
+  rotateLeftKey: 101
+  rotateRightKey: 113
   positionSmoothTime: 0
   rotationSmoothTime: 0
   _obstructionMask:
