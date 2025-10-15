@@ -9,6 +9,9 @@ public class InteractableItem : MonoBehaviour
     public bool canBePickedUp = true;
     public Vector3 holdOffset = new Vector3(0, 1, 1);
 
+    [Header("持握角度设置")]
+    public Vector3 holdRotationOffset = Vector3.zero; // 持握时的角度偏移
+
     [Header("传送设置")]
     public bool canBeExchanged = true;
     public bool isExchangeLocked = false;
@@ -25,7 +28,6 @@ public class InteractableItem : MonoBehaviour
     private Quaternion originalRotation;
     private Vector3 originalScale;
     private ExchangeZone currentZone;
-
 
     // 添加公共属性来访问私有字段
     public Rigidbody Rb => rb;
@@ -81,7 +83,7 @@ public class InteractableItem : MonoBehaviour
     {
         if (!canBePickedUp) return; // 额外检查
 
-        // 设置持有状态 - 这是缺失的关键代码！
+        // 设置持有状态
         isBeingHeld = true;
         currentHolder = player;
 
@@ -103,14 +105,12 @@ public class InteractableItem : MonoBehaviour
             itemCollider.enabled = false;
         }
 
-        // 关键修改：完全不设置父物体，避免任何缩放继承
-        // transform.SetParent(player.transform, false); // 注释掉这行
-
         // 立即强制设置缩放
         transform.localScale = originalScale;
 
         Debug.Log($"{player.name} 拿起了 {itemName}");
     }
+
     public void ResetItemState()
     {
         isBeingHeld = false;
@@ -129,6 +129,7 @@ public class InteractableItem : MonoBehaviour
             itemCollider.enabled = true;
         }
     }
+
     public void PutDown()
     {
         if (!isBeingHeld) return; // 如果已经不是持有状态，直接返回
@@ -168,7 +169,8 @@ public class InteractableItem : MonoBehaviour
                                 currentHolder.transform.up * holdOffset.y +
                                 currentHolder.transform.right * holdOffset.x;
 
-        Quaternion targetRotation = currentHolder.transform.rotation;
+        // 修改：应用持握角度偏移
+        Quaternion targetRotation = currentHolder.transform.rotation * Quaternion.Euler(holdRotationOffset);
 
         // 直接更新位置和旋转，不依赖父物体
         transform.position = Vector3.Lerp(transform.position, targetPosition, 10f * Time.deltaTime);
@@ -269,6 +271,7 @@ public class InteractableItem : MonoBehaviour
             rb.angularVelocity = Vector3.zero;
         }
     }
+
     // 添加强制释放方法
     public void ForceRelease()
     {
@@ -293,6 +296,7 @@ public class InteractableItem : MonoBehaviour
             Debug.Log($"强制释放物品: {itemName}");
         }
     }
+
     void OnDrawGizmosSelected()
     {
         if (isBeingHeld && currentHolder != null)
