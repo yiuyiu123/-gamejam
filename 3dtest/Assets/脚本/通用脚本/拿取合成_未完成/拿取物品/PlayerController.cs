@@ -9,6 +9,9 @@ public class PlayerController : MonoBehaviour
     public float interactionRange = 2f;
     public float throwRange = 10f;
 
+    [Header("特殊物品设置")]
+    public string wateringCanItemName = "水壶"; // 水壶的物品名称
+
     [Header("调试选项")]
     public bool showInputDebug = false;
     public bool showInteractionDebug = true;
@@ -16,6 +19,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private Vector3 movement;
     private InteractableItem heldItem;
+    private bool isTemporarilyLocked = false; // 临时锁定状态（用于浇花等特殊动作）
 
     // 玩家属性
     public string playerName = "玩家";
@@ -32,6 +36,8 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (isTemporarilyLocked) return; // 如果被临时锁定，不处理输入
+
         GetWASDInput();
         HandleInteraction();
 
@@ -58,12 +64,22 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(interactKey))
         {
+            if (showInteractionDebug)
+                Debug.Log($"{playerName} 按下交互键，持有物品: {heldItem?.itemName}");
+
             if (heldItem != null)
             {
+                // 如果持有水壶，优先尝试浇花
+                if (heldItem.itemName == wateringCanItemName && TryWateringFlowers())
+                {
+                    Debug.Log($"{playerName} 成功开始浇花");
+                    return;
+                }
+
                 // 如果持有物品，尝试抛掷到合成区域
                 if (TryThrowToSynthesisZone())
                 {
-                    // 成功抛掷
+                    Debug.Log($"{playerName} 成功抛掷物品到合成区域");
                     return;
                 }
                 else
@@ -78,6 +94,62 @@ public class PlayerController : MonoBehaviour
                 TryPickUpItem();
             }
         }
+    }
+
+    // 尝试浇花 - 修复逻辑
+    bool TryWateringFlowers()
+    {
+        // 检查是否持有水壶
+        if (heldItem == null || heldItem.itemName != wateringCanItemName)
+        {
+            if (showInteractionDebug)
+                Debug.Log($"{playerName} 没有持有水壶或水壶名称不匹配");
+            return false;
+        }
+
+        // 查找附近的花盆区域
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, interactionRange);
+        if (showInteractionDebug)
+            Debug.Log($"{playerName} 检测到 {hitColliders.Length} 个碰撞体");
+
+        foreach (var hitCollider in hitColliders)
+        {
+            FlowerPotZone flowerPot = hitCollider.GetComponent<FlowerPotZone>();
+            if (flowerPot != null)
+            {
+                if (showInteractionDebug)
+                    Debug.Log($"{playerName} 找到花盆区域: {flowerPot.zoneID}");
+
+                // 检查玩家是否在花盆区域内
+                if (flowerPot.IsPlayerInZone(gameObject))
+                {
+                    if (showInteractionDebug)
+                        Debug.Log($"{playerName} 在花盆区域内，开始浇花");
+
+                    // 开始浇花
+                    bool wateringStarted = flowerPot.StartWatering(gameObject, heldItem.gameObject);
+                    if (wateringStarted)
+                    {
+                        // 浇花成功后，立即释放水壶引用，因为花盆会处理水壶的销毁
+                        heldItem = null;
+                        return true;
+                    }
+                    else
+                    {
+                        Debug.Log($"{playerName} 花盆拒绝开始浇花");
+                    }
+                }
+                else
+                {
+                    if (showInteractionDebug)
+                        Debug.Log($"{playerName} 在花盆附近但不在区域内");
+                }
+            }
+        }
+
+        if (showInteractionDebug)
+            Debug.Log($"{playerName} 没有找到可用的花盆区域");
+        return false;
     }
 
     bool TryThrowToSynthesisZone()
@@ -192,6 +264,13 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // 新增：设置临时锁定状态
+    public void SetTemporaryLock(bool locked)
+    {
+        isTemporarilyLocked = locked;
+        Debug.Log($"{playerName} 临时锁定状态: {locked}");
+    }
+
     // 检查是否持有物品
     public bool IsHoldingItem()
     {
@@ -202,6 +281,17 @@ public class PlayerController : MonoBehaviour
     public InteractableItem GetHeldItem()
     {
         return heldItem;
+    }
+
+    // 强制释放持有的物品（用于浇花等特殊操作后）
+    public void ForceReleaseItem()
+    {
+        if (heldItem != null)
+        {
+            heldItem.ForceRelease();
+            heldItem = null;
+            Debug.Log($"{playerName} 强制释放了物品");
+        }
     }
 
     void OnDrawGizmosSelected()

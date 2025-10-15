@@ -1177,6 +1177,7 @@ MonoBehaviour:
   itemName: "\"\u7B14\u8BB0\u672C\u7535\u8111\""
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  holdRotationOffset: {x: 0, y: 0, z: 0}
   canBeExchanged: 0
   isExchangeLocked: 0
   lastExchangeZone: 
@@ -1459,7 +1460,7 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -6433,7 +6434,7 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -11285,6 +11286,7 @@ MonoBehaviour:
   itemName: "\"\u7A7A\u767D\u8BD5\u5377\""
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  holdRotationOffset: {x: 0, y: 0, z: 0}
   canBeExchanged: 0
   isExchangeLocked: 0
   lastExchangeZone: 
@@ -11600,7 +11602,7 @@ MonoBehaviour:
   throwTarget: {fileID: 1886848470}
   detectionRadius: 3
   itemSpawnPoint: {fileID: 0}
-  synthesisEffect: {fileID: 1263082884}
+  synthesisEffect: {fileID: 1351165459}
   synthesisSound: {fileID: 0}
   synthesisDelay: 1
   throwHeight: 3
@@ -12175,6 +12177,7 @@ MonoBehaviour:
   itemName: "\"\u7A7AU\u76D8\""
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  holdRotationOffset: {x: 0, y: 0, z: 0}
   canBeExchanged: 0
   isExchangeLocked: 0
   lastExchangeZone: 
