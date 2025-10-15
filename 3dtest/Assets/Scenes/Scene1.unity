@@ -634,7 +634,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1519320196}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UI_Manager, Assembly-CSharp
         m_MethodName: OnClickBack
         m_Mode: 1
@@ -1139,7 +1139,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1519320196}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UI_Manager, Assembly-CSharp
         m_MethodName: OnClickBack
         m_Mode: 1
@@ -1198,7 +1198,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 855185030}
-  - component: {fileID: 855185031}
   m_Layer: 0
   m_Name: scene1 UI manager
   m_TagString: Untagged
@@ -1221,21 +1220,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1425497459}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &855185031
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 855185029}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70d58ff378e20a4488c795eec6a130f2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UI_Conversation: {fileID: 36231735}
-  UI_Settings: {fileID: 1195387808}
-  noInputAnything: 0
 --- !u!1 &860985830
 GameObject:
   m_ObjectHideFlags: 0
@@ -1425,7 +1409,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1519320196}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UI_Manager, Assembly-CSharp
         m_MethodName: OnClickQuit
         m_Mode: 1
@@ -1882,7 +1866,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1519320196}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UI_Manager, Assembly-CSharp
         m_MethodName: ShowSetMenu
         m_Mode: 1
@@ -2930,7 +2914,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1519320196}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UI_Manager, Assembly-CSharp
         m_MethodName: ShowTeamMenu
         m_Mode: 1
@@ -8233,7 +8217,6 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1519320194}
   - {fileID: 855185030}
   - {fileID: 2055408915}
   - {fileID: 36231736}
@@ -8349,6 +8332,7 @@ MonoBehaviour:
   interactKey: 102
   interactionRange: 2
   throwRange: 10
+  wateringCanItemName: "\u6C34\u58F6"
   showInputDebug: 0
   showInteractionDebug: 1
   playerName: player1
@@ -8447,11 +8431,11 @@ Transform:
   m_GameObject: {fileID: 1519320193}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -41.17462, y: 59.303528, z: -938.7325}
+  m_LocalPosition: {x: 918.8254, y: 599.3035, z: -938.7325}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1425497459}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1519320195
 MonoBehaviour:
@@ -8479,8 +8463,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _0_skip: {fileID: 0}
   _1_back: {fileID: 0}
-  _1_set: {fileID: 1293500230}
-  _1_team: {fileID: 1043840226}
+  _1_set: {fileID: 0}
+  _1_team: {fileID: 0}
   victoryPanel: {fileID: 0}
   losePanel: {fileID: 0}
   restartPanel: {fileID: 0}
@@ -8818,6 +8802,7 @@ MonoBehaviour:
   interactKey: 104
   interactionRange: 2
   throwRange: 10
+  wateringCanItemName: "\u6C34\u58F6"
   showInputDebug: 0
   showInteractionDebug: 1
   playerName: player2
@@ -9607,7 +9592,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2055408915}
-  - component: {fileID: 2055408916}
   m_Layer: 0
   m_Name: conversation manager
   m_TagString: Untagged
@@ -9630,29 +9614,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1425497459}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2055408916
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2055408914}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 249f88d60a28e0b4ca245cb4cece8c31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player1Conversations:
-  - {fileID: 1193503009}
-  - {fileID: 935814705}
-  - {fileID: 1775778169}
-  player2Conversations:
-  - {fileID: 1938887209}
-  - {fileID: 1547607264}
-  - {fileID: 947737741}
-  scene1UI_Manager: {fileID: 855185031}
-  player1Key: 102
-  player2Key: 104
 --- !u!1 &2080883056
 GameObject:
   m_ObjectHideFlags: 0
@@ -9822,6 +9783,7 @@ SceneRoots:
   - {fileID: 677677540}
   - {fileID: 936413642}
   - {fileID: 2090050185}
+  - {fileID: 1519320194}
   - {fileID: 1134905128}
   - {fileID: 58442966}
   - {fileID: 1099919742}
