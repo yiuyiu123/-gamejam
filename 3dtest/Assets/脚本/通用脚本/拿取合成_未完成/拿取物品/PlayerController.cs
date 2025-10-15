@@ -38,7 +38,7 @@ public class PlayerController : MonoBehaviour
     {
         if (isTemporarilyLocked) return; // 如果被临时锁定，不处理输入
 
-        GetWASDInput();
+        //GetWASDInput();
         HandleInteraction();
 
         if (showInputDebug && movement.magnitude > 0.1f)
@@ -47,18 +47,18 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void GetWASDInput()
-    {
-        float horizontal = 0f;
-        float vertical = 0f;
+    //void GetWASDInput()
+    //{
+    //    float horizontal = 0f;
+    //    float vertical = 0f;
 
-        if (Input.GetKey(KeyCode.D)) horizontal += 1f;
-        if (Input.GetKey(KeyCode.A)) horizontal -= 1f;
-        if (Input.GetKey(KeyCode.W)) vertical += 1f;
-        if (Input.GetKey(KeyCode.S)) vertical -= 1f;
+    //    //if (Input.GetKey(KeyCode.D)) horizontal += 1f;
+    //    //if (Input.GetKey(KeyCode.A)) horizontal -= 1f;
+    //    //if (Input.GetKey(KeyCode.W)) vertical += 1f;
+    //    //if (Input.GetKey(KeyCode.S)) vertical -= 1f;
 
-        movement = new Vector3(horizontal, 0f, vertical).normalized;
-    }
+    //    movement = new Vector3(horizontal, 0f, vertical).normalized;
+    //}
 
     void HandleInteraction()
     {
