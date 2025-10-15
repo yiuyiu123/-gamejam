@@ -309,11 +309,11 @@ public class AudioManager : MonoBehaviour
     if (hoverAudioSource.isPlaying) hoverAudioSource.Stop();
     if (clickAudioSource.isPlaying) clickAudioSource.Stop();
     
-    // 重置背景音乐
+    /*// 重置背景音乐
     SceneBGM bgm = FindObjectOfType<SceneBGM>();
     if (bgm != null)
     {
         bgm.ResetBGM();
-    }
+    }*/
     }
 }
