@@ -19,6 +19,7 @@ public class FlowerPotZone : MonoBehaviour
     public float wateringDuration = 2f;      // 浇水持续时间
     public float flowerGrowthDelay = 1f;     // 花生长延迟
     public float keySpawnDelay = 2f;         // 钥匙生成延迟
+    public Vector3 customFlowerRotation = Vector3.zero;
 
     [Header("水壶设置")]
     public bool destroyWateringCanAfterUse = true; // 使用后删除水壶
@@ -167,10 +168,12 @@ public class FlowerPotZone : MonoBehaviour
         // 3. 等待花生长延迟
         yield return new WaitForSeconds(flowerGrowthDelay);
 
-        // 4. 生成花（播放生长动画）
+
         if (flowerPrefab != null && flowerSpawnPoint != null)
         {
-            currentFlower = Instantiate(flowerPrefab, flowerSpawnPoint.position, flowerSpawnPoint.rotation);
+            // 使用自定义方向创建旋转
+            Quaternion customRotation = Quaternion.Euler(customFlowerRotation);
+            currentFlower = Instantiate(flowerPrefab, flowerSpawnPoint.position, customRotation);
             Debug.Log("花已生长");
 
             // 播放花的生长动画（如果有）

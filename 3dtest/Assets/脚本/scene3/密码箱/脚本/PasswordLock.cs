@@ -193,7 +193,7 @@ public class PasswordLock : MonoBehaviour
     // 触发器检测玩家进入范围
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player1"))
+        if (other.CompareTag("Player2"))
         {
             isPlayerInRange = true;
             Debug.Log("玩家进入范围");
@@ -206,7 +206,7 @@ public class PasswordLock : MonoBehaviour
     // 触发器检测玩家离开范围
     void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player1"))
+        if (other.CompareTag("Player2"))
         {
             isPlayerInRange = false;
             Debug.Log("玩家进入范围不");
