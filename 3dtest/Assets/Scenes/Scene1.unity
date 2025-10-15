@@ -7597,7 +7597,7 @@ Transform:
   m_GameObject: {fileID: 1259558007}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10.46, y: 34.58, z: 13.32}
+  m_LocalPosition: {x: 9.19, y: 34.58, z: 16.72}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -13539,6 +13539,7 @@ MonoBehaviour:
   interactKey: 102
   interactionRange: 2
   throwRange: 10
+  wateringCanItemName: "\u6C34\u58F6"
   showInputDebug: 0
   showInteractionDebug: 1
   playerName: player1
@@ -13933,6 +13934,7 @@ MonoBehaviour:
   interactKey: 104
   interactionRange: 2
   throwRange: 10
+  wateringCanItemName: "\u6C34\u58F6"
   showInputDebug: 0
   showInteractionDebug: 1
   playerName: player2

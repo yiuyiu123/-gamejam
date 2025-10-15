@@ -66,7 +66,7 @@ public class FlowerPotZone : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player1"))
+        if (other.CompareTag("Player1")|| other.CompareTag("Player2"))
         {
             if (!playersInZone.Contains(other.gameObject))
             {

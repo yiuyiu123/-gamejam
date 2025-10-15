@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2854381815196890485}
   - component: {fileID: 9208806510676785371}
   - component: {fileID: 7747771816955249651}
+  - component: {fileID: 2828199480829268358}
   m_Layer: 0
   m_Name: "\u58A8\u6C34\u74F6"
   m_TagString: Untagged
@@ -83,3 +84,26 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &2828199480829268358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8316186318477623126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4db78b98f27e804eb70d016468cf412, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: "\"\u77FF\u6CC9\u6C34\""
+  canBePickedUp: 1
+  holdOffset: {x: 0, y: 1, z: 1}
+  holdRotationOffset: {x: 0, y: 0, z: 0}
+  canBeExchanged: 1
+  isExchangeLocked: 0
+  lastExchangeZone: 
+  isBeingHeld: 0
+  isInExchangeProcess: 0
+  currentHolder: {fileID: 0}
+  showDebugInfo: 0

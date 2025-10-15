@@ -56,7 +56,7 @@ public class PasswordLock : MonoBehaviour
     void Update()
     {
         // 检测玩家是否在范围内且按下F键
-        if (isPlayerInRange && Input.GetKeyDown(KeyCode.F) && !isOpened)
+        if (isPlayerInRange && Input.GetKeyDown(KeyCode.H) && !isOpened)
         {
             Debug.Log("玩家打开解密页面");
             ShowPasswordUI();
