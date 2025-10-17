@@ -1544,8 +1544,8 @@ GameObject:
   - component: {fileID: 1393095388}
   - component: {fileID: 1393095387}
   m_Layer: 0
-  m_Name: Camera1
-  m_TagString: MainCamera
+  m_Name: Player1Camera
+  m_TagString: Player1Camera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1616,6 +1616,8 @@ MonoBehaviour:
   target: {fileID: 1046518880}
   height: 10
   distance: 8
+  verticalOffset: 2
+  enableVerticalOffset: 1
   rotationSpeed: 90
   rotateLeftKey: 101
   rotateRightKey: 113
@@ -1938,6 +1940,11 @@ MonoBehaviour:
   rotationSpeed: 90
   player1StartAngle: 45
   player2StartAngle: 45
+  shadowDistance: 100
+  shadowBias: 0.05
+  shadowNormalBias: 1
+  enableShadowFix: 1
+  destroyOtherCameras: 1
 --- !u!1 &2043898186
 GameObject:
   m_ObjectHideFlags: 0
@@ -1987,8 +1994,8 @@ GameObject:
   - component: {fileID: 2141337749}
   - component: {fileID: 2141337748}
   m_Layer: 0
-  m_Name: Camera2
-  m_TagString: MainCamera
+  m_Name: Player2Camera
+  m_TagString: Player2Camera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2059,6 +2066,8 @@ MonoBehaviour:
   target: {fileID: 1243931705}
   height: 10
   distance: 8
+  verticalOffset: 2
+  enableVerticalOffset: 1
   rotationSpeed: 90
   rotateLeftKey: 111
   rotateRightKey: 117

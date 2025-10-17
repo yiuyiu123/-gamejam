@@ -259,8 +259,8 @@ GameObject:
   - component: {fileID: 125820151}
   - component: {fileID: 125820150}
   m_Layer: 0
-  m_Name: Camera2
-  m_TagString: MainCamera
+  m_Name: Player2Camera
+  m_TagString: Player2Camera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -331,6 +331,8 @@ MonoBehaviour:
   target: {fileID: 1667462938}
   height: 5.92
   distance: 9.18
+  verticalOffset: 2
+  enableVerticalOffset: 1
   rotationSpeed: 90
   rotateLeftKey: 111
   rotateRightKey: 117
@@ -870,7 +872,7 @@ GameObject:
   - component: {fileID: 764636333}
   - component: {fileID: 764636332}
   m_Layer: 0
-  m_Name: Camera1
+  m_Name: Player1Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -942,6 +944,8 @@ MonoBehaviour:
   target: {fileID: 1429236437}
   height: 5.92
   distance: 9.18
+  verticalOffset: 2
+  enableVerticalOffset: 1
   rotationSpeed: 90
   rotateLeftKey: 101
   rotateRightKey: 113
@@ -7216,14 +7220,13 @@ Transform:
   m_GameObject: {fileID: 1099919741}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -16.384705, y: -595.77814, z: 1384.4617}
+  m_LocalPosition: {x: 902.4407, y: 3.5253906, z: 445.7292}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1670078537}
-  - {fileID: 1257528750}
   - {fileID: 2128302558}
-  m_Father: {fileID: 2090050185}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1134905127
 GameObject:
@@ -7589,12 +7592,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1257528749}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 902.4407, y: 3.5253906, z: 445.7292}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1099919742}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1257528751
 MonoBehaviour:
@@ -14359,6 +14362,11 @@ MonoBehaviour:
   rotationSpeed: 90
   player1StartAngle: 45
   player2StartAngle: 45
+  shadowDistance: 100
+  shadowBias: 0.05
+  shadowNormalBias: 1
+  enableShadowFix: 1
+  destroyOtherCameras: 1
 --- !u!1 &1693425852
 GameObject:
   m_ObjectHideFlags: 0
@@ -14692,7 +14700,7 @@ GameObject:
   - component: {fileID: 1916855693}
   - component: {fileID: 1916855692}
   - component: {fileID: 1916855691}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: "\u5899 (2)"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14708,8 +14716,8 @@ Transform:
   m_GameObject: {fileID: 1916855689}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 34.1, y: -56.04, z: -4}
-  m_LocalScale: {x: 15.529361, y: 9.2614, z: 0.62105}
+  m_LocalPosition: {x: 34.1, y: -56.04, z: -1.37}
+  m_LocalScale: {x: 15.529361, y: 17.80782, z: 0.62105}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 58442966}
@@ -15214,7 +15222,7 @@ GameObject:
   - component: {fileID: 2080883060}
   - component: {fileID: 2080883059}
   - component: {fileID: 2080883058}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: "\u5899 (4)"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15230,8 +15238,8 @@ Transform:
   m_GameObject: {fileID: 2080883056}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 37.91, y: -56.04, z: -7.44}
-  m_LocalScale: {x: 15.56114, y: 9.2614, z: 0.62105}
+  m_LocalPosition: {x: 41.38, y: -56.04, z: -7.44}
+  m_LocalScale: {x: 15.56114, y: 19.343359, z: 0.62105}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 58442966}
@@ -15337,8 +15345,7 @@ Transform:
   m_LocalPosition: {x: 918.8254, y: 599.3035, z: -938.7325}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1099919742}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2090050186
@@ -15439,6 +15446,8 @@ SceneRoots:
   m_Roots:
   - {fileID: 677677540}
   - {fileID: 936413642}
+  - {fileID: 1257528750}
+  - {fileID: 1099919742}
   - {fileID: 2090050185}
   - {fileID: 1519320194}
   - {fileID: 1134905128}

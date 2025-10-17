@@ -72,11 +72,64 @@ public class SimpleSceneTransitionManager : MonoBehaviour
         SceneManager.LoadScene(sceneName);
         yield return null; // 等待一帧
 
+        // 关键修复：在新场景中调用阴影修复
+        yield return StartCoroutine(FixNewSceneShadows());
+
         // 淡出
         yield return StartCoroutine(FadeOut());
 
         isTransitioning = false;
         Debug.Log("场景过渡完成");
+    }
+
+    // 新增：修复新场景的阴影
+    private IEnumerator FixNewSceneShadows()
+    {
+        Debug.Log("开始修复新场景阴影设置...");
+
+        // 等待一帧确保所有对象已初始化
+        yield return null;
+
+        // 查找分屏管理器并强制修复阴影
+        SplitScreenManager splitScreenManager = FindObjectOfType<SplitScreenManager>();
+        if (splitScreenManager != null)
+        {
+            splitScreenManager.ForceFixShadows();
+            Debug.Log("找到分屏管理器，已调用阴影修复");
+        }
+        else
+        {
+            Debug.LogWarning("未找到分屏管理器，尝试手动修复阴影");
+            // 如果没有分屏管理器，手动修复基本阴影设置
+            ManualShadowFix();
+        }
+
+        // 额外等待一帧确保修复完成
+        yield return null;
+    }
+
+    // 手动阴影修复作为备用方案
+    private void ManualShadowFix()
+    {
+        // 设置合理的阴影距离
+        QualitySettings.shadowDistance = 100f;
+
+        // 修复方向光阴影设置
+        Light[] lights = FindObjectsOfType<Light>();
+        foreach (Light light in lights)
+        {
+            if (light.type == LightType.Directional)
+            {
+                light.shadowBias = 0.05f;
+                light.shadowNormalBias = 1.0f;
+                light.shadowStrength = 1.0f;
+            }
+        }
+
+        // 更新环境光照
+        DynamicGI.UpdateEnvironment();
+
+        Debug.Log("手动阴影修复完成");
     }
 
     private IEnumerator FadeIn()
