@@ -93,22 +93,41 @@ public class Conversation_Manager : MonoBehaviour
         if (player == 1) player1Index++;
         else player2Index++;
 
-        if ((player == 1 && player1Index < player1Conversations.Length) ||
-            (player == 2 && player2Index < player2Conversations.Length))
+        if (player == 1 && player1Index < player1Conversations.Length)
         {
-            // 显示当前对话
-            int newIndex = player == 1 ? player1Index : player2Index;
-            GameObject go = convArray[newIndex];
+            // 玩家1当前对话
+            GameObject go = player1Conversations[player1Index];
             go.SetActive(true);
 
-            // 获取子物体 TMP 并播放文字
+            // 播放玩家1的“点击下一步”音效（左声道）
+            AudioManager.Instance.PlayOneShot("UI继续", 0, isFadeIn: false, isFadeOut: false, isPlayer1: true, is3D: false);
+
+            // 播放文字
             TMPTypewriter tw = go.GetComponentInChildren<TMPTypewriter>();
             TMP_Text tmp = go.GetComponentInChildren<TMP_Text>();
             if (tw != null && tmp != null)
             {
-                tw.StartTyping(tmp.text); // 自动播放当前文字
+                tw.StartTypewriter(isPlayer1: true);
             }
         }
+        else if (player == 2 && player2Index < player2Conversations.Length)
+        {
+            // 玩家2当前对话
+            GameObject go = player2Conversations[player2Index];
+            go.SetActive(true);
+
+            // 播放玩家2的“点击下一步”音效（右声道）
+            AudioManager.Instance.PlayOneShot("UI继续", 0, isFadeIn: false, isFadeOut: false, isPlayer1: false, is3D: false);
+
+            // 播放文字
+            TMPTypewriter tw = go.GetComponentInChildren<TMPTypewriter>();
+            TMP_Text tmp = go.GetComponentInChildren<TMP_Text>();
+            if (tw != null && tmp != null)
+            {
+                tw.StartTypewriter(isPlayer1: false);
+            }
+        }
+
         else
         {
             // 播放完毕

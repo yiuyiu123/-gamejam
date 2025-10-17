@@ -18,8 +18,6 @@ public class AudioManager : MonoBehaviour
 
     private Dictionary<string, AudioClip[]> groupClipDict = new Dictionary<string, AudioClip[]>();
     private Dictionary<string, AudioSource> groupAudioSources = new Dictionary<string, AudioSource>();
-    private Dictionary<string, AudioSource> audioSources = new Dictionary<string, AudioSource>();
-
 
     private AudioSource hoverAudioSource;
     private AudioSource clickAudioSource;
@@ -32,7 +30,7 @@ public class AudioManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // 可选，跨场景保留
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -56,47 +54,46 @@ public class AudioManager : MonoBehaviour
 
         clickAudioSource = Instantiate(defaultAudioSourcePrefab, transform);
         clickAudioSource.playOnAwake = false;
-        // 🪵 打印调试信息
-        Debug.Log("[AudioManager] hoverAudioSource created");
-        Debug.Log($"HoverAudioSource Settings - Volume: {hoverAudioSource.volume}, Mute: {hoverAudioSource.mute}, Blend: {hoverAudioSource.spatialBlend}, Output: {hoverAudioSource.outputAudioMixerGroup}");
     }
 
-    // ▶ 播放一次（可指定 index）
-    public void PlayOneShot(string groupID, int index = -1, float volume = 1f, bool fadeIn = false, float fadeInDuration = 0.5f)
+    // ▶ 播放一次（OneShot）支持左右声道和2D/3D
+    public void PlayOneShot(string groupID, int index = -1, bool isFadeIn = false, float fadeInTime = 0.5f,
+                            bool isFadeOut = false, float fadeOutTime = 0.5f, bool isPlayer1 = true, bool is3D = false)
     {
-        if (groupClipDict.TryGetValue(groupID, out AudioClip[] clips) && clips.Length > 0)
-        {
-            AudioClip clip = GetClipByIndex(clips, index);
-            // 使用临时播放方式，避免场景切换被打断
-            StartCoroutine(PlayOneShotWithTempSource(clip, volume * sfxVolume, fadeIn, fadeInDuration));
-        }
+        if (!groupClipDict.TryGetValue(groupID, out var clips) || clips.Length == 0)
+            return;
+
+        AudioClip clip = GetClipByIndex(clips, index);
+        StartCoroutine(PlayTempSound(clip, sfxVolume, isFadeIn, fadeInTime, isFadeOut, fadeOutTime, isPlayer1, is3D));
     }
 
-    // 🔁 循环播放（可指定 index）
-    public void PlayLoop(string groupID, int index = -1, float volume = 1f, bool fadeIn = true, float fadeInDuration = 1f)
+    // 🔁 循环播放（Loop）支持左右声道和2D/3D
+    public void PlayLoop(string groupID, int index = -1, bool isFadeIn = true, float fadeInTime = 1f, bool isPlayer1 = true, bool is3D = false)
     {
-        if (groupClipDict.TryGetValue(groupID, out AudioClip[] clips) && clips.Length > 0)
-        {
-            AudioClip clip = GetClipByIndex(clips, index);
-            var source = groupAudioSources[groupID];
-            StartCoroutine(PlayClip(source, clip, volume * sfxVolume, true, fadeIn, false, 0f, fadeInDuration, 0f));
-        }
+        if (!groupClipDict.TryGetValue(groupID, out var clips) || clips.Length == 0)
+            return;
+
+        AudioClip clip = GetClipByIndex(clips, index);
+        var source = groupAudioSources[groupID];
+        source.spatialBlend = is3D ? 1f : 0f;
+        source.panStereo = !is3D ? (isPlayer1 ? -1f : 1f) : 0f;
+
+        StartCoroutine(PlayClip(source, clip, sfxVolume, true, isFadeIn, false, 0f, fadeInTime, 0f));
     }
 
     // ⏸ 暂停播放，支持淡出
-    public void Pause(string groupID,int index=-1, bool fadeOut = true, float fadeOutDuration = 1f)
+    public void Pause(string groupID, int index = -1, bool isFadeOut = true, float fadeOutTime = 1f)
     {
         if (groupAudioSources.TryGetValue(groupID, out AudioSource source))
         {
-            if (fadeOut)
-                StartCoroutine(FadeOutAndPause(source, fadeOutDuration));
+            if (isFadeOut)
+                StartCoroutine(FadeOutAndPause(source, fadeOutTime));
             else
                 source.Pause();
         }
     }
 
-    // 🖱 悬浮播放一次（可指定 index）
-    // 🖱 悬浮播放一次（使用固定音效）
+    // 🖱 悬浮播放一次
     public void PlayHover()
     {
         const string hoverGroupID = "点击";
@@ -109,13 +106,8 @@ public class AudioManager : MonoBehaviour
             StartCoroutine(PlayClip(hoverAudioSource, clip, hoverVolume * sfxVolume,
                                   false, false, false, 0f, 0f, 0f));
         }
-        else
-        {
-            Debug.LogError($"悬浮音效加载失败！GroupID: {hoverGroupID}, Index: {hoverIndex}");
-        }
     }
 
-    // ⛔ 停止悬浮音效播放，支持淡出
     public void StopHover(bool fadeOut = true, float fadeOutDuration = 0.3f)
     {
         if (hoverAudioSource.isPlaying)
@@ -125,12 +117,9 @@ public class AudioManager : MonoBehaviour
             else
                 hoverAudioSource.Stop();
         }
-        //测试
-        Debug.Log("StopHover() called");
-
     }
 
-    // 🖱 点击播放（可指定 index）
+    // 🖱 点击播放
     public void PlayClick(string groupID, int index = -1, float volume = 1f)
     {
         if (groupClipDict.TryGetValue(groupID, out AudioClip[] clips) && clips.Length > 0)
@@ -146,9 +135,7 @@ public class AudioManager : MonoBehaviour
     {
         musicVolume = volume;
         if (groupAudioSources.TryGetValue("战斗背景音", out var musicSource))
-        {
             musicSource.volume = musicVolume;
-        }
     }
 
     // 设置音效音量
@@ -159,15 +146,11 @@ public class AudioManager : MonoBehaviour
 
     public bool IsPlaying(string name)
     {
-        if (audioSources.ContainsKey(name))
-        {
-            return audioSources[name].isPlaying;
-        }
+        if (groupAudioSources.ContainsKey(name))
+            return groupAudioSources[name].isPlaying;
         return false;
     }
 
-
-    // 辅助：根据index获取音效，-1为随机
     private AudioClip GetClipByIndex(AudioClip[] clips, int index)
     {
         if (index >= 0 && index < clips.Length)
@@ -175,12 +158,52 @@ public class AudioManager : MonoBehaviour
         return clips[Random.Range(0, clips.Length)];
     }
 
-    // 🌊 播放协程，控制淡入、淡出、循环与停止
-    private IEnumerator PlayClip(AudioSource source, AudioClip clip, float targetVolume, bool loop, bool fadeIn, bool fadeOut, float clipDuration, float fadeInDuration, float fadeOutDuration)
+    private IEnumerator PlayTempSound(AudioClip clip, float volume, bool isFadeIn, float fadeInTime,
+                                      bool isFadeOut, float fadeOutTime, bool isPlayer1, bool is3D)
     {
-       // Debug.Log($"StartCoroutine PlayClip: playing {clip.name} with loop={loop}, fadeIn={fadeIn}");
+        GameObject temp = new GameObject($"TempAudio_{clip.name}");
+        DontDestroyOnLoad(temp);
 
+        AudioSource src = temp.AddComponent<AudioSource>();
+        src.clip = clip;
+        src.loop = false;
+        src.spatialBlend = is3D ? 1f : 0f;
+        src.panStereo = !is3D ? (isPlayer1 ? -1f : 1f) : 0f;
+        src.volume = 0f;
+        src.Play();
 
+        if (isFadeIn)
+        {
+            float t = 0f;
+            while (t < fadeInTime)
+            {
+                src.volume = Mathf.Lerp(0f, volume, t / fadeInTime);
+                t += Time.deltaTime;
+                yield return null;
+            }
+        }
+        else src.volume = volume;
+
+        yield return new WaitForSeconds(clip.length - (isFadeOut ? fadeOutTime : 0f));
+
+        if (isFadeOut)
+        {
+            float t = 0f;
+            float start = src.volume;
+            while (t < fadeOutTime)
+            {
+                src.volume = Mathf.Lerp(start, 0f, t / fadeOutTime);
+                t += Time.deltaTime;
+                yield return null;
+            }
+        }
+
+        Destroy(temp);
+    }
+
+    private IEnumerator PlayClip(AudioSource source, AudioClip clip, float targetVolume, bool loop,
+                                 bool fadeIn, bool fadeOut, float clipDuration, float fadeInDuration, float fadeOutDuration)
+    {
         source.clip = clip;
         source.loop = loop;
 
@@ -219,101 +242,40 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    // 🌙 淡出后暂停
     private IEnumerator FadeOutAndPause(AudioSource source, float duration)
     {
         float startVolume = source.volume;
-        float time = 0f;
-        while (time < duration)
+        float t = 0f;
+        while (t < duration)
         {
-            source.volume = Mathf.Lerp(startVolume, 0f, time / duration);
-            time += Time.deltaTime;
+            source.volume = Mathf.Lerp(startVolume, 0f, t / duration);
+            t += Time.deltaTime;
             yield return null;
         }
         source.Pause();
         source.volume = startVolume;
     }
 
-    // 🛑 淡出后停止
     private IEnumerator FadeOutAndStop(AudioSource source, float duration)
     {
         float startVolume = source.volume;
-        float time = 0f;
-        while (time < duration)
+        float t = 0f;
+        while (t < duration)
         {
-            source.volume = Mathf.Lerp(startVolume, 0f, time / duration);
-            time += Time.deltaTime;
+            source.volume = Mathf.Lerp(startVolume, 0f, t / duration);
+            t += Time.deltaTime;
             yield return null;
         }
         source.Stop();
         source.volume = startVolume;
     }
 
-    private IEnumerator PlayOneShotWithTempSource(AudioClip clip, float volume, bool fadeIn, float fadeInDuration)
-    {
-        GameObject tempGO = new GameObject("OneShotAudio");
-        DontDestroyOnLoad(tempGO);
-        AudioSource audioSource = tempGO.AddComponent<AudioSource>();
-        audioSource.clip = clip;
-        audioSource.volume = 0f;
-        audioSource.loop = false;
-        audioSource.playOnAwake = false;
-
-        audioSource.Play();
-
-        if (fadeIn)
-        {
-            float time = 0f;
-            while (time < fadeInDuration)
-            {
-                audioSource.volume = Mathf.Lerp(0f, volume, time / fadeInDuration);
-                time += Time.deltaTime;
-                yield return null;
-            }
-            audioSource.volume = volume;
-        }
-        else
-        {
-            audioSource.volume = volume;
-        }
-
-        // 等待音频播放完毕
-        yield return new WaitForSeconds(clip.length);
-
-        // 淡出音量（可选）
-        float fadeOutDuration = 0.5f;
-        float fadeOutTime = 0f;
-        float startVolume = audioSource.volume;
-        while (fadeOutTime < fadeOutDuration)
-        {
-            audioSource.volume = Mathf.Lerp(startVolume, 0f, fadeOutTime / fadeOutDuration);
-            fadeOutTime += Time.deltaTime;
-            yield return null;
-        }
-
-        Destroy(tempGO);
-    }
-
     public void ResetAllAudio()
     {
-    // 重置所有音频源
-    foreach (var source in groupAudioSources.Values)
-    {
-        if (source.isPlaying)
-        {
-            source.Stop();
-        }
-    }
-    
-    // 重置悬停和点击音效
-    if (hoverAudioSource.isPlaying) hoverAudioSource.Stop();
-    if (clickAudioSource.isPlaying) clickAudioSource.Stop();
-    
-    /*// 重置背景音乐
-    SceneBGM bgm = FindObjectOfType<SceneBGM>();
-    if (bgm != null)
-    {
-        bgm.ResetBGM();
-    }*/
+        foreach (var source in groupAudioSources.Values)
+            if (source.isPlaying) source.Stop();
+
+        if (hoverAudioSource.isPlaying) hoverAudioSource.Stop();
+        if (clickAudioSource.isPlaying) clickAudioSource.Stop();
     }
 }
