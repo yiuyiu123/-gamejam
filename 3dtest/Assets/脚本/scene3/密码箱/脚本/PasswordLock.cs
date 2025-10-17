@@ -28,7 +28,7 @@ public class PasswordLock : MonoBehaviour
     private bool isPlayerInRange = false;
     private bool isOpened = false;
 
-   
+
 
     void Start()
     {
@@ -62,6 +62,12 @@ public class PasswordLock : MonoBehaviour
             ShowPasswordUI();
         }
 
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            Debug.Log("按下Enter键确认密码");
+            CheckPassword();
+        }
+
         // 每帧更新提示图标朝向摄像机 
         if (interactionHint != null && interactionHint.activeSelf)
         {
@@ -88,7 +94,7 @@ public class PasswordLock : MonoBehaviour
         if (hintText != null)
             hintText.text = "请输入" + passwordLength + "位密码";
 
-       
+
     }
 
     void ShowPasswordUI()
@@ -216,7 +222,7 @@ public class PasswordLock : MonoBehaviour
             // 隐藏提示图标和密码界面
             if (interactionHint != null)
                 interactionHint.SetActive(false);
-            
+
         }
     }
 
