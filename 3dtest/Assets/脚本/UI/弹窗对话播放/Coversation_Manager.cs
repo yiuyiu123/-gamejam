@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -79,51 +80,44 @@ public class Conversation_Manager : MonoBehaviour
     }
 
     // 玩家点击下一步逻辑
-    // 玩家点击下一步逻辑
     public void HandleNext(int player)
     {
-        if (player == 1)
+        GameObject[] convArray = player == 1 ? player1Conversations : player2Conversations;
+        int index = player == 1 ? player1Index : player2Index;
+
+        // 隐藏前一张（非最后一张）
+        if (index < convArray.Length)
+            HideConversation(convArray, index);
+
+        // 递增索引
+        if (player == 1) player1Index++;
+        else player2Index++;
+
+        if ((player == 1 && player1Index < player1Conversations.Length) ||
+            (player == 2 && player2Index < player2Conversations.Length))
         {
-            // 隐藏前一张（除了最后一张时保留）
-            if (player1Index < player1Conversations.Length)
-                HideConversation(player1Conversations, player1Index);
+            // 显示当前对话
+            int newIndex = player == 1 ? player1Index : player2Index;
+            GameObject go = convArray[newIndex];
+            go.SetActive(true);
 
-            player1Index++;
-
-            if (player1Index < player1Conversations.Length)
+            // 获取子物体 TMP 并播放文字
+            TMPTypewriter tw = go.GetComponentInChildren<TMPTypewriter>();
+            TMP_Text tmp = go.GetComponentInChildren<TMP_Text>();
+            if (tw != null && tmp != null)
             {
-                ShowConversation(player1Conversations, player1Index);
-            }
-            else
-            {
-                // 到最后一张了，不隐藏，标记完成
-                player1Finished = true;
-                Debug.Log("玩家1对话播放完毕");
-
-                // 检查双方是否都结束
-                CheckBothFinished(1);
+                tw.StartTyping(tmp.text); // 自动播放当前文字
             }
         }
-        else if (player == 2)
+        else
         {
-            if (player2Index < player2Conversations.Length)
-                HideConversation(player2Conversations, player2Index);
-
-            player2Index++;
-
-            if (player2Index < player2Conversations.Length)
-            {
-                ShowConversation(player2Conversations, player2Index);
-            }
-            else
-            {
-                player2Finished = true;
-                Debug.Log("玩家2对话播放完毕");
-
-                CheckBothFinished(2);
-            }
+            // 播放完毕
+            if (player == 1) player1Finished = true;
+            else player2Finished = true;
+            CheckBothFinished(player);
         }
     }
+
 
     // 隐藏单个对话图片（不影响最后一张）
     private void HideConversation(GameObject[] convArray, int index)
