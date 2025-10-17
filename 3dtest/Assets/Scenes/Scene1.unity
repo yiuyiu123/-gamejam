@@ -6569,7 +6569,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &919928539
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7435,7 +7435,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1195387809
 Transform:
   m_ObjectHideFlags: 0
@@ -15210,6 +15210,8 @@ MonoBehaviour:
   scene1UI_Manager: {fileID: 855185031}
   player1Key: 102
   player2Key: 104
+  player1Finished: 0
+  player2Finished: 0
 --- !u!1 &2080883056
 GameObject:
   m_ObjectHideFlags: 0

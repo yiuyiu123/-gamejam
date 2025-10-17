@@ -120,6 +120,17 @@ public class DualPlayerController : MonoBehaviour
 
     void Update()
     {
+        // 如果UI禁用了输入，则停止响应移动
+        var ui = FindObjectOfType<scene1UI_Manager>();
+        if (ui != null && ui.noInputAnything)
+        {
+            // 允许F/H键单独响应
+            if (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.H))
+            {
+                // 可在这里触发对应UI逻辑
+            }
+            return; 
+        }
         GetPlayerInput();
 
         if (use2DSpriteMode)
@@ -310,6 +321,7 @@ public class DualPlayerController : MonoBehaviour
             player2CameraController.OnCameraRotated -= OnPlayer2CameraRotated;
         }
     }
+    #region 绿色注释
     //[Header("玩家对象")]
     //public GameObject player1;
     //public GameObject player2;
@@ -682,4 +694,5 @@ public class DualPlayerController : MonoBehaviour
     //        player2CameraController.OnCameraRotated -= OnPlayer2CameraRotated;
     //    }
     //}
+    #endregion
 }

@@ -18,10 +18,10 @@ public class Conversation_Manager : MonoBehaviour
     private int player1Index = 0;
     private int player2Index = 0;
 
-    private bool player1Finished = false;
-    private bool player2Finished = false;
+    public bool player1Finished = false;
+    public bool player2Finished = false;
 
-    void Start()
+    public void StartConversation()
     {
         // 初始化：隐藏所有对话图片
         InitConversation(player1Conversations);
@@ -60,7 +60,10 @@ public class Conversation_Manager : MonoBehaviour
     // 显示指定数组的指定下标
     private void ShowConversation(GameObject[] convArray, int index)
     {
-        if (convArray == null || convArray.Length == 0) return;
+        var ui = FindObjectOfType<scene1UI_Manager>();
+        
+        if (convArray == null || convArray.Length == 0) 
+            return;
         if (index >= 0 && index < convArray.Length)
             convArray[index].SetActive(true);
     }
@@ -76,12 +79,14 @@ public class Conversation_Manager : MonoBehaviour
     }
 
     // 玩家点击下一步逻辑
-    private void HandleNext(int player)
+    // 玩家点击下一步逻辑
+    public void HandleNext(int player)
     {
         if (player == 1)
         {
-            //AudioManager.Instance.PlayClick("翻书", 1f, 0);
-            HideAll(player1Conversations);
+            // 隐藏前一张（除了最后一张时保留）
+            if (player1Index < player1Conversations.Length)
+                HideConversation(player1Conversations, player1Index);
 
             player1Index++;
 
@@ -91,17 +96,18 @@ public class Conversation_Manager : MonoBehaviour
             }
             else
             {
+                // 到最后一张了，不隐藏，标记完成
                 player1Finished = true;
                 Debug.Log("玩家1对话播放完毕");
 
-                // 检查另一方是否也结束
+                // 检查双方是否都结束
                 CheckBothFinished(1);
             }
         }
         else if (player == 2)
         {
-            //AudioManager.Instance.PlayClick("翻书", 1f, 0);
-            HideAll(player2Conversations);
+            if (player2Index < player2Conversations.Length)
+                HideConversation(player2Conversations, player2Index);
 
             player2Index++;
 
@@ -118,6 +124,17 @@ public class Conversation_Manager : MonoBehaviour
             }
         }
     }
+
+    // 隐藏单个对话图片（不影响最后一张）
+    private void HideConversation(GameObject[] convArray, int index)
+    {
+        if (convArray == null || index < 0 || index >= convArray.Length) return;
+
+        // 如果是最后一张就不隐藏
+        if (index < convArray.Length - 1)
+            convArray[index].SetActive(false);
+    }
+
 
     // 检查双方是否结束
     private void CheckBothFinished(int justFinishedPlayer)

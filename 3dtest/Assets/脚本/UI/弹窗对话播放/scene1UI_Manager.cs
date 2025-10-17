@@ -8,34 +8,50 @@ public class scene1UI_Manager : MonoBehaviour
     [Header("UI References")]
     public GameObject UI_Conversation;
     public GameObject UI_Settings;
-    public bool noInputAnything=false;
+    public bool noInputAnything=false;//只能点击F H
+
+    private bool conversationStarted = false; // 是否已经进入对话阶段
+    private Conversation_Manager conversation;
+
 
     void Start()
     {
-        //禁用除了FH以外的键盘输入
-        if (noInputAnything&&Input.anyKeyDown)
-        {
-            if (!Input.GetKeyDown(KeyCode.F) && !Input.GetKeyDown(KeyCode.H))
-            {
-                return;
-            }
-        }
         UI_Settings.SetActive(false);
         UI_Conversation.SetActive(false);
+
+        conversation = FindObjectOfType<Conversation_Manager>();
         //FindObjectOfType<SceneBGM>().PlayBGM();
     }
 
     private void Update()
     {
-        if (Input.anyKeyDown)
+        if (!conversation.player1Finished)
         {
-            UI_Conversation.SetActive(true);
+            if (!conversationStarted && Input.anyKeyDown)
+            {
+                UI_Conversation.SetActive(true);
+                conversationStarted = true;
+                noInputAnything = true;
+
+                if (conversation != null)
+                    conversation.StartConversation();
+            }
+            if (conversation != null && conversationStarted && noInputAnything)
+            {
+                if (Input.anyKeyDown && Input.GetKeyDown(KeyCode.F) == false && Input.GetKeyDown(KeyCode.H) == false)
+                {
+                    Debug.Log("输入被禁用");
+                }
+            }
         }
     }
 
     public void OverConversation()
     {
-        OnSettings();
+        UI_Conversation.SetActive(false);
+        noInputAnything =false;
+        conversationStarted = false;//恢复输入
+        //OnSettings();
         // 播放 "点击" 组第0个元素点击音效
         //AudioManager.Instance.PlayClick("点击", volume: 1f, index: 0);
     }
@@ -57,10 +73,10 @@ public class scene1UI_Manager : MonoBehaviour
     }*/
     #endregion
 
-    private void OnSettings()
+    /*private void OnSettings()
     {
         TowUI(UI_Settings, UI_Conversation);
-    }
+    }*/
 
     private void TowUI(GameObject show, GameObject off)
     {
