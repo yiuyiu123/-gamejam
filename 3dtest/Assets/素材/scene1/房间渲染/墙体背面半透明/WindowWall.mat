@@ -32,7 +32,9 @@ Material:
     - _AlphaScale: 1
     - _Cutoff: 0.5
     - _Gloss: 20
+    - _Glossiness: 0.3
+    - _Metallic: 0
     m_Colors:
-    - _Color: {r: 0.9559748, g: 0.88283306, b: 0.79664564, a: 1}
+    - _Color: {r: 1, g: 0.97204006, b: 0.8018867, a: 1}
     - _Specular: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
