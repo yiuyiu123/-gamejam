@@ -1,6 +1,10 @@
 // Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
-Shader "Unlit/backBlack"
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Custom/backBlack"
 {
     Properties
     {
@@ -65,9 +69,10 @@ Shader "Unlit/backBlack"
 
         Pass//ÕýÃæPhong
         {
-            ZWrite Off
+            ZWrite On
             Cull Back
-            Blend SrcAlpha OneMinusSrcAlpha
+            Blend Off
+            //Cull Off
             Tags{"LightMode"="ForwardBase"}
 
             CGPROGRAM
@@ -96,7 +101,7 @@ Shader "Unlit/backBlack"
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
                 UNITY_TRANSFER_FOG(o,o.vertex);
-                o.worldpos=(UnityObjectToClipPos(v.vertex)).xyz;
+                o.worldpos=UnityObjectToClipPos(v.vertex).xyz;
                 o.worldNormal=UnityObjectToWorldNormal(v.normal);
                 return o;
             }
