@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class InteractableItem : MonoBehaviour
 {
+   
     [Header("物品设置")]
     public string itemName = "物品";
     public bool canBePickedUp = true;
@@ -21,6 +22,13 @@ public class InteractableItem : MonoBehaviour
     public bool isBeingHeld = false;
     public bool isInExchangeProcess = false;
     public GameObject currentHolder = null;
+
+    [Header("拾取动画设置")]
+    public float pickUpTransitionTime = 0.3f;
+    public AnimationCurve pickUpCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+
+    private Coroutine transitionCoroutine;
+    private bool isTransitioning = false;
 
     private Rigidbody rb;
     private Collider itemCollider;
@@ -81,13 +89,11 @@ public class InteractableItem : MonoBehaviour
 
     void PickUp(GameObject player)
     {
-        if (!canBePickedUp) return; // 额外检查
+        if (!canBePickedUp || isTransitioning) return;
 
-        // 设置持有状态
+        // 立即设置基础状态，避免逻辑错误
         isBeingHeld = true;
         currentHolder = player;
-
-        // 在设置任何东西之前先保存和锁定缩放
         originalScale = transform.localScale;
 
         ResetExchangeLock();
@@ -99,16 +105,54 @@ public class InteractableItem : MonoBehaviour
             rb.useGravity = false;
         }
 
-        // 禁用碰撞体
         if (itemCollider != null)
         {
             itemCollider.enabled = false;
         }
 
-        // 立即强制设置缩放
-        transform.localScale = originalScale;
+        // 开始过渡动画
+        if (transitionCoroutine != null)
+            StopCoroutine(transitionCoroutine);
+
+        transitionCoroutine = StartCoroutine(PickUpTransition(player));
 
         Debug.Log($"{player.name} 拿起了 {itemName}");
+    }
+
+    IEnumerator PickUpTransition(GameObject player)
+    {
+        isTransitioning = true;
+
+        // 保存初始状态
+        Vector3 startPosition = transform.position;
+        Quaternion startRotation = transform.rotation;
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < pickUpTransitionTime && currentHolder != null)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = pickUpCurve.Evaluate(elapsedTime / pickUpTransitionTime);
+
+            // 计算当前帧的目标位置
+            Vector3 targetPosition = GetTargetHoldPosition();
+            Quaternion targetRotation = GetTargetHoldRotation();
+
+            // 平滑插值
+            transform.position = Vector3.Lerp(startPosition, targetPosition, t);
+            transform.rotation = Quaternion.Slerp(startRotation, targetRotation, t);
+
+            yield return null;
+        }
+
+        // 确保最终位置准确
+        if (currentHolder != null)
+        {
+            transform.position = GetTargetHoldPosition();
+            transform.rotation = GetTargetHoldRotation();
+        }
+
+        isTransitioning = false;
     }
 
     public void ResetItemState()
@@ -155,35 +199,26 @@ public class InteractableItem : MonoBehaviour
         Debug.Log($"{currentHolder?.name} 放下了 {itemName}");
         currentHolder = null;
     }
-
     void FollowHolder()
     {
-        if (currentHolder == null)
-        {
-            Debug.LogWarning($"物品 {itemName} 的 currentHolder 为 null，无法跟随");
-            return;
-        }
+        if (currentHolder == null || isTransitioning) return;
 
-        Vector3 targetPosition = currentHolder.transform.position +
-                                currentHolder.transform.forward * holdOffset.z +
-                                currentHolder.transform.up * holdOffset.y +
-                                currentHolder.transform.right * holdOffset.x;
-
-        // 修改：应用持握角度偏移
-        Quaternion targetRotation = currentHolder.transform.rotation * Quaternion.Euler(holdRotationOffset);
-
-        // 直接更新位置和旋转，不依赖父物体
-        transform.position = Vector3.Lerp(transform.position, targetPosition, 10f * Time.deltaTime);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 10f * Time.deltaTime);
-
-        // 在跟随过程中强制保持缩放
+        // 直接设置位置，没有延迟
+        transform.position = GetTargetHoldPosition();
+        transform.rotation = GetTargetHoldRotation();
         transform.localScale = originalScale;
+    }
+    Vector3 GetTargetHoldPosition()
+    {
+        return currentHolder.transform.position +
+               currentHolder.transform.forward * holdOffset.z +
+               currentHolder.transform.up * holdOffset.y +
+               currentHolder.transform.right * holdOffset.x;
+    }
 
-        // 调试信息
-        if (showDebugInfo)
-        {
-            Debug.Log($"物品 {itemName} 跟随玩家: 位置={transform.position}, 目标位置={targetPosition}");
-        }
+    Quaternion GetTargetHoldRotation()
+    {
+        return currentHolder.transform.rotation * Quaternion.Euler(holdRotationOffset);
     }
 
     [Header("调试选项")]
@@ -272,22 +307,26 @@ public class InteractableItem : MonoBehaviour
         }
     }
 
-    // 添加强制释放方法
     public void ForceRelease()
     {
         if (isBeingHeld)
         {
+            // 停止过渡动画
+            if (transitionCoroutine != null)
+            {
+                StopCoroutine(transitionCoroutine);
+                isTransitioning = false;
+            }
+
             isBeingHeld = false;
             currentHolder = null;
 
-            // 恢复物理效果
             if (rb != null)
             {
                 rb.isKinematic = false;
                 rb.useGravity = true;
             }
 
-            // 恢复碰撞体
             if (itemCollider != null)
             {
                 itemCollider.enabled = true;
