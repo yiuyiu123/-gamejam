@@ -8,69 +8,89 @@ using UnityEngine.UI;
 
 public class Scene2DialogueManager : MonoBehaviour
 {
-    public static Scene2DialogueManager Instance;
+    public static Scene2DialogueManager Instance; // 单例模式
 
     [Header("分屏对话UI")]
-    public GameObject player1DialoguePanel;  // 左侧屏幕对话面板
-    public GameObject player2DialoguePanel;  // 右侧屏幕对话面板
+    public GameObject player1DialoguePanel;  // 左侧玩家对话面板
+    public GameObject player2DialoguePanel;  // 右侧玩家对话面板
 
     [Header("玩家1对话UI组件")]
-    public TextMeshProUGUI player1DialogueText;
-    public Image player1SpeakerIcon;
-    public TextMeshProUGUI player1SpeakerName;
+    public TextMeshProUGUI player1DialogueText; // 玩家1对话文本
+    public Image player1SpeakerIcon;           // 玩家1说话者图标
+    public TextMeshProUGUI player1SpeakerName; // 玩家1说话者名称
 
     [Header("玩家2对话UI组件")]
-    public TextMeshProUGUI player2DialogueText;
-    public Image player2SpeakerIcon;
-    public TextMeshProUGUI player2SpeakerName;
+    public TextMeshProUGUI player2DialogueText; // 玩家2对话文本
+    public Image player2SpeakerIcon;           // 玩家2说话者图标
+    public TextMeshProUGUI player2SpeakerName; // 玩家2说话者名称
 
     [Header("对话设置")]
-    public float typingSpeed = 0.05f;
-    public KeyCode player1NextKey = KeyCode.F;
-    public KeyCode player2NextKey = KeyCode.H;
+    public float typingSpeed = 0.05f;     // 打字速度
+    public KeyCode player1NextKey = KeyCode.F; // 玩家1下一页按键
+    public KeyCode player2NextKey = KeyCode.H; // 玩家2下一页按键
+
+    [Header("打字音效设置")]
+    public AudioClip typingSound;         // 打字音效
+    public float typingSoundVolume = 0.5f; // 音效音量
+    [Range(1, 10)]
+    public int charactersPerSound = 2;    // 每多少个字符播放一次音效
+    public bool playSoundOnSpace = false; // 是否在空格时播放音效
+    public bool playSoundOnPunctuation = true; // 是否在标点时播放音效
+
+    [Header("对话结束设置")]
+    public bool showEndingPrompt = true;  // 是否显示结束提示
+    public string endingPromptText = "按 F 和 H 键继续"; // 结束提示文本
 
     [Header("对话数据")]
-    public List<DialogueSequence> dialogueSequences;
+    public List<DialogueSequence> dialogueSequences; // 对话序列列表
+
+    [Header("调试选项")]
+    public bool enableDialogueDebug = true; // 是否启用调试
 
     // 当前对话状态
-    private DialogueSequence currentSequence;
-    private int currentDialogueIndex = 0;
-    private bool isDialogueActive = false;
-    private bool waitingForPlayer1 = false;
-    private bool waitingForPlayer2 = false;
-    private Coroutine typingCoroutine;
+    private DialogueSequence currentSequence;    // 当前对话序列
+    private int currentDialogueIndex = 0;        // 当前对话行索引
+    private bool isDialogueActive = false;       // 对话是否激活
+    private bool waitingForPlayer1 = false;      // 等待玩家1按键
+    private bool waitingForPlayer2 = false;      // 等待玩家2按键
+    private bool isLastLine = false;             // 是否是最后一行
+    private Coroutine typingCoroutine;           // 打字协程引用
+    private AudioSource audioSource;             // 音频源
 
-    // 玩家控制器引用（用于锁定移动）
-    private PlayerController player1Controller;
-    private PlayerController player2Controller;
+    // 玩家控制器引用
+    private PlayerController player1Controller; // 玩家1控制器
+    private PlayerController player2Controller; // 玩家2控制器
 
     // 对话序列类
     [System.Serializable]
     public class DialogueSequence
     {
-        public string sequenceName;
-        public List<DialogueLine> dialogueLines;
-        public bool requireBothPlayers = true; // 是否需要两个玩家都按键
-        public UnityEvent onSequenceStart;
-        public UnityEvent onSequenceEnd;
+        public string sequenceName;           // 序列名称
+        public List<DialogueLine> dialogueLines; // 对话行列表
+        public bool requireBothPlayers = true; // 是否需要双玩家确认
+        public UnityEvent onSequenceStart;    // 序列开始事件
+        public UnityEvent onSequenceEnd;      // 序列结束事件
     }
 
+    // 对话行类
     [System.Serializable]
     public class DialogueLine
     {
         [TextArea(3, 5)]
-        public string player1Text; // 玩家1屏幕显示的文本
+        public string player1Text;        // 玩家1看到的文本
         [TextArea(3, 5)]
-        public string player2Text; // 玩家2屏幕显示的文本
-        public string speakerName; // 说话者名字
-        public Sprite speakerIcon; // 说话者图标
-        public AudioClip voiceClip; // 语音
-        public bool autoAdvance = false; // 是否自动前进
+        public string player2Text;        // 玩家2看到的文本
+        public string speakerName;        // 说话者名称
+        public Sprite speakerIcon;        // 说话者图标
+        public AudioClip voiceClip;       // 语音片段
+        public bool autoAdvance = false;  // 是否自动前进
         public float autoAdvanceDelay = 3f; // 自动前进延迟
+        public AudioClip customTypingSound; // 自定义打字音效
     }
 
     void Awake()
     {
+        // 单例模式初始化
         if (Instance == null)
         {
             Instance = this;
@@ -79,11 +99,16 @@ public class Scene2DialogueManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        // 添加AudioSource组件用于播放音效
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.playOnAwake = false;
+        audioSource.volume = typingSoundVolume;
     }
 
     void Start()
     {
-        // 获取玩家控制器
+        // 查找玩家控制器
         player1Controller = FindPlayerController("Player1");
         player2Controller = FindPlayerController("Player2");
 
@@ -91,23 +116,24 @@ public class Scene2DialogueManager : MonoBehaviour
         if (player1DialoguePanel != null) player1DialoguePanel.SetActive(false);
         if (player2DialoguePanel != null) player2DialoguePanel.SetActive(false);
 
-        // 开始游戏时等待任意按键触发初始对话
+        // 等待输入开始对话
         StartCoroutine(WaitForStartInput());
     }
 
+    // 等待开始输入的协程
     IEnumerator WaitForStartInput()
     {
-        Debug.Log("等待任意按键开始对话...");
+        Log("等待任意按键开始对话...");
 
         while (!Input.anyKeyDown)
         {
             yield return null;
         }
 
-        // 开始剧情1对话
-        StartDialogueSequence("Plot1");
+        StartDialogueSequence("Plot1"); // 开始第一个对话序列
     }
 
+    // 根据标签查找玩家控制器
     PlayerController FindPlayerController(string playerTag)
     {
         GameObject player = GameObject.FindGameObjectWithTag(playerTag);
@@ -122,7 +148,7 @@ public class Scene2DialogueManager : MonoBehaviour
     {
         if (!isDialogueActive) return;
 
-        // 检查玩家按键
+        // 检测玩家按键
         if (waitingForPlayer1 && Input.GetKeyDown(player1NextKey))
         {
             waitingForPlayer1 = false;
@@ -136,7 +162,7 @@ public class Scene2DialogueManager : MonoBehaviour
         }
     }
 
-    // 在关键方法中添加日志
+    // 开始指定名称的对话序列
     public void StartDialogueSequence(string sequenceName)
     {
         Log($"请求开始对话序列: {sequenceName}");
@@ -154,6 +180,7 @@ public class Scene2DialogueManager : MonoBehaviour
         }
     }
 
+    // 开始对话序列
     void StartDialogueSequence(DialogueSequence sequence)
     {
         if (isDialogueActive) return;
@@ -162,24 +189,23 @@ public class Scene2DialogueManager : MonoBehaviour
         currentDialogueIndex = 0;
         isDialogueActive = true;
 
-        // 锁定玩家移动
-        LockPlayerMovement(true);
+        LockPlayerMovement(true); // 锁定玩家移动
 
         // 显示对话面板
         if (player1DialoguePanel != null) player1DialoguePanel.SetActive(true);
         if (player2DialoguePanel != null) player2DialoguePanel.SetActive(true);
 
-        // 触发序列开始事件
-        sequence.onSequenceStart?.Invoke();
+        sequence.onSequenceStart?.Invoke(); // 触发序列开始事件
 
-        // 显示第一句对话
-        ShowDialogueLine(currentSequence.dialogueLines[currentDialogueIndex]);
+        ShowDialogueLine(currentSequence.dialogueLines[currentDialogueIndex]); // 显示第一行对话
     }
 
+    // 显示对话行
     void ShowDialogueLine(DialogueLine line)
     {
-        // 停止之前的打字效果
         if (typingCoroutine != null) StopCoroutine(typingCoroutine);
+
+        isLastLine = (currentDialogueIndex == currentSequence.dialogueLines.Count - 1);
 
         // 设置说话者信息
         if (player1SpeakerName != null) player1SpeakerName.text = line.speakerName;
@@ -187,18 +213,15 @@ public class Scene2DialogueManager : MonoBehaviour
         if (player1SpeakerIcon != null) player1SpeakerIcon.sprite = line.speakerIcon;
         if (player2SpeakerIcon != null) player2SpeakerIcon.sprite = line.speakerIcon;
 
+        // 设置自定义打字音效（如果有）
+        AudioClip currentTypingSound = line.customTypingSound != null ? line.customTypingSound : typingSound;
+
         // 开始打字效果
-        typingCoroutine = StartCoroutine(TypeDialogueLine(line));
+        typingCoroutine = StartCoroutine(TypeDialogueLine(line, currentTypingSound));
 
-        //// 播放语音
-        //if (line.voiceClip != null)
-        //{
-        //    AudioManager.Instance.PlayVoice(line.voiceClip);
-        //}
-
-        // 自动前进设置
         if (line.autoAdvance)
         {
+            // 自动前进
             StartCoroutine(AutoAdvanceDialogue(line.autoAdvanceDelay));
         }
         else
@@ -206,11 +229,19 @@ public class Scene2DialogueManager : MonoBehaviour
             // 等待玩家按键
             waitingForPlayer1 = currentSequence.requireBothPlayers;
             waitingForPlayer2 = currentSequence.requireBothPlayers;
+
+            if (isLastLine && showEndingPrompt)
+            {
+                StartCoroutine(AddEndingPrompt()); // 添加结束提示
+            }
         }
     }
 
-    IEnumerator TypeDialogueLine(DialogueLine line)
+    // 打字效果的协程
+    IEnumerator TypeDialogueLine(DialogueLine line, AudioClip soundClip)
     {
+        int characterCount = 0;
+
         // 玩家1文本打字效果
         if (player1DialogueText != null)
         {
@@ -218,6 +249,11 @@ public class Scene2DialogueManager : MonoBehaviour
             foreach (char c in line.player1Text)
             {
                 player1DialogueText.text += c;
+                characterCount++;
+
+                // 播放打字音效
+                PlayTypingSound(c, soundClip, characterCount);
+
                 yield return new WaitForSeconds(typingSpeed);
             }
         }
@@ -229,17 +265,69 @@ public class Scene2DialogueManager : MonoBehaviour
             foreach (char c in line.player2Text)
             {
                 player2DialogueText.text += c;
+                characterCount++;
+
+                // 播放打字音效
+                PlayTypingSound(c, soundClip, characterCount);
+
                 yield return new WaitForSeconds(typingSpeed);
             }
         }
     }
 
+    // 播放打字音效
+    void PlayTypingSound(char character, AudioClip soundClip, int characterCount)
+    {
+        if (soundClip == null) return;
+
+        // 检查是否需要跳过这个字符的音效
+        if (character == ' ' && !playSoundOnSpace)
+            return;
+
+        if (IsPunctuation(character) && !playSoundOnPunctuation)
+            return;
+
+        // 根据设置的频率播放音效
+        if (characterCount % charactersPerSound == 0)
+        {
+            audioSource.PlayOneShot(soundClip);
+        }
+    }
+
+    // 检查字符是否是标点符号
+    bool IsPunctuation(char c)
+    {
+        // 常见标点符号
+        char[] punctuations = { '.', ',', '!', '?', ';', ':', '"', '\'', '(', ')', '[', ']', '{', '}' };
+        return System.Array.IndexOf(punctuations, c) >= 0;
+    }
+
+    // 添加结束提示的协程
+    IEnumerator AddEndingPrompt()
+    {
+        yield return new WaitUntil(() => typingCoroutine == null);
+
+        // 在对话文本后添加提示
+        if (player1DialogueText != null && !string.IsNullOrEmpty(player1DialogueText.text))
+        {
+            player1DialogueText.text += $"\n\n<color=#FFFF00>{endingPromptText}</color>";
+        }
+        if (player2DialogueText != null && !string.IsNullOrEmpty(player2DialogueText.text))
+        {
+            player2DialogueText.text += $"\n\n<color=#FFFF00>{endingPromptText}</color>";
+        }
+
+        Log("显示结束提示，等待玩家按键");
+    }
+
+    // 自动前进对话的协程
     IEnumerator AutoAdvanceDialogue(float delay)
     {
         yield return new WaitForSeconds(delay);
         NextDialogueLine();
     }
 
+    // 检查是否可以前进到下一行对话
     void CheckAdvanceDialogue()
     {
         if (!waitingForPlayer1 && !waitingForPlayer2)
@@ -248,6 +336,7 @@ public class Scene2DialogueManager : MonoBehaviour
         }
     }
 
+    // 前进到下一行对话
     void NextDialogueLine()
     {
         currentDialogueIndex++;
@@ -258,27 +347,28 @@ public class Scene2DialogueManager : MonoBehaviour
         }
         else
         {
-            EndDialogueSequence();
+            EndDialogueSequence(); // 结束对话序列
         }
     }
 
+    // 结束对话序列
     void EndDialogueSequence()
     {
         isDialogueActive = false;
+        isLastLine = false;
 
         // 隐藏对话面板
         if (player1DialoguePanel != null) player1DialoguePanel.SetActive(false);
         if (player2DialoguePanel != null) player2DialoguePanel.SetActive(false);
 
-        // 解锁玩家移动
-        LockPlayerMovement(false);
+        LockPlayerMovement(false); // 解锁玩家移动
 
-        // 触发序列结束事件
-        currentSequence.onSequenceEnd?.Invoke();
+        currentSequence.onSequenceEnd?.Invoke(); // 触发序列结束事件
 
-        Debug.Log($"对话序列结束: {currentSequence.sequenceName}");
+        Log($"对话序列结束: {currentSequence.sequenceName}");
     }
 
+    // 锁定/解锁玩家移动
     void LockPlayerMovement(bool locked)
     {
         if (player1Controller != null)
@@ -291,7 +381,7 @@ public class Scene2DialogueManager : MonoBehaviour
         }
     }
 
-    // 快速跳过当前对话
+    // 跳过当前对话
     public void SkipCurrentDialogue()
     {
         if (isDialogueActive)
@@ -300,7 +390,7 @@ public class Scene2DialogueManager : MonoBehaviour
         }
     }
 
-    // 强制开始特定对话（用于调试）
+    // 调试工具
     [ContextMenu("开始剧情1对话")]
     public void DebugStartPlot1()
     {
@@ -312,9 +402,22 @@ public class Scene2DialogueManager : MonoBehaviour
     {
         StartDialogueSequence("Plot2");
     }
-    [Header("调试选项")]
-    public bool enableDialogueDebug = true;
 
+    [ContextMenu("测试打字音效")]
+    public void TestTypingSound()
+    {
+        if (typingSound != null)
+        {
+            audioSource.PlayOneShot(typingSound);
+            Log("播放打字音效测试");
+        }
+        else
+        {
+            Log("没有设置打字音效");
+        }
+    }
+
+    // 日志工具方法
     void Log(string message)
     {
         if (enableDialogueDebug)
@@ -322,6 +425,4 @@ public class Scene2DialogueManager : MonoBehaviour
             Debug.Log($"[DialogueManager] {message}");
         }
     }
-
-
 }

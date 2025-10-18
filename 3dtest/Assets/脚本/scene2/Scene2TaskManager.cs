@@ -6,55 +6,56 @@ using UnityEngine.SceneManagement;
 
 public class Scene2TaskManager : MonoBehaviour
 {
-    public static Scene2TaskManager Instance;
+    public static Scene2TaskManager Instance; // 单例模式
 
     [Header("游戏流程状态")]
-    public GameProgress currentProgress = GameProgress.Initial;
+    public GameProgress currentProgress = GameProgress.Initial; // 当前游戏进度
 
     [Header("玩家引用")]
-    public GameObject player1;
-    public GameObject player2;
-    public string player1Tag = "Player1";
-    public string player2Tag = "Player2";
+    public GameObject player1;           // 玩家1对象
+    public GameObject player2;           // 玩家2对象
+    public string player1Tag = "Player1"; // 玩家1标签
+    public string player2Tag = "Player2"; // 玩家2标签
 
     [Header("管理器引用")]
-    public Scene2DualSynthesisManager synthesisManager;
-    public Scene2DialogueManager dialogueManager;
+    public Scene2DualSynthesisManager synthesisManager; // 合成管理器引用
+    public Scene2DialogueManager dialogueManager;       // 对话管理器引用
 
     [Header("任务事件")]
-    public UnityEvent OnTask1Start;
-    public UnityEvent OnTask1Complete;
-    public UnityEvent OnTask2Start;
-    public UnityEvent OnTask2Complete;
-    public UnityEvent OnAllTasksComplete;
+    public UnityEvent OnTask1Start;       // 任务1开始事件
+    public UnityEvent OnTask1Complete;    // 任务1完成事件
+    public UnityEvent OnTask2Start;       // 任务2开始事件
+    public UnityEvent OnTask2Complete;    // 任务2完成事件
+    public UnityEvent OnAllTasksComplete; // 所有任务完成事件
 
     [Header("调试选项")]
-    public bool enableDebugLogs = true;
+    public bool enableDebugLogs = true; // 是否启用调试日志
 
     // 游戏进度枚举
     public enum GameProgress
     {
         Initial,        // 初始状态
-        Plot1,          // 剧情1
+        Plot1,          // 剧情1：场景介绍
         Task1,          // 任务1：合成U盘
-        Plot2,          // 剧情2
-        Plot4,          // 剧情4
+        Plot2,          // 剧情2：玩家A给老板U盘
+        Plot4,          // 剧情4：老师检查试卷
         Task2,          // 任务2：合成试卷
-        Plot3And5,      // 剧情3和5
+        Plot3And5,      // 剧情3和5：老板和老师同时训斥玩家
         Complete        // 完成
     }
 
     // 任务状态
-    private bool task1Completed = false;
-    private bool task2Completed = false;
-    private bool plot1Completed = false;
-    private bool plot2Completed = false;
-    private bool plot3Completed = false;
-    private bool plot4Completed = false;
-    private bool plot5Completed = false;
+    private bool task1Completed = false; // 任务1完成状态
+    private bool task2Completed = false; // 任务2完成状态
+    private bool plot1Completed = false; // 剧情1完成状态
+    private bool plot2Completed = false; // 剧情2完成状态
+    private bool plot3Completed = false; // 剧情3完成状态
+    private bool plot4Completed = false; // 剧情4完成状态
+    private bool plot5Completed = false; // 剧情5完成状态
 
     void Awake()
     {
+        // 单例模式初始化
         if (Instance == null)
         {
             Instance = this;
@@ -67,10 +68,11 @@ public class Scene2TaskManager : MonoBehaviour
 
     void Start()
     {
-        InitializeManagers();
-        StartGame();
+        InitializeManagers(); // 初始化管理器
+        StartGame();         // 开始游戏
     }
 
+    // 初始化管理器引用
     void InitializeManagers()
     {
         if (synthesisManager == null)
@@ -88,6 +90,7 @@ public class Scene2TaskManager : MonoBehaviour
             LogWarning("Scene2DialogueManager 未找到！");
     }
 
+    // 开始游戏
     void StartGame()
     {
         Log("游戏开始 - Scene2 双人合作解密");
@@ -95,6 +98,7 @@ public class Scene2TaskManager : MonoBehaviour
     }
 
     #region 剧情管理
+    // 开始剧情1
     public void StartPlot1()
     {
         if (currentProgress != GameProgress.Initial) return;
@@ -103,6 +107,7 @@ public class Scene2TaskManager : MonoBehaviour
         Log("开始剧情1：办公室/学校场景介绍");
     }
 
+    // 完成剧情1
     public void CompletePlot1()
     {
         plot1Completed = true;
@@ -112,6 +117,7 @@ public class Scene2TaskManager : MonoBehaviour
         StartTask1();
     }
 
+    // 完成任务1
     public void CompleteTask1()
     {
         task1Completed = true;
@@ -121,7 +127,8 @@ public class Scene2TaskManager : MonoBehaviour
         // 任务1完成后开始剧情2
         StartPlot2();
     }
-    
+
+    // 开始剧情2
     public void StartPlot2()
     {
         currentProgress = GameProgress.Plot2;
@@ -134,6 +141,7 @@ public class Scene2TaskManager : MonoBehaviour
         }
     }
 
+    // 完成剧情2
     public void CompletePlot2()
     {
         plot2Completed = true;
@@ -143,6 +151,7 @@ public class Scene2TaskManager : MonoBehaviour
         StartPlot4();
     }
 
+    // 开始剧情4
     public void StartPlot4()
     {
         currentProgress = GameProgress.Plot4;
@@ -155,6 +164,7 @@ public class Scene2TaskManager : MonoBehaviour
         }
     }
 
+    // 完成剧情4
     public void CompletePlot4()
     {
         plot4Completed = true;
@@ -164,6 +174,7 @@ public class Scene2TaskManager : MonoBehaviour
         StartTask2();
     }
 
+    // 完成任务2
     public void CompleteTask2()
     {
         task2Completed = true;
@@ -175,6 +186,7 @@ public class Scene2TaskManager : MonoBehaviour
         StartPlot3And5();
     }
 
+    // 开始剧情3和5（合并剧情）
     public void StartPlot3And5()
     {
         currentProgress = GameProgress.Plot3And5;
@@ -191,20 +203,20 @@ public class Scene2TaskManager : MonoBehaviour
         }
     }
 
-    public void CompletePlot3()
+    // 完成剧情3和5
+    public void CompletePlot3And5()
     {
         plot3Completed = true;
-        Log("剧情3完成");
-    }
-
-    public void CompletePlot5()
-    {
         plot5Completed = true;
-        Log("剧情5完成");
+        Log("剧情3和5完成");
+
+        // 直接准备下一场景，因为对话已经由玩家按键结束
+        PrepareNextScene();
     }
     #endregion
 
     #region 任务管理
+    // 开始任务1
     void StartTask1()
     {
         currentProgress = GameProgress.Task1;
@@ -223,7 +235,8 @@ public class Scene2TaskManager : MonoBehaviour
             Log("合成管理器为null！");
         }
     }
- 
+
+    // 开始任务2
     void StartTask2()
     {
         currentProgress = GameProgress.Task2;
@@ -240,6 +253,7 @@ public class Scene2TaskManager : MonoBehaviour
     #endregion
 
     #region 场景管理
+    // 准备下一场景
     void PrepareNextScene()
     {
         currentProgress = GameProgress.Complete;
@@ -251,6 +265,7 @@ public class Scene2TaskManager : MonoBehaviour
         Invoke("LoadNextScene", 2f);
     }
 
+    // 加载下一场景
     void LoadNextScene()
     {
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
@@ -268,6 +283,7 @@ public class Scene2TaskManager : MonoBehaviour
         }
     }
 
+    // 重新开始游戏
     public void RestartGame()
     {
         Log("重新开始游戏");
@@ -276,7 +292,7 @@ public class Scene2TaskManager : MonoBehaviour
     #endregion
 
     #region 公共方法
-    // 合成事件回调
+    // 合成事件回调 - 任务1合成完成
     public void OnTask1SynthesisComplete()
     {
         Log($"OnTask1SynthesisComplete 被调用，当前任务1完成状态: {task1Completed}");
@@ -290,6 +306,7 @@ public class Scene2TaskManager : MonoBehaviour
         }
     }
 
+    // 合成事件回调 - 任务2合成完成
     public void OnTask2SynthesisComplete()
     {
         if (!task2Completed)
@@ -317,15 +334,7 @@ public class Scene2TaskManager : MonoBehaviour
                 break;
         }
     }
-    public void CompletePlot3And5()
-    {
-        plot3Completed = true;
-        plot5Completed = true;
-        Log("剧情3和5完成");
 
-        // 准备下一场景
-        PrepareNextScene();
-    }
 
     // 获取当前状态
     public bool IsTask1Complete() => task1Completed;
@@ -395,6 +404,7 @@ public class Scene2TaskManager : MonoBehaviour
     #endregion
 
     #region 工具方法
+    // 日志工具方法
     void Log(string message)
     {
         if (enableDebugLogs)
