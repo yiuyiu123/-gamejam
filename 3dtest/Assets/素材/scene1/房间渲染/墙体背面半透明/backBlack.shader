@@ -13,7 +13,7 @@ Shader "Unlit/backBlack"
     {
         Tags { "Queue"="Transparent" "IgnoreProjector"="true" "RenderType"="Transparent" "ForceNoShadowCasting"="True"}
         
-       /* Pass//背面半透明黑
+        Pass//背面半透明黑
         {
             ZWrite On
             Cull Front
@@ -55,14 +55,14 @@ Shader "Unlit/backBlack"
                 return fixed4(0,0,0,_AlphaScale);
             }
             ENDCG
-        }*/
+        }
 
         Pass//正面Phong
         {
             ZWrite On
-            //Cull Back
+            Cull Back
             Blend Off
-            Cull Off
+            //Cull Off
             Tags{"LightMode"="ForwardBase"}
 
             CGPROGRAM
@@ -114,9 +114,9 @@ Shader "Unlit/backBlack"
         {
             Tags { "LightMode"="ForwardAdd" }
             ZWrite On
-            //Cull Back
+            Cull Back
             Blend Off
-            Cull Off
+            //Cull Off
 
             CGPROGRAM
             #pragma vertex vert
