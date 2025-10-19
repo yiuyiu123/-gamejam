@@ -4,14 +4,16 @@ Shader "Custom/ColorTint"
     {
         _MainTex ("Base (RGB)", 2D) = "white" {}
         _TintColor ("Tint Color", Color) = (1,1,1,1)
-        _RedOffset ("Red Offset", Range(-50,50)) = 0
-        _GreenOffset ("Green Offset", Range(-50,50)) = 0
-        _BlueOffset ("Blue Offset", Range(-50,50)) = 0
+        _RedOffset ("Red Offset", Float) = 0
+        _GreenOffset ("Green Offset", Float) = 0
+        _BlueOffset ("Blue Offset", Float) = 0
+        _Brightness ("Brightness", Float) = 0
+        _Contrast ("Contrast", Float) = 0
+        _Saturation ("Saturation", Float) = 0
     }
 
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
         Cull Off ZWrite Off ZTest Always
 
         Pass
@@ -26,27 +28,38 @@ Shader "Custom/ColorTint"
             float _RedOffset;
             float _GreenOffset;
             float _BlueOffset;
+            float _Brightness;
+            float _Contrast;
+            float _Saturation;
 
             fixed4 frag(v2f_img i) : SV_Target
             {
                 fixed4 col = tex2D(_MainTex, i.uv);
 
-                // 将范围映射为颜色调整系数：1 表示原值，±50 表示倍数 0~3 区间
-                float3 factor = 1 + float3(_RedOffset, _GreenOffset, _BlueOffset) / 50.0;
+                // --- 通道偏移 ---
+                col.r += _RedOffset / 255.0;
+                col.g += _GreenOffset / 255.0;
+                col.b += _BlueOffset / 255.0;
 
-                // 以乘法方式偏移色彩强度，避免瞬间饱和
-                col.rgb *= factor;
-
-                // 全局色调混合
+                // --- 颜色乘因子 ---
                 col.rgb *= _TintColor.rgb;
 
-                // 保持安全范围
-                col.rgb = clamp(col.rgb, 0.0, 1.0);
+                // --- 亮度 ---
+                col.rgb += _Brightness / 50.0; // 映射到 -1 ~ +1
 
+                // --- 对比度 ---
+                float contrastFactor = 1.0 + (_Contrast / 50.0); // -50~50 → 0~2
+                col.rgb = (col.rgb - 0.5) * contrastFactor + 0.5;
+
+                // --- 饱和度 ---
+                float3 gray = dot(col.rgb, float3(0.299, 0.587, 0.114));
+                float satFactor = 1.0 + (_Saturation / 50.0); // -50~50 → 0~2
+                col.rgb = lerp(gray.xxx, col.rgb, satFactor);
+
+                col.a = 1.0;
                 return col;
             }
             ENDCG
         }
     }
-    FallBack Off
 }
