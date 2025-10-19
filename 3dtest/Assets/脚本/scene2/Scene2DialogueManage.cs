@@ -44,6 +44,9 @@ public class Scene2DialogueManager : MonoBehaviour
     [Header("对话数据")]
     public List<DialogueSequence> dialogueSequences; // 对话序列列表
 
+    [Header("移动控制设置")]
+    public bool lockMovementDuringDialogue = true; // 对话期间锁定移动
+
     [Header("调试选项")]
     public bool enableDialogueDebug = true; // 是否启用调试
 
@@ -60,6 +63,7 @@ public class Scene2DialogueManager : MonoBehaviour
     // 玩家控制器引用
     private PlayerController player1Controller; // 玩家1控制器
     private PlayerController player2Controller; // 玩家2控制器
+    private DualPlayerController dualPlayerController; // 双人移动控制器
 
     // 对话序列类
     [System.Serializable]
@@ -67,7 +71,6 @@ public class Scene2DialogueManager : MonoBehaviour
     {
         public string sequenceName;           // 序列名称
         public List<DialogueLine> dialogueLines; // 对话行列表
-        public bool requireBothPlayers = true; // 是否需要双玩家确认
         public UnityEvent onSequenceStart;    // 序列开始事件
         public UnityEvent onSequenceEnd;      // 序列结束事件
     }
@@ -86,6 +89,29 @@ public class Scene2DialogueManager : MonoBehaviour
         public bool autoAdvance = false;  // 是否自动前进
         public float autoAdvanceDelay = 3f; // 自动前进延迟
         public AudioClip customTypingSound; // 自定义打字音效
+
+        // 控制对话显示在哪一侧以及需要哪个玩家确认
+        public DialogueSide dialogueSide = DialogueSide.Both;
+        public PlayerInputRequirement inputRequirement = PlayerInputRequirement.Both;
+
+        // 新增：标记是否为序列结束行（需要双人确认）
+        public bool isSequenceEndLine = false;
+    }
+
+    // 枚举：对话显示侧
+    public enum DialogueSide
+    {
+        Both,       // 两边都显示
+        LeftOnly,   // 只显示在左边
+        RightOnly   // 只显示在右边
+    }
+
+    // 枚举：玩家输入要求
+    public enum PlayerInputRequirement
+    {
+        Both,       // 需要两个玩家都确认
+        Player1Only, // 只需要玩家1确认
+        Player2Only  // 只需要玩家2确认
     }
 
     void Awake()
@@ -111,6 +137,17 @@ public class Scene2DialogueManager : MonoBehaviour
         // 查找玩家控制器
         player1Controller = FindPlayerController("Player1");
         player2Controller = FindPlayerController("Player2");
+
+        // 查找双人移动控制器
+        dualPlayerController = FindObjectOfType<DualPlayerController>();
+        if (dualPlayerController == null)
+        {
+            LogWarning("未找到 DualPlayerController！移动锁定功能将不可用");
+        }
+        else
+        {
+            Log("找到 DualPlayerController，移动锁定功能已启用");
+        }
 
         // 隐藏对话面板
         if (player1DialoguePanel != null) player1DialoguePanel.SetActive(false);
@@ -189,7 +226,11 @@ public class Scene2DialogueManager : MonoBehaviour
         currentDialogueIndex = 0;
         isDialogueActive = true;
 
-        LockPlayerMovement(true); // 锁定玩家移动
+        // 锁定玩家移动和交互
+        if (lockMovementDuringDialogue)
+        {
+            LockPlayerControls(true);
+        }
 
         // 显示对话面板
         if (player1DialoguePanel != null) player1DialoguePanel.SetActive(true);
@@ -200,12 +241,32 @@ public class Scene2DialogueManager : MonoBehaviour
         ShowDialogueLine(currentSequence.dialogueLines[currentDialogueIndex]); // 显示第一行对话
     }
 
-    // 显示对话行
     void ShowDialogueLine(DialogueLine line)
     {
         if (typingCoroutine != null) StopCoroutine(typingCoroutine);
 
         isLastLine = (currentDialogueIndex == currentSequence.dialogueLines.Count - 1);
+
+        // 根据对话侧设置显示对应的UI
+        switch (line.dialogueSide)
+        {
+            case DialogueSide.LeftOnly:
+                // 只显示左边，隐藏右边
+                if (player1DialoguePanel != null) player1DialoguePanel.SetActive(true);
+                if (player2DialoguePanel != null) player2DialoguePanel.SetActive(false);
+                break;
+            case DialogueSide.RightOnly:
+                // 只显示右边，隐藏左边
+                if (player1DialoguePanel != null) player1DialoguePanel.SetActive(false);
+                if (player2DialoguePanel != null) player2DialoguePanel.SetActive(true);
+                break;
+            case DialogueSide.Both:
+            default:
+                // 两边都显示
+                if (player1DialoguePanel != null) player1DialoguePanel.SetActive(true);
+                if (player2DialoguePanel != null) player2DialoguePanel.SetActive(true);
+                break;
+        }
 
         // 设置说话者信息
         if (player1SpeakerName != null) player1SpeakerName.text = line.speakerName;
@@ -226,13 +287,39 @@ public class Scene2DialogueManager : MonoBehaviour
         }
         else
         {
-            // 等待玩家按键
-            waitingForPlayer1 = currentSequence.requireBothPlayers;
-            waitingForPlayer2 = currentSequence.requireBothPlayers;
-
-            if (isLastLine && showEndingPrompt)
+            // 如果是序列结束行，强制要求双人确认
+            if (line.isSequenceEndLine)
             {
-                StartCoroutine(AddEndingPrompt()); // 添加结束提示
+                waitingForPlayer1 = true;
+                waitingForPlayer2 = true;
+            }
+            else
+            {
+                // 根据输入要求设置等待哪个玩家按键
+                switch (line.inputRequirement)
+                {
+                    case PlayerInputRequirement.Player1Only:
+                        // 只等待玩家1按键
+                        waitingForPlayer1 = true;
+                        waitingForPlayer2 = false;
+                        break;
+                    case PlayerInputRequirement.Player2Only:
+                        // 只等待玩家2按键
+                        waitingForPlayer1 = false;
+                        waitingForPlayer2 = true;
+                        break;
+                    case PlayerInputRequirement.Both:
+                    default:
+                        // 等待两个玩家按键
+                        waitingForPlayer1 = true;
+                        waitingForPlayer2 = true;
+                        break;
+                }
+            }
+
+            if (showEndingPrompt)
+            {
+                StartCoroutine(AddEndingPrompt(line)); // 添加结束提示
             }
         }
     }
@@ -242,36 +329,70 @@ public class Scene2DialogueManager : MonoBehaviour
     {
         int characterCount = 0;
 
-        // 玩家1文本打字效果
-        if (player1DialogueText != null)
+        // 根据对话侧设置显示对应的文本
+        switch (line.dialogueSide)
         {
-            player1DialogueText.text = "";
-            foreach (char c in line.player1Text)
-            {
-                player1DialogueText.text += c;
-                characterCount++;
+            case DialogueSide.LeftOnly:
+                // 只在左边显示打字效果
+                if (player1DialogueText != null)
+                {
+                    player1DialogueText.text = "";
+                    foreach (char c in line.player1Text)
+                    {
+                        player1DialogueText.text += c;
+                        characterCount++;
+                        PlayTypingSound(c, soundClip, characterCount);
+                        yield return new WaitForSeconds(typingSpeed);
+                    }
+                }
+                // 右边保持空白
+                if (player2DialogueText != null) player2DialogueText.text = "";
+                break;
 
-                // 播放打字音效
-                PlayTypingSound(c, soundClip, characterCount);
+            case DialogueSide.RightOnly:
+                // 只在右边显示打字效果
+                if (player2DialogueText != null)
+                {
+                    player2DialogueText.text = "";
+                    foreach (char c in line.player2Text)
+                    {
+                        player2DialogueText.text += c;
+                        characterCount++;
+                        PlayTypingSound(c, soundClip, characterCount);
+                        yield return new WaitForSeconds(typingSpeed);
+                    }
+                }
+                // 左边保持空白
+                if (player1DialogueText != null) player1DialogueText.text = "";
+                break;
 
-                yield return new WaitForSeconds(typingSpeed);
-            }
-        }
+            case DialogueSide.Both:
+            default:
+                // 两边都显示打字效果
+                if (player1DialogueText != null)
+                {
+                    player1DialogueText.text = "";
+                    foreach (char c in line.player1Text)
+                    {
+                        player1DialogueText.text += c;
+                        characterCount++;
+                        PlayTypingSound(c, soundClip, characterCount);
+                        yield return new WaitForSeconds(typingSpeed);
+                    }
+                }
 
-        // 玩家2文本打字效果
-        if (player2DialogueText != null)
-        {
-            player2DialogueText.text = "";
-            foreach (char c in line.player2Text)
-            {
-                player2DialogueText.text += c;
-                characterCount++;
-
-                // 播放打字音效
-                PlayTypingSound(c, soundClip, characterCount);
-
-                yield return new WaitForSeconds(typingSpeed);
-            }
+                if (player2DialogueText != null)
+                {
+                    player2DialogueText.text = "";
+                    foreach (char c in line.player2Text)
+                    {
+                        player2DialogueText.text += c;
+                        characterCount++;
+                        PlayTypingSound(c, soundClip, characterCount);
+                        yield return new WaitForSeconds(typingSpeed);
+                    }
+                }
+                break;
         }
     }
 
@@ -302,19 +423,57 @@ public class Scene2DialogueManager : MonoBehaviour
         return System.Array.IndexOf(punctuations, c) >= 0;
     }
 
-    // 添加结束提示的协程
-    IEnumerator AddEndingPrompt()
+    // 添加结束提示的协程（根据输入要求显示不同的提示）
+    IEnumerator AddEndingPrompt(DialogueLine line)
     {
         yield return new WaitUntil(() => typingCoroutine == null);
 
-        // 在对话文本后添加提示
-        if (player1DialogueText != null && !string.IsNullOrEmpty(player1DialogueText.text))
+        // 如果是序列结束行，强制显示双人确认提示
+        if (line.isSequenceEndLine)
         {
-            player1DialogueText.text += $"\n\n<color=#FFFF00>{endingPromptText}</color>";
+            if (player1DialogueText != null && !string.IsNullOrEmpty(player1DialogueText.text))
+            {
+                player1DialogueText.text += $"\n\n<color=#FFFF00>按 F 和 H 键继续</color>";
+            }
+            if (player2DialogueText != null && !string.IsNullOrEmpty(player2DialogueText.text))
+            {
+                player2DialogueText.text += $"\n\n<color=#FFFF00>按 F 和 H 键继续</color>";
+            }
         }
-        if (player2DialogueText != null && !string.IsNullOrEmpty(player2DialogueText.text))
+        else
         {
-            player2DialogueText.text += $"\n\n<color=#FFFF00>{endingPromptText}</color>";
+            // 根据输入要求显示不同的提示
+            switch (line.inputRequirement)
+            {
+                case PlayerInputRequirement.Player1Only:
+                    // 只在左边显示提示
+                    if (player1DialogueText != null && !string.IsNullOrEmpty(player1DialogueText.text))
+                    {
+                        player1DialogueText.text += $"\n\n<color=#FFFF00>按 F 键继续</color>";
+                    }
+                    break;
+
+                case PlayerInputRequirement.Player2Only:
+                    // 只在右边显示提示
+                    if (player2DialogueText != null && !string.IsNullOrEmpty(player2DialogueText.text))
+                    {
+                        player2DialogueText.text += $"\n\n<color=#FFFF00>按 H 键继续</color>";
+                    }
+                    break;
+
+                case PlayerInputRequirement.Both:
+                default:
+                    // 两边都显示提示
+                    if (player1DialogueText != null && !string.IsNullOrEmpty(player1DialogueText.text))
+                    {
+                        player1DialogueText.text += $"\n\n<color=#FFFF00>按 F 和 H 键继续</color>";
+                    }
+                    if (player2DialogueText != null && !string.IsNullOrEmpty(player2DialogueText.text))
+                    {
+                        player2DialogueText.text += $"\n\n<color=#FFFF00>按 F 和 H 键继续</color>";
+                    }
+                    break;
+            }
         }
 
         Log("显示结束提示，等待玩家按键");
@@ -361,23 +520,38 @@ public class Scene2DialogueManager : MonoBehaviour
         if (player1DialoguePanel != null) player1DialoguePanel.SetActive(false);
         if (player2DialoguePanel != null) player2DialoguePanel.SetActive(false);
 
-        LockPlayerMovement(false); // 解锁玩家移动
+        // 解锁玩家移动和交互
+        if (lockMovementDuringDialogue)
+        {
+            LockPlayerControls(false);
+        }
 
         currentSequence.onSequenceEnd?.Invoke(); // 触发序列结束事件
 
         Log($"对话序列结束: {currentSequence.sequenceName}");
     }
 
-    // 锁定/解锁玩家移动
-    void LockPlayerMovement(bool locked)
+    // 锁定/解锁玩家控制（移动和交互）
+    void LockPlayerControls(bool locked)
     {
+        // 锁定 DualPlayerController 的移动
+        if (dualPlayerController != null)
+        {
+            dualPlayerController.SetMovementLock(locked);
+            Log($"DualPlayerController 移动 {(locked ? "锁定" : "解锁")}");
+        }
+
+        // 锁定 PlayerController 的交互
         if (player1Controller != null)
         {
             player1Controller.SetTemporaryLock(locked);
+            Log($"玩家1交互 {(locked ? "锁定" : "解锁")}");
         }
+
         if (player2Controller != null)
         {
             player2Controller.SetTemporaryLock(locked);
+            Log($"玩家2交互 {(locked ? "锁定" : "解锁")}");
         }
     }
 
@@ -403,6 +577,37 @@ public class Scene2DialogueManager : MonoBehaviour
         StartDialogueSequence("Plot2");
     }
 
+    [ContextMenu("显示当前对话状态")]
+    public void DebugShowDialogueState()
+    {
+        Log($"=== 对话状态 ===");
+        Log($"当前序列: {currentSequence?.sequenceName ?? "None"}");
+        Log($"当前索引: {currentDialogueIndex}");
+        Log($"等待玩家1: {waitingForPlayer1}");
+        Log($"等待玩家2: {waitingForPlayer2}");
+        Log($"最后一行: {isLastLine}");
+        Log($"移动锁定: {lockMovementDuringDialogue}");
+        if (dualPlayerController != null)
+        {
+            Log($"DualPlayerController 状态: {(dualPlayerController.IsMovementLocked() ? "锁定" : "正常")}");
+        }
+    }
+
+    [ContextMenu("测试移动锁定")]
+    public void TestMovementLock()
+    {
+        if (dualPlayerController != null)
+        {
+            bool currentState = dualPlayerController.IsMovementLocked();
+            dualPlayerController.SetMovementLock(!currentState);
+            Log($"切换移动锁定状态: {(!currentState ? "锁定" : "解锁")}");
+        }
+        else
+        {
+            LogWarning("DualPlayerController 未找到");
+        }
+    }
+
     [ContextMenu("测试打字音效")]
     public void TestTypingSound()
     {
@@ -423,6 +628,14 @@ public class Scene2DialogueManager : MonoBehaviour
         if (enableDialogueDebug)
         {
             Debug.Log($"[DialogueManager] {message}");
+        }
+    }
+
+    void LogWarning(string message)
+    {
+        if (enableDialogueDebug)
+        {
+            Debug.LogWarning($"[DialogueManager] {message}");
         }
     }
 }

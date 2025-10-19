@@ -21,6 +21,10 @@ public class Scene2TaskManager : MonoBehaviour
     public Scene2DualSynthesisManager synthesisManager; // 合成管理器引用
     public Scene2DialogueManager dialogueManager;       // 对话管理器引用
 
+    [Header("场景过渡")]
+    public bool useSceneTransition = true; // 是否使用场景过渡效果
+    public string nextSceneName = "Scene3"; // 下一场景名称
+
     [Header("任务事件")]
     public UnityEvent OnTask1Start;       // 任务1开始事件
     public UnityEvent OnTask1Complete;    // 任务1完成事件
@@ -53,6 +57,9 @@ public class Scene2TaskManager : MonoBehaviour
     private bool plot4Completed = false; // 剧情4完成状态
     private bool plot5Completed = false; // 剧情5完成状态
 
+    // 场景过渡管理器引用
+    private SimpleSceneTransitionManager sceneTransition;
+
     void Awake()
     {
         // 单例模式初始化
@@ -84,10 +91,27 @@ public class Scene2TaskManager : MonoBehaviour
         if (player1 != null) player1.tag = player1Tag;
         if (player2 != null) player2.tag = player2Tag;
 
+        // 查找场景过渡管理器
+        sceneTransition = FindObjectOfType<SimpleSceneTransitionManager>();
+        if (sceneTransition == null && useSceneTransition)
+        {
+            LogWarning("SimpleSceneTransitionManager 未找到！将创建新的实例");
+            CreateSceneTransitionManager();
+        }
+
         if (synthesisManager == null)
             LogWarning("Scene2DualSynthesisManager 未找到！");
         if (dialogueManager == null)
             LogWarning("Scene2DialogueManager 未找到！");
+    }
+
+    // 创建场景过渡管理器
+    void CreateSceneTransitionManager()
+    {
+        GameObject transitionObj = new GameObject("SceneTransitionManager");
+        sceneTransition = transitionObj.AddComponent<SimpleSceneTransitionManager>();
+        DontDestroyOnLoad(transitionObj);
+        Log("创建了新的 SimpleSceneTransitionManager");
     }
 
     // 开始游戏
@@ -261,25 +285,57 @@ public class Scene2TaskManager : MonoBehaviour
 
         OnAllTasksComplete?.Invoke();
 
-        // 可以在这里添加过渡动画
-        Invoke("LoadNextScene", 2f);
-    }
-
-    // 加载下一场景
-    void LoadNextScene()
-    {
-        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        int nextSceneIndex = currentSceneIndex + 1;
-
-        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+        // 使用场景过渡效果
+        if (useSceneTransition && sceneTransition != null)
         {
-            Log($"加载下一场景: {nextSceneIndex}");
-            SceneManager.LoadScene(nextSceneIndex);
+            Log($"使用场景过渡效果加载下一场景: {nextSceneName}");
+            StartCoroutine(LoadNextSceneWithTransition());
         }
         else
         {
-            Log("这是最后一个场景，游戏结束");
-            // 触发游戏结束
+            // 备用方案：直接加载
+            Log($"直接加载下一场景: {nextSceneName}");
+            Invoke("LoadNextSceneDirectly", 2f);
+        }
+    }
+
+    // 使用过渡效果加载下一场景
+    IEnumerator LoadNextSceneWithTransition()
+    {
+        Log("开始场景过渡协程");
+
+        // 等待一帧确保所有事件处理完成
+        yield return null;
+
+        // 使用场景过渡管理器
+        yield return StartCoroutine(sceneTransition.TransitionToScene(nextSceneName));
+
+        Log("场景过渡完成");
+    }
+
+    // 直接加载下一场景（备用方案）
+    void LoadNextSceneDirectly()
+    {
+        if (!string.IsNullOrEmpty(nextSceneName))
+        {
+            SceneManager.LoadScene(nextSceneName);
+        }
+        else
+        {
+            // 如果没有指定场景名，使用build index
+            int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+            int nextSceneIndex = currentSceneIndex + 1;
+
+            if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+            {
+                Log($"加载下一场景 (BuildIndex): {nextSceneIndex}");
+                SceneManager.LoadScene(nextSceneIndex);
+            }
+            else
+            {
+                Log("这是最后一个场景，游戏结束");
+                // 触发游戏结束
+            }
         }
     }
 
@@ -287,7 +343,16 @@ public class Scene2TaskManager : MonoBehaviour
     public void RestartGame()
     {
         Log("重新开始游戏");
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
+        if (useSceneTransition && sceneTransition != null)
+        {
+            string currentSceneName = SceneManager.GetActiveScene().name;
+            StartCoroutine(sceneTransition.TransitionToScene(currentSceneName));
+        }
+        else
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
     }
     #endregion
 
@@ -335,7 +400,6 @@ public class Scene2TaskManager : MonoBehaviour
         }
     }
 
-
     // 获取当前状态
     public bool IsTask1Complete() => task1Completed;
     public bool IsTask2Complete() => task2Completed;
@@ -373,6 +437,19 @@ public class Scene2TaskManager : MonoBehaviour
         PrepareNextScene();
     }
 
+    [ContextMenu("测试场景过渡")]
+    public void DebugTestTransition()
+    {
+        if (sceneTransition != null)
+        {
+            sceneTransition.TestTransition();
+        }
+        else
+        {
+            LogWarning("场景过渡管理器未找到");
+        }
+    }
+
     [ContextMenu("显示当前状态")]
     public void DebugShowStatus()
     {
@@ -385,6 +462,9 @@ public class Scene2TaskManager : MonoBehaviour
         Log($"剧情3完成: {plot3Completed}");
         Log($"剧情4完成: {plot4Completed}");
         Log($"剧情5完成: {plot5Completed}");
+        Log($"使用场景过渡: {useSceneTransition}");
+        Log($"下一场景: {nextSceneName}");
+        Log($"过渡管理器: {(sceneTransition != null ? "已找到" : "未找到")}");
     }
 
     [ContextMenu("重置游戏状态")]
