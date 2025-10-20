@@ -24,6 +24,13 @@ public class TutorialCollaborationManager : MonoBehaviour
     public GameObject waitingPrompt; // 显示"等待另一位玩家"的UI
     public GameObject successPrompt; // 显示"协作成功"的UI
 
+    [Header("张奕忻scene1：UI_Play开始游戏")]
+    public GameObject UI_Play;
+    public bool isNotScene1=true;
+    public float skipHoldTime = 5.0f;
+    private bool skipPressed = false;
+
+
     private bool player1Ready = false;
     private bool player2Ready = false;
     private bool isTransitioning = false;
@@ -52,6 +59,8 @@ public class TutorialCollaborationManager : MonoBehaviour
         // 初始化UI
         if (waitingPrompt != null) waitingPrompt.SetActive(false);
         if (successPrompt != null) successPrompt.SetActive(false);
+        //张奕忻
+        UI_Play.SetActive(false);
 
         Debug.Log("协作教学关卡管理器已启动");
     }
@@ -91,6 +100,7 @@ public class TutorialCollaborationManager : MonoBehaviour
         }
     }
 
+    //张奕忻改动
     IEnumerator CompleteCollaboration()
     {
         isTransitioning = true;
@@ -101,11 +111,54 @@ public class TutorialCollaborationManager : MonoBehaviour
 
         Debug.Log($"双人协作成功！将在 {sceneTransitionDelay} 秒后跳转到场景: {targetSceneName}");
 
-        // 等待一段时间
-        yield return new WaitForSeconds(sceneTransitionDelay);
+        //如果是scene1，等待数秒弹出Play，如果玩家长按五秒或点击Play，则切换第二关
+        if (!isNotScene1)
+        {
+            yield return new WaitForSeconds(2f);
+            if (UI_Play != null)
+                {
+                    UI_Play.SetActive(true);
+                    while (true)
+                    {
+                        if (Input.GetKey(KeyCode.Space))
+                        {
+                            skipPressed = true;
+                            Debug.Log("按下空格键");
+                        }
+                        else
+                        {
+                            skipPressed = false;
+                        }
 
-        // 使用黑幕效果跳转场景
-        yield return StartCoroutine(LoadNextSceneWithFade());
+                        if (skipPressed)
+                        {
+                            skipHoldTime -= Time.deltaTime;
+
+                            if (skipHoldTime <= 0)
+                            {
+                                Debug.Log("空格长达五秒");
+                                StartCoroutine(LoadNextSceneWithFade());
+                                yield break; // 跳出当前协程
+                            }
+                        }
+                        else
+                        {
+                            skipHoldTime = 5.0f; // 重置倒计时
+                        }
+
+                        yield return null; // 每帧等待一次
+                    }
+            }
+        }
+        //如果不是scene1，按唤洋的程序合成后等待两秒自动跳转
+        else
+        {
+            // 等待一段时间
+            yield return new WaitForSeconds(sceneTransitionDelay);
+
+            // 使用黑幕效果跳转场景
+            yield return StartCoroutine(LoadNextSceneWithFade());
+        }
     }
 
     IEnumerator LoadNextSceneWithFade()
@@ -140,7 +193,7 @@ public class TutorialCollaborationManager : MonoBehaviour
             AudioSource.PlayClipAtPoint(collaborationSound, Vector3.zero);
         }
 
-        if (collaborationLight != null)
+        if (isNotScene1&&collaborationLight != null)
         {
             StartCoroutine(FlashCollaborationLight());
         }

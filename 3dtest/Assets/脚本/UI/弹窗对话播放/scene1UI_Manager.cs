@@ -13,7 +13,6 @@ public class scene1UI_Manager : MonoBehaviour
     private bool conversationStarted = false; // 是否已经进入对话阶段
     private Conversation_Manager conversation;
 
-
     void Start()
     {
         UI_Settings.SetActive(false);
