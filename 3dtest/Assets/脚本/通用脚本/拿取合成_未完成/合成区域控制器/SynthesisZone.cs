@@ -19,16 +19,24 @@ public class SynthesisZone : MonoBehaviour
     public float throwHeight = 3f;
     public float throwDuration = 0.8f;
 
-    [Header("调试选项")]
-    public bool showDebugGUI = false;
+    [Header("合成冷却时间")]
+    public float synthesisCooldown = 2f;
+
+    [Header("合成失败弹出设置")]
+    public bool enableFailEjection = true; // 是否启用失败弹出
+    public float failEjectionForce = 8f; // 弹出力度
+    public float failEjectionHeight = 2f; // 弹出高度
+    public float failEjectionRandomness = 0.5f; // 弹出随机性
+    public ParticleSystem failEffect; // 失败效果
+    public AudioClip failSound; // 失败音效
 
     private List<InteractableItem> itemsInZone = new List<InteractableItem>();
     private AudioSource audioSource;
     private bool isCombining = false;
     private bool hasCheckedThisFrame = false;
-
-    // 添加物品进入区域的跟踪
+    private float lastSynthesisTime = 0f;
     private Dictionary<InteractableItem, float> itemEnterTimes = new Dictionary<InteractableItem, float>();
+    private Dictionary<InteractableItem, float> failedItems = new Dictionary<InteractableItem, float>();
 
     void Start()
     {
@@ -43,7 +51,6 @@ public class SynthesisZone : MonoBehaviour
 
         EnsureColliderSize();
 
-        // 注册到全局管理器
         if (GlobalSynthesisManager.Instance != null)
         {
             GlobalSynthesisManager.Instance.RegisterZone(this);
@@ -58,12 +65,10 @@ public class SynthesisZone : MonoBehaviour
             BoxCollider boxCollider = gameObject.AddComponent<BoxCollider>();
             boxCollider.isTrigger = true;
             boxCollider.size = new Vector3(5, 3, 5);
-            Debug.Log($"为合成区域 {zoneID} 添加了触发碰撞体");
         }
         else if (!collider.isTrigger)
         {
             collider.isTrigger = true;
-            Debug.Log($"已将合成区域 {zoneID} 的碰撞体设置为触发器");
         }
     }
 
@@ -71,7 +76,12 @@ public class SynthesisZone : MonoBehaviour
     {
         if (!hasCheckedThisFrame)
         {
-            CheckForSynthesis();
+            CleanupFailedItems();
+
+            if (Time.time - lastSynthesisTime >= synthesisCooldown)
+            {
+                CheckForSynthesis();
+            }
             hasCheckedThisFrame = true;
         }
     }
@@ -84,81 +94,18 @@ public class SynthesisZone : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         InteractableItem item = other.GetComponent<InteractableItem>();
-        if (item != null)
+        if (item != null && ShouldProcessItem(item))
         {
-            // 更严格的忽略条件检查
-            if (ShouldIgnoreItem(item))
-            {
-                Debug.Log($"忽略物品 {item.itemName} - 被持有: {item.isBeingHeld}, 交换中: {item.isInExchangeProcess}");
-                return;
-            }
-
             if (!itemsInZone.Contains(item))
             {
                 itemsInZone.Add(item);
-                // 记录进入时间
                 itemEnterTimes[item] = Time.time;
 
-                Debug.Log($"物品 {item.itemName} 进入合成区域 {zoneID}，当前区域物品数: {itemsInZone.Count}");
-                DebugItemsInZone();
-
-                // 立即检查合成
-                CheckForSynthesis();
+                if (Time.time - lastSynthesisTime >= synthesisCooldown)
+                {
+                    CheckForSynthesis();
+                }
             }
-        }
-    }
-
-    void OnDestroy()
-    {
-        // 取消注册
-        if (GlobalSynthesisManager.Instance != null)
-        {
-            GlobalSynthesisManager.Instance.UnregisterZone(this);
-        }
-    }
-
-    // 添加公共方法供全局管理器调用
-    public List<InteractableItem> GetItemsInZone()
-    {
-        // 清理无效物品，但不要过滤掉 canBePickedUp = false 的物品
-        // 因为合成失败后物品需要被重新检测
-        itemsInZone.RemoveAll(item =>
-            item == null ||
-            item.isBeingHeld
-        );
-
-        // 返回所有在区域内的物品，让全局管理器自己处理状态检查
-        return new List<InteractableItem>(itemsInZone);
-    }
-
-    // 从区域中移除指定物品
-    public void RemoveItemFromZone(InteractableItem item)
-    {
-        if (itemsInZone.Contains(item))
-        {
-            itemsInZone.Remove(item);
-            itemEnterTimes.Remove(item);
-            Debug.Log($"从区域 {zoneID} 移除物品: {item.itemName}");
-        }
-    }
-
-    void OnTriggerStay(Collider other)
-    {
-        InteractableItem item = other.GetComponent<InteractableItem>();
-        if (item != null && !itemsInZone.Contains(item))
-        {
-            if (ShouldIgnoreItem(item))
-            {
-                return;
-            }
-
-            itemsInZone.Add(item);
-            itemEnterTimes[item] = Time.time;
-
-            Debug.Log($"物品 {item.itemName} 在合成区域内被检测到，当前区域物品数: {itemsInZone.Count}");
-            DebugItemsInZone();
-
-            CheckForSynthesis();
         }
     }
 
@@ -171,48 +118,54 @@ public class SynthesisZone : MonoBehaviour
         {
             itemsInZone.Remove(item);
             itemEnterTimes.Remove(item);
-
-            Debug.Log($"物品 {item.itemName} 离开合成区域 {zoneID}，剩余物品数: {itemsInZone.Count}");
-            DebugItemsInZone();
         }
     }
 
-    // 改进的物品忽略检查
-    bool ShouldIgnoreItem(InteractableItem item)
+    bool ShouldProcessItem(InteractableItem item)
     {
-        if (item == null) return true;
-        if (item.isBeingHeld) return true;
-        if (item.isInExchangeProcess) return true;
+        if (item == null) return false;
+        if (item.isBeingHeld) return false;
+        if (item.isInExchangeProcess) return false;
 
-        // 检查物品是否刚被抛掷（避免重复检测）
-        if (itemEnterTimes.ContainsKey(item))
+        if (failedItems.ContainsKey(item))
         {
-            float timeSinceEnter = Time.time - itemEnterTimes[item];
-            if (timeSinceEnter < 0.1f) // 100ms内刚进入的物品
+            float timeSinceFail = Time.time - failedItems[item];
+            if (timeSinceFail < synthesisCooldown)
             {
-                return false; // 允许新进入的物品
+                return false;
+            }
+            else
+            {
+                failedItems.Remove(item);
             }
         }
 
-        return false;
+        return true;
     }
 
-    void DebugItemsInZone()
+    void CleanupFailedItems()
     {
-        string debugInfo = $"区域 {zoneID} 物品列表 ({itemsInZone.Count} 个): ";
-        foreach (var item in itemsInZone)
+        List<InteractableItem> toRemove = new List<InteractableItem>();
+        foreach (var kvp in failedItems)
         {
-            if (item != null)
+            if (Time.time - kvp.Value >= synthesisCooldown)
             {
-                debugInfo += $"{item.itemName} ";
+                toRemove.Add(kvp.Key);
             }
         }
-        Debug.Log(debugInfo);
+        foreach (var item in toRemove)
+        {
+            failedItems.Remove(item);
+        }
     }
 
     void CheckForSynthesis()
     {
-        // 检查本地合成条件
+        if (isCombining) return;
+        if (Time.time - lastSynthesisTime < synthesisCooldown) return;
+
+        itemsInZone.RemoveAll(item => item == null || item.isBeingHeld);
+
         List<InteractableItem> validItems = new List<InteractableItem>();
         foreach (var item in itemsInZone)
         {
@@ -222,24 +175,17 @@ public class SynthesisZone : MonoBehaviour
             }
         }
 
-        if (validItems.Count >= 2 && !isCombining)
+        if (validItems.Count >= 2)
         {
             StartCoroutine(PerformSynthesis());
-        }
-
-        // 同时触发全局合成检查
-        if (GlobalSynthesisManager.Instance != null)
-        {
-            GlobalSynthesisManager.Instance.CheckGlobalSynthesis();
         }
     }
 
     IEnumerator PerformSynthesis()
     {
         isCombining = true;
-        Debug.Log("=== 开始本地合成过程 ===");
+        lastSynthesisTime = Time.time;
 
-        // 使用当前有效的物品列表
         List<InteractableItem> itemsToCombine = new List<InteractableItem>();
         foreach (var item in itemsInZone)
         {
@@ -249,135 +195,146 @@ public class SynthesisZone : MonoBehaviour
             }
         }
 
-        Debug.Log($"准备合成的物品数量: {itemsToCombine.Count}");
-
         if (itemsToCombine.Count < 2)
         {
-            Debug.LogWarning("合成失败：有效物品不足2个");
             isCombining = false;
             yield break;
         }
 
-        // 只取前2个物品
         if (itemsToCombine.Count > 2)
         {
             itemsToCombine = itemsToCombine.GetRange(0, 2);
         }
 
-        string combineItems = "";
+        // 锁定物品
         foreach (var item in itemsToCombine)
         {
-            combineItems += $"{item.itemName} ";
             item.isInExchangeProcess = true;
             if (item.Rb != null)
             {
                 item.Rb.isKinematic = true;
                 item.Rb.velocity = Vector3.zero;
             }
-            Debug.Log($"锁定合成物品: {item.itemName}");
         }
-        Debug.Log($"将要合成的物品: {combineItems}");
 
+        // 播放合成效果
         if (synthesisEffect != null) synthesisEffect.Play();
         if (synthesisSound != null) audioSource.PlayOneShot(synthesisSound);
 
         yield return new WaitForSeconds(synthesisDelay);
 
-        // 使用 CraftingManager 获取合成结果 - 现在返回 CraftingRecipe
         CraftingRecipe matchedRecipe = CraftingManager.Instance.CombineItems(itemsToCombine);
 
         if (matchedRecipe != null && matchedRecipe.resultItemPrefab != null)
         {
-            Debug.Log("=== 本地合成成功！ ===");
-
-            // 从所有相关列表中移除物品
+            // 合成成功
             foreach (var item in itemsToCombine)
             {
                 if (item != null)
                 {
-                    if (itemsInZone.Contains(item)) itemsInZone.Remove(item);
+                    itemsInZone.Remove(item);
                     itemEnterTimes.Remove(item);
                     Destroy(item.gameObject);
                 }
             }
 
-            // 使用配方特定的出生位置
             Vector3 spawnPosition = GetRecipeSpawnPosition(matchedRecipe);
-            Debug.Log($"配方 {matchedRecipe.recipeName} 将在位置 {spawnPosition} 生成");
-
             yield return StartCoroutine(SpawnResultItemWithPosition(matchedRecipe.resultItemPrefab, spawnPosition));
-            Debug.Log("=== 本地合成过程完成 ===");
         }
         else
         {
-            Debug.LogWarning("=== 本地合成失败：没有匹配的配方 ===");
-            foreach (var item in itemsToCombine)
-            {
-                if (item != null)
-                {
-                    item.isInExchangeProcess = false;
-                    if (item.Rb != null) item.Rb.isKinematic = false;
-                }
-            }
+            // 合成失败 - 弹出物品
+            Debug.LogWarning($"合成失败，将弹出 {itemsToCombine.Count} 个物品");
+
+            // 播放失败效果
+            if (failEffect != null) failEffect.Play();
+            if (failSound != null) audioSource.PlayOneShot(failSound);
+
+            // 弹出所有参与合成的物品
+            yield return StartCoroutine(EjectFailedItems(itemsToCombine));
         }
 
         isCombining = false;
-        yield return new WaitForSeconds(0.5f);
-        CheckForSynthesis();
     }
 
-    // 根据配方获取出生位置
-    private Vector3 GetRecipeSpawnPosition(CraftingRecipe recipe)
+    // 新增：弹出失败物品的协程
+    IEnumerator EjectFailedItems(List<InteractableItem> itemsToEject)
     {
-        // 如果全局管理器存在，使用它的方法
-        if (GlobalSynthesisManager.Instance != null)
+        Debug.Log($"开始弹出 {itemsToEject.Count} 个失败物品");
+
+        foreach (var item in itemsToEject)
         {
-            // 创建一个临时的区域列表，只包含当前区域
-            List<SynthesisZone> tempZones = new List<SynthesisZone> { this };
-
-            // 根据配方设置计算出生位置
-            switch (recipe.spawnMode)
+            if (item != null)
             {
-                case GlobalSynthesisManager.SynthesisResultSpawnMode.FirstZone:
-                case GlobalSynthesisManager.SynthesisResultSpawnMode.LastZone:
-                case GlobalSynthesisManager.SynthesisResultSpawnMode.RandomZone:
-                    // 对于这些模式，使用当前区域
-                    return itemSpawnPoint != null ? itemSpawnPoint.position : throwTarget.position + Vector3.up * 2f;
+                // 标记为失败物品
+                failedItems[item] = Time.time;
 
-                case GlobalSynthesisManager.SynthesisResultSpawnMode.SpecificZone:
-                    if (recipe.specificSpawnZone != null)
-                    {
-                        return recipe.specificSpawnZone.itemSpawnPoint != null ?
-                            recipe.specificSpawnZone.itemSpawnPoint.position :
-                            recipe.specificSpawnZone.throwTarget.position + Vector3.up * 2f;
-                    }
-                    break;
+                // 从区域列表中移除
+                itemsInZone.Remove(item);
+                itemEnterTimes.Remove(item);
 
-                case GlobalSynthesisManager.SynthesisResultSpawnMode.CustomPosition:
-                    if (recipe.customSpawnPoint != null)
-                    {
-                        return recipe.customSpawnPoint.position;
-                    }
-                    break;
+                // 解锁物品状态
+                item.isInExchangeProcess = false;
 
-                case GlobalSynthesisManager.SynthesisResultSpawnMode.UseGlobalSetting:
-                    // 使用全局设置
-                    return GlobalSynthesisManager.Instance.GetGlobalSpawnPosition();
+                // 启用物理
+                if (item.Rb != null)
+                {
+                    item.Rb.isKinematic = false;
+                    item.Rb.useGravity = true;
+
+                    // 计算弹出方向（从区域中心向外，带随机性）
+                    Vector3 ejectionDirection = CalculateEjectionDirection(item.transform.position);
+
+                    // 应用弹出力
+                    item.Rb.AddForce(ejectionDirection * failEjectionForce, ForceMode.Impulse);
+
+                    // 添加一些随机旋转
+                    Vector3 randomTorque = new Vector3(
+                        Random.Range(-failEjectionRandomness, failEjectionRandomness),
+                        Random.Range(-failEjectionRandomness, failEjectionRandomness),
+                        Random.Range(-failEjectionRandomness, failEjectionRandomness)
+                    ) * failEjectionForce;
+                    item.Rb.AddTorque(randomTorque, ForceMode.Impulse);
+                }
+
+                Debug.Log($"弹出物品: {item.itemName}");
             }
         }
 
-        // 默认回退到当前区域的出生点
+        yield return new WaitForSeconds(0.5f);
+    }
+
+    // 计算弹出方向
+    Vector3 CalculateEjectionDirection(Vector3 itemPosition)
+    {
+        // 基本方向：从区域中心指向物品位置
+        Vector3 baseDirection = (itemPosition - transform.position).normalized;
+
+        // 确保有向上的分量
+        baseDirection.y = Mathf.Max(baseDirection.y, 0.3f);
+
+        // 添加随机性
+        Vector3 randomVariation = new Vector3(
+            Random.Range(-failEjectionRandomness, failEjectionRandomness),
+            Random.Range(0, failEjectionRandomness * 0.5f), // 减少向下的随机性
+            Random.Range(-failEjectionRandomness, failEjectionRandomness)
+        );
+
+        Vector3 finalDirection = (baseDirection + randomVariation).normalized;
+        finalDirection.y += failEjectionHeight * 0.1f; // 添加高度因子
+
+        return finalDirection;
+    }
+
+    private Vector3 GetRecipeSpawnPosition(CraftingRecipe recipe)
+    {
+        if (GlobalSynthesisManager.Instance != null)
+        {
+            return GlobalSynthesisManager.Instance.GetGlobalSpawnPosition();
+        }
         return itemSpawnPoint != null ? itemSpawnPoint.position : throwTarget.position + Vector3.up * 2f;
     }
 
-    // 原始生成方法（保持兼容性）
-    public IEnumerator SpawnResultItem(GameObject resultPrefab)
-    {
-        Vector3 spawnPosition = itemSpawnPoint != null ? itemSpawnPoint.position : throwTarget.position + Vector3.up * 2f;
-        yield return StartCoroutine(SpawnResultItemWithPosition(resultPrefab, spawnPosition));
-    }
-
-    // 新的生成方法，接受位置参数
     public IEnumerator SpawnResultItemWithPosition(GameObject resultPrefab, Vector3 spawnPosition)
     {
         GameObject newItemObj = Instantiate(resultPrefab, spawnPosition, Quaternion.identity);
@@ -387,12 +344,6 @@ public class SynthesisZone : MonoBehaviour
         {
             Vector3 popDirection = new Vector3(Random.Range(-0.5f, 0.5f), 1f, Random.Range(-0.5f, 0.5f)).normalized;
             rb.AddForce(popDirection * 5f, ForceMode.Impulse);
-        }
-
-        InteractableItem newItem = newItemObj.GetComponent<InteractableItem>();
-        if (newItem != null)
-        {
-            Debug.Log($"新道具已生成: {newItem.itemName} 在位置: {spawnPosition}");
         }
 
         yield return new WaitForSeconds(0.5f);
@@ -405,14 +356,11 @@ public class SynthesisZone : MonoBehaviour
 
     IEnumerator ThrowItemCoroutine(InteractableItem item)
     {
-        Debug.Log($"开始抛掷物品: {item.itemName} 到区域 {zoneID}");
-
         item.isInExchangeProcess = true;
         if (item.Rb != null)
         {
             item.Rb.isKinematic = true;
             item.Rb.velocity = Vector3.zero;
-            item.Rb.angularVelocity = Vector3.zero;
         }
 
         Vector3 startPosition = item.transform.position;
@@ -429,108 +377,74 @@ public class SynthesisZone : MonoBehaviour
         }
 
         item.transform.position = throwTarget.position;
-        yield return null;
 
-        // 确保物品被添加到区域
         if (!itemsInZone.Contains(item))
         {
             itemsInZone.Add(item);
             itemEnterTimes[item] = Time.time;
-            Debug.Log($"抛掷完成后添加物品: {item.itemName} 到区域 {zoneID}");
         }
 
         item.isInExchangeProcess = false;
         if (item.Rb != null) item.Rb.isKinematic = false;
-
-        Debug.Log($"物品 {item.itemName} 抛掷完成到区域 {zoneID}");
-        DebugItemsInZone();
-        CheckForSynthesis();
     }
 
-    // 调试方法
-    [ContextMenu("强制触发合成检测")]
-    public void ForceSynthesisCheck()
+    public List<InteractableItem> GetItemsInZone()
     {
-        Debug.Log("=== 强制触发合成检测 ===");
-        ManualCheckItemsInZone();
-        CheckForSynthesis();
+        itemsInZone.RemoveAll(item =>
+            item == null ||
+            item.isBeingHeld ||
+            item.isInExchangeProcess
+        );
+        return new List<InteractableItem>(itemsInZone);
     }
 
-    [ContextMenu("显示区域状态")]
-    public void ShowZoneStatus()
+    public void RemoveItemFromZone(InteractableItem item)
     {
-        Debug.Log($"=== 合成区域 {zoneID} 状态 ===");
-        Debug.Log($"物品数量: {itemsInZone.Count}");
-        Debug.Log($"合成中: {isCombining}");
+        if (itemsInZone.Contains(item))
+        {
+            itemsInZone.Remove(item);
+            itemEnterTimes.Remove(item);
+            failedItems.Remove(item);
+        }
+    }
 
+    [ContextMenu("测试弹出效果")]
+    public void TestEjection()
+    {
+        List<InteractableItem> testItems = new List<InteractableItem>();
         foreach (var item in itemsInZone)
         {
-            if (item != null)
+            if (item != null && testItems.Count < 2)
             {
-                Debug.Log($"- {item.itemName} (持有: {item.isBeingHeld}, 交换: {item.isInExchangeProcess})");
-            }
-        }
-    }
-
-    public void ManualCheckItemsInZone()
-    {
-        Debug.Log("=== 开始手动检查区域物品 ===");
-        itemsInZone.RemoveAll(item => item == null);
-
-        Collider zoneCollider = GetComponent<Collider>();
-        if (zoneCollider != null)
-        {
-            Collider[] collidersInZone = Physics.OverlapBox(zoneCollider.bounds.center, zoneCollider.bounds.extents);
-            Debug.Log($"物理检测到 {collidersInZone.Length} 个碰撞体在区域内");
-
-            foreach (Collider collider in collidersInZone)
-            {
-                InteractableItem item = collider.GetComponent<InteractableItem>();
-                if (item != null && !itemsInZone.Contains(item) && !ShouldIgnoreItem(item))
-                {
-                    itemsInZone.Add(item);
-                    itemEnterTimes[item] = Time.time;
-                    Debug.Log($"手动添加物品: {item.itemName}");
-                }
+                testItems.Add(item);
             }
         }
 
-        Debug.Log($"手动检查完成，区域物品数: {itemsInZone.Count}");
-        DebugItemsInZone();
-        CheckForSynthesis();
-    }
-
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(transform.position, detectionRadius);
-        if (throwTarget != null)
+        if (testItems.Count > 0)
         {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(throwTarget.position, 0.5f);
+            StartCoroutine(EjectFailedItems(testItems));
+            Debug.Log($"测试弹出 {testItems.Count} 个物品");
+        }
+        else
+        {
+            Debug.LogWarning("没有物品可用于测试弹出");
         }
     }
 
-    // 添加紧急解锁所有物品的方法
     [ContextMenu("紧急解锁所有物品")]
     public void EmergencyUnlockAllItems()
     {
-        Debug.Log("=== 紧急解锁所有物品 ===");
-
-        // 解锁区域内的物品
         foreach (var item in itemsInZone)
         {
             if (item != null)
             {
                 item.isInExchangeProcess = false;
-                item.canBePickedUp = true;
                 if (item.Rb != null) item.Rb.isKinematic = false;
-                Debug.Log($"解锁物品: {item.itemName}");
             }
         }
-
-        // 清理区域列表
         itemsInZone.Clear();
         itemEnterTimes.Clear();
+        failedItems.Clear();
+        isCombining = false;
     }
 }
