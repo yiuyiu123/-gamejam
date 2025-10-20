@@ -13740,7 +13740,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &538238631
 Transform:
   m_ObjectHideFlags: 0
@@ -49813,6 +49813,9 @@ MonoBehaviour:
   spawnMode: 0
   specificSpawnZone: {fileID: 0}
   customSpawnPoint: {fileID: 0}
+  enableGlobalFailEjection: 1
+  globalFailEjectionForce: 10
+  globalFailEjectionHeight: 2.5
 --- !u!1 &1348763108 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1771089155095711644, guid: 09c87d3d3a46e9c4ca9194a2c4fb37bf, type: 3}
@@ -68563,7 +68566,13 @@ MonoBehaviour:
   synthesisDelay: 1
   throwHeight: 3
   throwDuration: 0.8
-  showDebugGUI: 0
+  synthesisCooldown: 2
+  enableFailEjection: 1
+  failEjectionForce: 8
+  failEjectionHeight: 2
+  failEjectionRandomness: 0.5
+  failEffect: {fileID: 0}
+  failSound: {fileID: 0}
 --- !u!65 &1886848472
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -70607,7 +70616,13 @@ MonoBehaviour:
   synthesisDelay: 1
   throwHeight: 3
   throwDuration: 0.8
-  showDebugGUI: 0
+  synthesisCooldown: 2
+  enableFailEjection: 1
+  failEjectionForce: 8
+  failEjectionHeight: 2
+  failEjectionRandomness: 0.5
+  failEffect: {fileID: 0}
+  failSound: {fileID: 0}
 --- !u!1 &1952273048 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -6223110018033315523, guid: 09c87d3d3a46e9c4ca9194a2c4fb37bf, type: 3}
