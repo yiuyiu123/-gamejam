@@ -9,6 +9,8 @@ TagManager:
   - PickableItem_ink
   - Player1Camera
   - Player2Camera
+  - NEW1
+  - NEW2
   layers:
   - Default
   - TransparentFX
