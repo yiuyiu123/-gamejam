@@ -16,6 +16,10 @@ public class PlayerController : MonoBehaviour
     public bool showInputDebug = false;
     public bool showInteractionDebug = true;
 
+    [Header("张奕忻")]    
+    public string flashLight = "手电筒";
+    public bool isHoldFlashLight = false;
+
     private Rigidbody rb;
     private Vector3 movement;
     private InteractableItem heldItem;
@@ -74,6 +78,13 @@ public class PlayerController : MonoBehaviour
                 {
                     Debug.Log($"{playerName} 成功开始浇花");
                     return;
+                }
+
+                //张奕忻：如果持有手电筒，增加布尔值
+                if(heldItem.itemName == flashLight)
+                {
+                    isHoldFlashLight = true;
+                    Debug.Log($"{playerName} 拿到手电筒，准备开始scene3剧情2");
                 }
 
                 // 如果持有物品，尝试抛掷到合成区域

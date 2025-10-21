@@ -31,6 +31,9 @@ public class FlowerPotZone : MonoBehaviour
     [Header("调试选项")]
     public bool showDebugInfo = true; // 默认开启调试
 
+    [Header("张奕忻：是否弹出钥匙")]
+    public bool isKeyAppear=false;
+
     private GameObject currentFlower;        // 当前的花
     private AudioSource audioSource;
     private List<GameObject> playersInZone = new List<GameObject>();
@@ -200,6 +203,8 @@ public class FlowerPotZone : MonoBehaviour
             {
                 Vector3 popDirection = new Vector3(Random.Range(-0.5f, 0.5f), 1f, Random.Range(-0.5f, 0.5f)).normalized;
                 keyRb.AddForce(popDirection * 5f, ForceMode.Impulse);
+                //张奕忻
+                isKeyAppear = true;
             }
         }
 
