@@ -51,19 +51,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    //void GetWASDInput()
-    //{
-    //    float horizontal = 0f;
-    //    float vertical = 0f;
-
-    //    //if (Input.GetKey(KeyCode.D)) horizontal += 1f;
-    //    //if (Input.GetKey(KeyCode.A)) horizontal -= 1f;
-    //    //if (Input.GetKey(KeyCode.W)) vertical += 1f;
-    //    //if (Input.GetKey(KeyCode.S)) vertical -= 1f;
-
-    //    movement = new Vector3(horizontal, 0f, vertical).normalized;
-    //}
-
     void HandleInteraction()
     {
         if (Input.GetKeyDown(interactKey))
@@ -184,11 +171,34 @@ public class PlayerController : MonoBehaviour
                 ThrowToTutorialZone(tutorialZone, heldItem);
                 return true;
             }
+
+            // 新增：尝试三合成区域
+            ThreeItemSynthesisZone threeItemZone = hit.collider.GetComponent<ThreeItemSynthesisZone>();
+            if (threeItemZone != null && heldItem != null)
+            {
+                ThrowToThreeItemZone(threeItemZone, heldItem);
+                return true;
+            }
         }
 
         return false;
     }
 
+    // 新增：向三合成区域抛掷
+    void ThrowToThreeItemZone(ThreeItemSynthesisZone zone, InteractableItem item)
+    {
+        // 从玩家手中移除物品引用
+        InteractableItem itemToThrow = heldItem;
+        heldItem = null;
+
+        // 重要：在抛掷前强制清除物品的持有状态
+        itemToThrow.ForceRelease();
+
+        // 调用三合成区域的抛掷方法
+        zone.ThrowItemToZone(itemToThrow);
+
+        Debug.Log($"{playerName} 向三合成区域抛掷 {itemToThrow.itemName}");
+    }
     void ThrowToZone(SynthesisZone zone, InteractableItem item)
     {
         // 从玩家手中移除物品引用
