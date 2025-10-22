@@ -16,9 +16,8 @@ public class PlayerController : MonoBehaviour
     public bool showInputDebug = false;
     public bool showInteractionDebug = true;
 
-    [Header("张奕忻")]    
-    public string flashLight = "手电筒";
-    public bool isHoldFlashLight = false;
+    //[Header("张奕忻")]    
+    //public string flashLight = "手电筒";
 
     private Rigidbody rb;
     private Vector3 movement;
@@ -28,6 +27,11 @@ public class PlayerController : MonoBehaviour
     // 玩家属性
     public string playerName = "玩家";
     public Color playerColor = Color.white;
+
+    [Header("手电筒设置")]
+    public string flashLight = "手电筒"; // 手电筒的物品名称
+    public bool isHoldFlashLight = false;
+    private FlashlightController currentFlashlight; // 当前持有的手电筒
 
     void Start()
     {
@@ -67,12 +71,12 @@ public class PlayerController : MonoBehaviour
                     return;
                 }
 
-                //张奕忻：如果持有手电筒，增加布尔值
-                if(heldItem.itemName == flashLight)
-                {
-                    isHoldFlashLight = true;
-                    Debug.Log($"{playerName} 拿到手电筒，准备开始scene3剧情2");
-                }
+                ////张奕忻：如果持有手电筒，增加布尔值
+                //if(heldItem.itemName == flashLight)
+                //{
+                //    isHoldFlashLight = true;
+                //    Debug.Log($"{playerName} 拿到手电筒，准备开始scene3剧情2");
+                //}
 
                 // 如果持有物品，尝试抛掷到合成区域
                 if (TryThrowToSynthesisZone())
@@ -263,7 +267,18 @@ public class PlayerController : MonoBehaviour
     {
         heldItem = item;
         item.Interact(gameObject);
+        // 检查是否是手电筒
+        if (item.itemName == flashLight)
+        {
+            currentFlashlight = item.GetComponent<FlashlightController>();
+            isHoldFlashLight = true;
 
+            // 如果是player2拿起手电筒，自动开灯
+            if (gameObject.CompareTag("Player2") && currentFlashlight != null)
+            {
+                currentFlashlight.TurnOn();
+            }
+        }
         if (showInteractionDebug)
         {
             Debug.Log($"{playerName} 捡起了 {item.itemName}");
@@ -274,6 +289,15 @@ public class PlayerController : MonoBehaviour
     {
         if (heldItem != null)
         {
+
+            // 放下前如果是手电筒，关闭灯光
+            if (heldItem.itemName == flashLight && currentFlashlight != null)
+            {
+                currentFlashlight.TurnOff();
+                currentFlashlight = null;
+                isHoldFlashLight = false;
+            }
+
             heldItem.Interact(gameObject);
 
             if (showInteractionDebug)
@@ -309,6 +333,14 @@ public class PlayerController : MonoBehaviour
     {
         if (heldItem != null)
         {
+            // 释放前如果是手电筒，关闭灯光
+            if (heldItem.itemName == flashLight && currentFlashlight != null)
+            {
+                currentFlashlight.TurnOff();
+                currentFlashlight = null;
+                isHoldFlashLight = false;
+            }
+
             heldItem.ForceRelease();
             heldItem = null;
             Debug.Log($"{playerName} 强制释放了物品");

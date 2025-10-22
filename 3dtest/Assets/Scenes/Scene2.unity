@@ -3802,10 +3802,10 @@ MonoBehaviour:
   wateringCanItemName: "\u6C34\u58F6"
   showInputDebug: 0
   showInteractionDebug: 1
-  flashLight: "\u624B\u7535\u7B52"
-  isHoldFlashLight: 0
   playerName: player2
   playerColor: {r: 1, g: 1, b: 1, a: 1}
+  flashLight: "\u624B\u7535\u7B52"
+  isHoldFlashLight: 0
 --- !u!65 &121200601
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -15875,7 +15875,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &538238631
 Transform:
   m_ObjectHideFlags: 0
@@ -76998,10 +76998,10 @@ MonoBehaviour:
   wateringCanItemName: "\u6C34\u58F6"
   showInputDebug: 0
   showInteractionDebug: 1
-  flashLight: "\u624B\u7535\u7B52"
-  isHoldFlashLight: 0
   playerName: player1
   playerColor: {r: 1, g: 1, b: 1, a: 1}
+  flashLight: "\u624B\u7535\u7B52"
+  isHoldFlashLight: 0
 --- !u!65 &1977873615
 BoxCollider:
   m_ObjectHideFlags: 0
