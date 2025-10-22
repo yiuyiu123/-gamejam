@@ -132,7 +132,7 @@ public class AdvancedCameraSwitch : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player2"))
+        if (other.CompareTag("Player1"))
         {
             isPlayerInTrigger = true;
             if (hintUI != null) hintUI.SetActive(true);
@@ -141,7 +141,7 @@ public class AdvancedCameraSwitch : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player2"))
+        if (other.CompareTag("Player1"))
         {
             isPlayerInTrigger = false;
             if (hintUI != null) hintUI.SetActive(false);
