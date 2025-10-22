@@ -31,8 +31,8 @@ public class PlayerMovement : MonoBehaviour
 
         // 修改为JL键控制移动（J=左，L=右）
         float moveInput = 0f;
-        if (Input.GetKey(KeyCode.J)) moveInput = -1f; // J键向左 
-        if (Input.GetKey(KeyCode.L)) moveInput = 1f;  // L键向右 
+        if (Input.GetKey(KeyCode.A)) moveInput = -1f; // J键向左 
+        if (Input.GetKey(KeyCode.D)) moveInput = 1f;  // L键向右 
 
         // 平滑移动（保留抗抖动逻辑）
         Vector3 targetVelocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
