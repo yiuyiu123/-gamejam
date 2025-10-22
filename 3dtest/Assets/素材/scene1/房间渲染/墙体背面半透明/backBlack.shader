@@ -1,4 +1,4 @@
-
+﻿
 Shader "Unlit/backBlack"
 {
     Properties
@@ -8,12 +8,15 @@ Shader "Unlit/backBlack"
         _Specular("Specular",Color)=(1,1,1,1)
         _AlphaScale("Alpha Scale",Range(0,1))=1
         _Gloss("Gloss",Range(8.0,256))=20
+        //法线
+        _NormalMap("Normal Map",2D)="bump"{}
+        _BumpScale("Bump Scale",float)=1.0
     }
     SubShader
     {
         Tags { "Queue"="Transparent" "IgnoreProjector"="true" "RenderType"="Transparent" "ForceNoShadowCasting"="True"}
         
-        Pass//�����͸����
+        Pass//背面半透明黑
         {
             ZWrite On
             Cull Front
@@ -57,17 +60,17 @@ Shader "Unlit/backBlack"
             ENDCG
         }
 
-        Pass//����Phong
+        Pass // 正面Phong
         {
             ZWrite On
             Cull Back
             Blend Off
-            //Cull Off
             Tags{"LightMode"="ForwardBase"}
 
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma target 4.5
 
             #include "UnityCG.cginc"
             #include "Lighting.cginc"
@@ -78,38 +81,53 @@ Shader "Unlit/backBlack"
                 float2 uv : TEXCOORD0;
                 UNITY_FOG_COORDS(1)
                 float4 pos : SV_POSITION;
-                float3 worldpos:TEXCOORD2;
-                float3 worldNormal:TEXCOORD3;
+                float3 worldpos : TEXCOORD2;
+                float3 worldNormal : TEXCOORD3;
+                float3 tangentWorld : TEXCOORD4;
+                float3 bitangentWorld : TEXCOORD5;
             };
 
             sampler2D _MainTex; float4 _MainTex_ST; fixed4 _Color; fixed4 _Specular; float _AlphaScale;
-            fixed _Gloss;
+            fixed _Gloss; sampler2D _NormalMap; float _BumpScale;
 
-            v2f vert (appdata_base v)
+            v2f vert (appdata_tan v)
             {
                 v2f o;
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
-                UNITY_TRANSFER_FOG(o,o.vertex);
+                UNITY_TRANSFER_FOG(o, o.pos);
+
                 o.worldpos = mul(unity_ObjectToWorld, v.vertex).xyz;
-                o.worldNormal=UnityObjectToWorldNormal(v.normal);
+                o.worldNormal = UnityObjectToWorldNormal(v.normal);
+
+                float3 worldTangent = UnityObjectToWorldDir(v.tangent.xyz);
+                float3 worldBitangent = cross(o.worldNormal, worldTangent) * v.tangent.w;
+
+                o.tangentWorld = worldTangent;
+                o.bitangentWorld = worldBitangent;
                 return o;
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
-                float3 worldNormal=normalize(i.worldNormal);
-                float3 worldLightDir=normalize(UnityWorldSpaceLightDir(i.worldpos));
-                fixed3 albedo=_LightColor0.rgb*_Color.rgb*tex2D(_MainTex,i.uv).rgb*max(0,dot(worldNormal,worldLightDir));
-                fixed3 ambient=UNITY_LIGHTMODEL_AMBIENT;
-                fixed3 specular=_Specular.rgb*_LightColor0.rgb*pow(max(0,dot(worldLightDir,worldNormal)),_Gloss);
+                // ✅ 法线贴图采样只能在 fragment 中做
+                float3 normalTex = UnpackNormal(tex2D(_NormalMap, i.uv)) * _BumpScale;
 
-                return fixed4(ambient+albedo+specular,1);
+                // 转换切线空间法线到世界空间
+                float3x3 TBN = float3x3(normalize(i.tangentWorld), normalize(i.bitangentWorld), normalize(i.worldNormal));
+                float3 worldNormal = normalize(mul(normalTex, TBN));
+
+                float3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldpos));
+                fixed3 albedo = _LightColor0.rgb * _Color.rgb * tex2D(_MainTex, i.uv).rgb * max(0, dot(worldNormal, worldLightDir));
+                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT;
+                fixed3 specular = _Specular.rgb * _LightColor0.rgb * pow(max(0, dot(worldLightDir, worldNormal)), _Gloss);
+
+                return fixed4(ambient + albedo + specular, 1);
             }
             ENDCG
         }
 
-        //���Դ
+        //点光源
         Pass
         {
             Tags { "LightMode"="ForwardAdd" }
@@ -121,6 +139,7 @@ Shader "Unlit/backBlack"
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma target 4.5
 
             #include "UnityCG.cginc"
             #include "Lighting.cginc"
@@ -131,33 +150,48 @@ Shader "Unlit/backBlack"
                 float2 uv : TEXCOORD0;
                 UNITY_FOG_COORDS(1)
                 float4 pos : SV_POSITION;
-                float3 worldpos:TEXCOORD2;
-                float3 worldNormal:TEXCOORD3;
+                float3 worldpos : TEXCOORD2;
+                float3 worldNormal : TEXCOORD3;
+                float3 tangentWorld : TEXCOORD4;
+                float3 bitangentWorld : TEXCOORD5;
             };
 
             sampler2D _MainTex; float4 _MainTex_ST; fixed4 _Color; fixed4 _Specular; float _AlphaScale;
-            fixed _Gloss;
+            fixed _Gloss; sampler2D _NormalMap; float _BumpScale;
 
-            v2f vert (appdata_base v)
+            v2f vert (appdata_tan v)
             {
                 v2f o;
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
-                UNITY_TRANSFER_FOG(o,o.vertex);
+                UNITY_TRANSFER_FOG(o, o.pos);
+
                 o.worldpos = mul(unity_ObjectToWorld, v.vertex).xyz;
-                o.worldNormal=UnityObjectToWorldNormal(v.normal);
+                o.worldNormal = UnityObjectToWorldNormal(v.normal);
+
+                float3 worldTangent = UnityObjectToWorldDir(v.tangent.xyz);
+                float3 worldBitangent = cross(o.worldNormal, worldTangent) * v.tangent.w;
+
+                o.tangentWorld = worldTangent;
+                o.bitangentWorld = worldBitangent;
                 return o;
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
-                float3 worldNormal=normalize(i.worldNormal);
-                float3 worldLightDir=normalize(UnityWorldSpaceLightDir(i.worldpos));
-                fixed3 albedo=_LightColor0.rgb*_Color.rgb*tex2D(_MainTex,i.uv).rgb*max(0,dot(worldNormal,worldLightDir));
-                fixed3 ambient=UNITY_LIGHTMODEL_AMBIENT;
-                fixed3 specular=_Specular.rgb*_LightColor0.rgb*pow(max(0,dot(worldLightDir,worldNormal)),_Gloss);
+                // ✅ 法线贴图采样只能在 fragment 中做
+                float3 normalTex = UnpackNormal(tex2D(_NormalMap, i.uv)) * _BumpScale;
 
-                return fixed4(ambient+albedo+specular,1);
+                // 转换切线空间法线到世界空间
+                float3x3 TBN = float3x3(normalize(i.tangentWorld), normalize(i.bitangentWorld), normalize(i.worldNormal));
+                float3 worldNormal = normalize(mul(normalTex, TBN));
+
+                float3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldpos));
+                fixed3 albedo = _LightColor0.rgb * _Color.rgb * tex2D(_MainTex, i.uv).rgb * max(0, dot(worldNormal, worldLightDir));
+                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT;
+                fixed3 specular = _Specular.rgb * _LightColor0.rgb * pow(max(0, dot(worldLightDir, worldNormal)), _Gloss);
+
+                return fixed4(ambient + albedo + specular, 1);
             }
             ENDCG
         }
