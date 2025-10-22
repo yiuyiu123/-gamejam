@@ -85,4 +85,14 @@ public class TMPTypewriter : MonoBehaviour
 
         IsTyping = false;
     }
+
+    //scene3新加
+    public void SetText(string text)
+    {
+        OriginalText = text;
+        if (textMeshPro == null)
+            textMeshPro = GetComponent<TextMeshProUGUI>();
+        textMeshPro.text = text; // 可选：直接显示初始文本
+    }
+
 }

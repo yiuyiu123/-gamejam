@@ -149,14 +149,14 @@ public class Scene3UI_Manager : MonoBehaviour
     void StartTask1()
     {
         currentProgress = GameProgress.Task1;
-        Log("开始任务1：寻找电闸");
+        Log("开始任务1：寻找电闸手电筒");
         OnTask1Start?.Invoke();
     }
 
     void CompleteTask1()
     {
         task1Completed = true;
-        Log("任务1完成：电闸已打开");
+        Log("任务1完成：电闸和手电筒已打开");
         OnTask1Complete?.Invoke();
         StartPlot2();
     }
@@ -164,7 +164,7 @@ public class Scene3UI_Manager : MonoBehaviour
     void StartTask2()
     {
         currentProgress = GameProgress.Task2;
-        Log("开始任务2：寻找钥匙");
+        Log("开始任务2：合成花洒寻找钥匙");
         OnTask2Start?.Invoke();
     }
 
