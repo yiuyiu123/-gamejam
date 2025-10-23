@@ -7,11 +7,14 @@ public class ThreeItemRecipe
 {
     public string recipeName;
     public List<string> requiredItems; // 必须包含3个物品
-    public GameObject resultItemPrefab;
+    public GameObject resultItemPrefab1;
+    public GameObject resultItemPrefab2;
 
     [Header("合成位置设置")]
-    public Transform spawnPoint; // 合成结果生成位置
-    public Vector3 spawnOffset = Vector3.up * 2f;
+    public Transform spawnPoint1; // 第一个结果物品生成位置
+    public Vector3 spawnOffset1 = Vector3.up * 2f;
+    public Transform spawnPoint2; // 第二个结果物品生成位置
+    public Vector3 spawnOffset2 = Vector3.up * 2f;
 }
 
 public class ThreeItemCraftingManager : MonoBehaviour
@@ -82,7 +85,7 @@ public class ThreeItemCraftingManager : MonoBehaviour
 
         ThreeItemRecipe matchedRecipe = FindMatchingRecipe(itemNames);
 
-        if (matchedRecipe != null && matchedRecipe.resultItemPrefab != null)
+        if (matchedRecipe != null && matchedRecipe.resultItemPrefab1 != null && matchedRecipe.resultItemPrefab2 != null)
         {
             Debug.Log($"三合成成功！配方: {matchedRecipe.recipeName}");
             return matchedRecipe;
@@ -137,13 +140,25 @@ public class ThreeItemCraftingManager : MonoBehaviour
         }
     }
 
-    // 获取合成位置
-    public Vector3 GetSpawnPosition(ThreeItemRecipe recipe)
+    // 获取第一个物品的合成位置
+    public Vector3 GetSpawnPosition1(ThreeItemRecipe recipe)
     {
-        if (recipe.spawnPoint != null)
+        if (recipe.spawnPoint1 != null)
         {
-            return recipe.spawnPoint.position + recipe.spawnOffset;
+            return recipe.spawnPoint1.position + recipe.spawnOffset1;
         }
+        Debug.LogWarning($"配方 {recipe.recipeName} 的 spawnPoint1 未设置，使用默认位置");
         return Vector3.zero;
+    }
+
+    // 获取第二个物品的合成位置 - 修复这里！
+    public Vector3 GetSpawnPosition2(ThreeItemRecipe recipe)
+    {
+        if (recipe.spawnPoint2 != null)
+        {
+            return recipe.spawnPoint2.position + recipe.spawnOffset2; // 这里应该是 spawnOffset2
+        }
+        Debug.LogWarning($"配方 {recipe.recipeName} 的 spawnPoint2 未设置，使用默认位置");
+        return Vector3.zero + Vector3.right * 2f; // 给第二个物品一个偏移，避免重叠
     }
 }

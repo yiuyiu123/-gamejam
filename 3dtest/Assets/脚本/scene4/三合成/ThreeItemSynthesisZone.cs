@@ -211,7 +211,7 @@ public class ThreeItemSynthesisZone : MonoBehaviour
         // 尝试三合成
         ThreeItemRecipe matchedRecipe = ThreeItemCraftingManager.Instance.CombineThreeItems(itemsToCombine);
 
-        if (matchedRecipe != null && matchedRecipe.resultItemPrefab != null)
+        if (matchedRecipe != null && matchedRecipe.resultItemPrefab1 != null && matchedRecipe.resultItemPrefab2 != null)
         {
             // 三合成成功
             foreach (var item in itemsToCombine)
@@ -236,11 +236,16 @@ public class ThreeItemSynthesisZone : MonoBehaviour
                 }
             }
 
-            // 生成结果物品
-            Vector3 spawnPosition = ThreeItemCraftingManager.Instance.GetSpawnPosition(matchedRecipe);
-            yield return StartCoroutine(SpawnResultItem(matchedRecipe.resultItemPrefab, spawnPosition));
+            // 生成结果物品 - 添加调试信息
+            Vector3 spawnPosition1 = ThreeItemCraftingManager.Instance.GetSpawnPosition1(matchedRecipe);
+            Vector3 spawnPosition2 = ThreeItemCraftingManager.Instance.GetSpawnPosition2(matchedRecipe);
 
-            Debug.Log($"三合成成功！生成了 {matchedRecipe.recipeName}");
+            Debug.Log($"生成位置1: {spawnPosition1}, 生成位置2: {spawnPosition2}");
+
+            yield return StartCoroutine(SpawnResultItem(matchedRecipe.resultItemPrefab1, spawnPosition1));
+            yield return StartCoroutine(SpawnResultItem(matchedRecipe.resultItemPrefab2, spawnPosition2));
+
+            Debug.Log($"三合成成功！生成了 {matchedRecipe.recipeName} 的两个物品");
         }
         else
         {

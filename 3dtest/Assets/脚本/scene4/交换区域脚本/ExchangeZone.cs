@@ -40,6 +40,10 @@ public class ExchangeZone : MonoBehaviour
                 foundItem = item.gameObject;
                 break;
             }
+            else if (item != null && item.limitExchangeTimes && item.currentExchangeTimes >= item.maxExchangeTimes)
+            {
+                Debug.Log($"物品 {item.itemName} 已达到最大交换次数，无法交换");
+            }
         }
 
         // 如果状态发生变化
