@@ -3150,7 +3150,7 @@ MonoBehaviour:
   flowerPotZone: {fileID: 89620796}
   dialogueManager: {fileID: 187351384}
   useSceneTransition: 1
-  nextSceneName: Scene4
+  nextSceneName: scene4
   OnTask1Start:
     m_PersistentCalls:
       m_Calls:

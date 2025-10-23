@@ -131,11 +131,8 @@ public class Scene3UI_Manager : MonoBehaviour
     // 新增方法：任务1完成检查
     void CheckTask1Completion()
     {
-        Debug.Log($"[CheckTask1Completion] hasFlashlight={hasFlashlight}, hasOpenedSwitch={hasOpenedSwitch}, task1Completed={task1Completed}");
-
         if (!task1Completed && hasFlashlight && hasOpenedSwitch)
         {
-            Debug.Log("CheckTask1Completion()进入if语句执行");
             task1Completed = true;
             CompleteTask1();
         }
@@ -186,11 +183,51 @@ public class Scene3UI_Manager : MonoBehaviour
         Log("开始剧情3：开门剧情");
 
         if (dialogueManager != null)
+        {
             dialogueManager.StartDialogueSequence("Plot3");
+            // 启动协程监控剧情3对话是否结束
+            StartCoroutine(MonitorPlot3DialogueEnd());
+        }
         else
+        {
             LogWarning("对话管理器未找到");
+        }
 
         plot3Completed = true;
+    }
+
+    // 轮询剧情3对话是否播放完毕
+    private IEnumerator MonitorPlot3DialogueEnd()
+    {
+        // 等待剧情3对话结束
+        while (IsDialoguePlaying())
+        {
+            yield return null;
+        }
+
+        Log("剧情3对话播放完毕，延迟跳转场景");
+        StartCoroutine(DelayedSceneTransition(2f)); // 延迟2秒跳场景
+    }
+
+    // 使用 DialogueManager 的状态判断
+    private bool IsDialoguePlaying()
+    {
+        // 通过反射访问私有字段 isDialogueActive
+        if (dialogueManager == null) return false;
+
+        var type = dialogueManager.GetType();
+        var field = type.GetField("isDialogueActive", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        if (field != null)
+        {
+            return (bool)field.GetValue(dialogueManager);
+        }
+
+        return false;
+    }
+
+    private IEnumerator DelayedSceneTransition(float delay)
+    {
+        yield return new WaitForSeconds(delay);
         PrepareNextScene();
     }
     #endregion
