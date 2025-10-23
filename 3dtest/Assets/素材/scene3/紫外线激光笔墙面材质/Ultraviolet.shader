@@ -1,9 +1,12 @@
-Shader "Custom/Ultraviolet"
+ï»¿Shader "Custom/Ultraviolet"
 {
     Properties
     {
         _BaseTex("Base Texture", 2D) = "white" {}
+        _BaseTex_STCustom("Base Tex Tiling/Offset", Vector) = (1,1,0,0)
+
         _DrawTex("Drawing Texture", 2D) = "white" {}
+        _DrawTex_STCustom("Draw Tex Tiling/Offset", Vector) = (1,1,0,0)
         _DrawRotation("Draw Rotation", Range(0,360)) = 0
 
         _NormalMap("Normal Map", 2D) = "bump" {}
@@ -20,10 +23,10 @@ Shader "Custom/Ultraviolet"
         #pragma target 3.0
 
         sampler2D _BaseTex;
-        float4 _BaseTex_ST;
+        float4 _BaseTex_STCustom;
 
         sampler2D _DrawTex;
-        float4 _DrawTex_ST;
+        float4 _DrawTex_STCustom;  // âœ… è‡ªå®šä¹‰å‘½åï¼Œå½»åº•é¿å…å†²çª
         float _DrawRotation;
 
         sampler2D _NormalMap;
@@ -37,7 +40,7 @@ Shader "Custom/Ultraviolet"
             float3 viewDir;
         };
 
-        // ×Ô¶¨ÒåĞı×ªUV
+        // è‡ªå®šä¹‰æ—‹è½¬UV
         inline float2 RotateUV(float2 uv, float angle)
         {
             float rad = radians(angle);
@@ -50,46 +53,33 @@ Shader "Custom/Ultraviolet"
             return uv;
         }
 
-        void surf (Input IN, inout SurfaceOutputStandard o)
+        // surf å‡½æ•°
+        void surf(Input IN, inout SurfaceOutputStandard o)
         {
-            // »ù´¡ÑÕÉ«
-            float2 baseUV = TRANSFORM_TEX(IN.uv_BaseTex, _BaseTex);
+            // BaseTex UV
+            float2 baseUV = IN.uv_BaseTex * _BaseTex_STCustom.xy + _BaseTex_STCustom.zw;
             fixed4 baseCol = tex2D(_BaseTex, baseUV);
 
-            // ·¨ÏßÌùÍ¼
-            o.Normal = UnpackNormal(tex2D(_NormalMap, baseUV));
-
-            // »æÖÆÌùÍ¼UV + Ğı×ª + ST
+            // DrawTex UV + æ—‹è½¬ + ST
             float2 drawUV = RotateUV(IN.uv_DrawTex, _DrawRotation);
-            drawUV = drawUV * _DrawTex_ST.xy + _DrawTex_ST.zw;
+            drawUV = drawUV * _DrawTex_STCustom.xy + _DrawTex_STCustom.zw;
             fixed4 drawCol = tex2D(_DrawTex, drawUV);
 
-            // »ù´¡ÑÕÉ«Êä³ö
-            o.Albedo = baseCol.rgb;
+            // ---- é¢œè‰²å åŠ åˆ° Albedo ----
+            o.Albedo = baseCol.rgb + drawCol.rgb * drawCol.a;  // âœ… DrawTex å åŠ åˆ° BaseTex
             o.Metallic = 0.0;
             o.Smoothness = 0.3;
 
-            // ---- ¼ÆËã¾Û¹âµÆÓ°Ïì ----
-            float3 lightDir = normalize(_WorldSpaceLightPos0.xyz);
-            float3 toLight = lightDir;
-            float3 normal = normalize(o.Normal);
+            // ---- æ³•çº¿ ----
+            o.Normal = UnpackNormal(tex2D(_NormalMap, baseUV));
 
-            // ¹âÕÕË¥¼õ£¨¼òµ¥¼ÆËã£©
-            half nl = saturate(dot(normal, toLight));
-
-            // ¼ÙÉè¾Û¹âµÆÔÚÖ÷¹âÔ´·½ÏòÉÏ£º¹âÇ¿×÷ÎªÊÇ·ñ¿É¼ûÒÀ¾İ
-            float visibility = step(0.1, nl);
-
-            // ---- Í¿Ñ»½öÔÚ¾Û¹âµÆ·¶Î§ÄÚÏÔÊ¾ ----
-            fixed3 graffitiColor = drawCol.rgb * drawCol.a * visibility;
-
-            // ---- ¾Û¹âµÆÑÕÉ«¿ØÖÆ×Ô·¢¹â ----
-            fixed3 lightColor = unity_LightColor0.rgb;
-            fixed3 emissive = graffitiColor * lightColor * _EmissionStrength;
-
-            o.Emission = emissive;
+            // ---- Emissionï¼ˆå¯é€‰ï¼šèšå…‰ç¯ä¸‹è‡ªå‘å…‰ï¼‰----
+            float visibility = step(0.1, saturate(dot(o.Normal, normalize(_WorldSpaceLightPos0.xyz))));
+            o.Emission = drawCol.rgb * drawCol.a * _EmissionStrength * visibility;
         }
+
         ENDCG
     }
+
     FallBack "Diffuse"
 }
