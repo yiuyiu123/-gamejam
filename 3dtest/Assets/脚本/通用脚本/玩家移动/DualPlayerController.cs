@@ -355,6 +355,35 @@ public class DualPlayerController : MonoBehaviour
         return isMovementLocked;
     }
 
+    /// <summary>
+    /// 获取玩家1的输入方向（供动画控制器使用）
+    /// </summary>
+    public Vector3 GetPlayer1InputDirection()
+    {
+        return movement1;
+    }
+ 
+    /// 获取玩家2的输入方向（供动画控制器使用）
+
+    public Vector3 GetPlayer2InputDirection()
+    {
+        return movement2;
+    }
+    /// <summary>
+    /// 获取玩家1的摄像机
+    /// </summary>
+    public Camera GetPlayer1Camera()
+    {
+        return player1Camera;
+    }
+
+    /// <summary>
+    /// 获取玩家2的摄像机
+    /// </summary>
+    public Camera GetPlayer2Camera()
+    {
+        return player2Camera;
+    }
     void DebugRotationState()
     {
         Debug.Log("=== 2D Sprite旋转状态 ===");

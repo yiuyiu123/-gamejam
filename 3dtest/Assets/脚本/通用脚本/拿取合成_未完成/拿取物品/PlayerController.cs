@@ -32,6 +32,9 @@ public class PlayerController : MonoBehaviour
     public event Action OnFlashlightPickedUp;// 新增事件
     private FlashlightController currentFlashlight; // 当前持有的手电筒
 
+    [Header("动画控制")]
+    public PlayerAnimationController animationController;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -266,6 +269,13 @@ public class PlayerController : MonoBehaviour
     {
         heldItem = item;
         item.Interact(gameObject);
+
+        // 触发拾取动画
+        if (animationController != null)
+        {
+            animationController.TriggerPickUpAnimation();
+        }
+
         // 检查是否是手电筒
         if (item.itemName == flashLight)
         {
@@ -300,6 +310,15 @@ public class PlayerController : MonoBehaviour
 
             heldItem.Interact(gameObject);
 
+            // 更新动画状态 - 确保在放下物品后立即更新
+            if (animationController != null)
+            {
+                animationController.SetHoldingState(false);
+
+                // 强制立即检查移动状态
+                StartCoroutine(ForceAnimationUpdateNextFrame());
+            }
+
             if (showInteractionDebug)
             {
                 Debug.Log($"{playerName} 放下了 {heldItem.itemName}");
@@ -308,7 +327,17 @@ public class PlayerController : MonoBehaviour
             heldItem = null;
         }
     }
+    // 新增协程：在下一帧强制更新动画状态
+    System.Collections.IEnumerator ForceAnimationUpdateNextFrame()
+    {
+        yield return null; // 等待下一帧
 
+        if (animationController != null)
+        {
+            // 这会触发UpdateAnimationStates中的强制更新
+            animationController.SetHoldingState(false);
+        }
+    }
     // 新增：设置临时锁定状态
     public void SetTemporaryLock(bool locked)
     {
