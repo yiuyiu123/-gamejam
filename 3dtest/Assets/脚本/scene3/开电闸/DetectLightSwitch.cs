@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class DetectLightSwitch : MonoBehaviour
@@ -9,6 +10,7 @@ public class DetectLightSwitch : MonoBehaviour
 
     [Header("玩家检测")]
     public string playerTag = "Player";
+    public event Action LightSwitchOn;
 
     private bool playerInRange = false; // 玩家是否在触发范围
     private bool hasRotated = false;    // 防止重复旋转
@@ -24,6 +26,7 @@ public class DetectLightSwitch : MonoBehaviour
     private void OpenSwitch()
     {
         IsSwitchOpen = true;
+        LightSwitchOn?.Invoke();
 
         if (pivot != null && !hasRotated)
         {

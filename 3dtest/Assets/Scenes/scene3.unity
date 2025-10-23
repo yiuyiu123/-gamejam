@@ -578,7 +578,6 @@ MonoBehaviour:
   hasBeenWatered: 0
   isWatering: 0
   showDebugInfo: 0
-  isKeyAppear: 0
 --- !u!1 &91805745
 GameObject:
   m_ObjectHideFlags: 0
@@ -1156,9 +1155,9 @@ MonoBehaviour:
       autoAdvance: 0
       autoAdvanceDelay: 2
       customTypingSound: {fileID: 0}
-      dialogueSide: 1
+      dialogueSide: 2
       inputRequirement: 2
-      isSequenceEndLine: 1
+      isSequenceEndLine: 0
     onSequenceStart:
       m_PersistentCalls:
         m_Calls:
@@ -1209,7 +1208,7 @@ MonoBehaviour:
       autoAdvance: 0
       autoAdvanceDelay: 2
       customTypingSound: {fileID: 0}
-      dialogueSide: 1
+      dialogueSide: 2
       inputRequirement: 2
       isSequenceEndLine: 0
     - player1Text: "\u54E6\u5BF9.....\u6211\u7684u\u76D8\uFF01\u6211\u8BB0\u5F97\u5728\u5367\u5BA4\u91CC\u9762"
@@ -3145,12 +3144,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentProgress: 0
-  playerController: {fileID: 1772867896}
+  player1Controller: {fileID: 1772867896}
+  player2Controller: {fileID: 2024142366}
   detectLightSwitch: {fileID: 275124699}
   flowerPotZone: {fileID: 89620796}
   dialogueManager: {fileID: 187351384}
   useSceneTransition: 1
-  nextSceneName: scene4
+  nextSceneName: Scene4
   OnTask1Start:
     m_PersistentCalls:
       m_Calls:
@@ -12342,5 +12342,5 @@ SceneRoots:
   - {fileID: 839235237}
   - {fileID: 1265759978}
   - {fileID: 1148909608}
-  - {fileID: 187007842}
   - {fileID: 406414494}
+  - {fileID: 187007842}

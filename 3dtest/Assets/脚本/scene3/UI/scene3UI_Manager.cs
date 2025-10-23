@@ -11,9 +11,15 @@ public class Scene3UI_Manager : MonoBehaviour
     public GameProgress currentProgress = GameProgress.Initial;
 
     [Header("引用脚本")]
-    public PlayerController playerController;              // 关卡逻辑（灯、钥匙、门等）
+    public PlayerController player1Controller;
+    public PlayerController player2Controller; 
     public DetectLightSwitch detectLightSwitch;
     public FlowerPotZone flowerPotZone;
+
+    private bool hasFlashlight = false;
+    private bool hasOpenedSwitch = false;
+    private bool keyHasAppeared = false;
+
 
     [Header("逻辑引用")]
     public Scene2DialogueManager dialogueManager; // 通用对话系统
@@ -59,14 +65,26 @@ public class Scene3UI_Manager : MonoBehaviour
 
     void Start()
     {
-        if (dialogueManager == null)
+        // 订阅 Player1、Player2 的拾取事件
+        if (player1Controller != null)
+            player1Controller.OnFlashlightPickedUp += OnFlashlightPickedUp;
+        if (player2Controller != null)
+            player2Controller.OnFlashlightPickedUp += OnFlashlightPickedUp;
+
+        // 灯闸
+        if (detectLightSwitch != null)
+            detectLightSwitch.LightSwitchOn += OnLightSwitchOn;
+
+        // 钥匙生成
+        if (flowerPotZone != null)
+            flowerPotZone.HasKeyAppear += OnKeyAppear;
+        else
+        {
             dialogueManager = FindObjectOfType<Scene2DialogueManager>();
-
-        if (playerController == null)
-            playerController = FindObjectOfType<PlayerController>();
-        if (detectLightSwitch == null)
+            player1Controller = FindObjectOfType<PlayerController>();
+            player2Controller = FindObjectOfType<PlayerController>();
             detectLightSwitch = FindObjectOfType<DetectLightSwitch>();
-
+        }
         sceneTransition = FindObjectOfType<SimpleSceneTransitionManager>();
 
         StartCoroutine(MonitorSceneProgress());
@@ -77,31 +95,60 @@ public class Scene3UI_Manager : MonoBehaviour
         yield return new WaitForSeconds(1f);
         Log("Scene3剧情监控启动");
 
+        // 启动初始剧情
+        if (currentProgress == GameProgress.Initial)
+        {
+            StartPlot1();
+        }
+
         while (true)
         {
-            // 初始剧情
-            if (currentProgress == GameProgress.Initial)
-            {
-                StartPlot1();
-            }
-
-            // 任务1完成检测
-            if (currentProgress == GameProgress.Task1 && playerController.isHoldFlashLight && detectLightSwitch.IsSwitchOpen&&!plot2Completed)
-            {
-                CompleteTask1();
-            }
-
-            //  任务2完成检测
-            if (currentProgress == GameProgress.Task2 && flowerPotZone.isKeyAppear && !plot3Completed)
-            {
-                CompleteTask2();
-            }
-
             yield return null;
         }
     }
 
     #region 剧情控制
+    void OnFlashlightPickedUp()
+    {
+        Debug.Log("事件触发：手电筒捡起");
+        hasFlashlight = true;
+        CheckTask1Completion();
+    }
+
+    void OnLightSwitchOn()
+    {
+        Debug.Log("事件触发：灯闸打开");
+        hasOpenedSwitch = true;
+        CheckTask1Completion();
+    }
+
+    void OnKeyAppear()
+    {
+        keyHasAppeared = true;
+        CheckTask2Completion();
+    }
+
+    // 新增方法：任务1完成检查
+    void CheckTask1Completion()
+    {
+        Debug.Log($"[CheckTask1Completion] hasFlashlight={hasFlashlight}, hasOpenedSwitch={hasOpenedSwitch}, task1Completed={task1Completed}");
+
+        if (!task1Completed && hasFlashlight && hasOpenedSwitch)
+        {
+            Debug.Log("CheckTask1Completion()进入if语句执行");
+            task1Completed = true;
+            CompleteTask1();
+        }
+    }
+
+    void CheckTask2Completion()
+    {
+        if (!task2Completed && keyHasAppeared)
+        {
+            task2Completed = true;
+            CompleteTask2();
+        }
+    }
     public void StartPlot1()
     {
         currentProgress = GameProgress.Plot1;
@@ -122,7 +169,10 @@ public class Scene3UI_Manager : MonoBehaviour
         Log("开始剧情2：钥匙任务前对话");
 
         if (dialogueManager != null)
+        {
+            Debug.Log("调用 dialogueManager.StartDialogueSequence(\"Plot2\")");
             dialogueManager.StartDialogueSequence("Plot2");
+        }
         else
             LogWarning("对话管理器未找到");
 
@@ -156,8 +206,9 @@ public class Scene3UI_Manager : MonoBehaviour
     void CompleteTask1()
     {
         task1Completed = true;
-        Log("任务1完成：电闸和手电筒已打开");
+        Debug.Log("任务1完成，触发剧情2");
         OnTask1Complete?.Invoke();
+        // 触发剧情2
         StartPlot2();
     }
 

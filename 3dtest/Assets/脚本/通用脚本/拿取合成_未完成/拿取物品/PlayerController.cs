@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class PlayerController : MonoBehaviour
 {
@@ -16,9 +17,6 @@ public class PlayerController : MonoBehaviour
     public bool showInputDebug = false;
     public bool showInteractionDebug = true;
 
-    //[Header("张奕忻")]    
-    //public string flashLight = "手电筒";
-
     private Rigidbody rb;
     private Vector3 movement;
     private InteractableItem heldItem;
@@ -31,6 +29,7 @@ public class PlayerController : MonoBehaviour
     [Header("手电筒设置")]
     public string flashLight = "手电筒"; // 手电筒的物品名称
     public bool isHoldFlashLight = false;
+    public event Action OnFlashlightPickedUp;// 新增事件
     private FlashlightController currentFlashlight; // 当前持有的手电筒
 
     void Start()
@@ -272,6 +271,7 @@ public class PlayerController : MonoBehaviour
         {
             currentFlashlight = item.GetComponent<FlashlightController>();
             isHoldFlashLight = true;
+            OnFlashlightPickedUp?.Invoke(); // 触发事件
 
             // 如果是player2拿起手电筒，自动开灯
             if (gameObject.CompareTag("Player2") && currentFlashlight != null)

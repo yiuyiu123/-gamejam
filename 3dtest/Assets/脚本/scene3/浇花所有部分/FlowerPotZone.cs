@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class FlowerPotZone : MonoBehaviour
 {
@@ -31,8 +32,8 @@ public class FlowerPotZone : MonoBehaviour
     [Header("调试选项")]
     public bool showDebugInfo = true; // 默认开启调试
 
-    [Header("张奕忻：是否弹出钥匙")]
-    public bool isKeyAppear=false;
+    //UI弹窗：是否出现钥匙
+    public event Action HasKeyAppear;
 
     private GameObject currentFlower;        // 当前的花
     private AudioSource audioSource;
@@ -201,10 +202,10 @@ public class FlowerPotZone : MonoBehaviour
             Rigidbody keyRb = newKey.GetComponent<Rigidbody>();
             if (keyRb != null)
             {
-                Vector3 popDirection = new Vector3(Random.Range(-0.5f, 0.5f), 1f, Random.Range(-0.5f, 0.5f)).normalized;
+                Vector3 popDirection = new Vector3(UnityEngine.Random.Range(-0.5f, 0.5f), 1f, UnityEngine.Random.Range(-0.5f, 0.5f)).normalized;
                 keyRb.AddForce(popDirection * 5f, ForceMode.Impulse);
                 //张奕忻
-                isKeyAppear = true;
+                HasKeyAppear?.Invoke();
             }
         }
 
