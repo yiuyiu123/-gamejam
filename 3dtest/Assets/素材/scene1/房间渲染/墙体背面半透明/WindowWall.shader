@@ -7,6 +7,9 @@ Shader "Custom/WindowWall_Lit_ShadowCaster"
         _Cutoff ("Alpha Cutoff", Range(0,1)) = 0.5
         _Glossiness ("Smoothness", Range(0,1)) = 0.3
         _Metallic ("Metallic", Range(0,1)) = 0.0
+        //法线
+        _NormalMap("Normal Map",2D)="bump"{}
+        _BumpScale("Bump Scale",float)=1.0
     }
 
     SubShader
@@ -22,7 +25,7 @@ Shader "Custom/WindowWall_Lit_ShadowCaster"
         sampler2D _MainTex;
         fixed4 _Color;
         half _Glossiness;
-        half _Metallic;
+        half _Metallic; 
 
         struct Input
         {
@@ -60,7 +63,7 @@ Shader "Custom/WindowWall_Lit_ShadowCaster"
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
-            float _Cutoff;
+            float _Cutoff;  sampler2D _NormalMap; float _BumpScale;
 
             struct v2f
             {
