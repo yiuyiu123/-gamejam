@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class InteractableItem : MonoBehaviour
 {
-   
     [Header("物品设置")]
     public string itemName = "物品";
     public bool canBePickedUp = true;
@@ -17,6 +16,11 @@ public class InteractableItem : MonoBehaviour
     public bool canBeExchanged = true;
     public bool isExchangeLocked = false;
     public string lastExchangeZone = "";
+
+    [Header("交换次数限制")]
+    public bool limitExchangeTimes = true;  // 是否限制交换次数
+    public int maxExchangeTimes = 1;        // 最大交换次数
+    public int currentExchangeTimes = 0;    // 当前交换次数
 
     [Header("状态")]
     public bool isBeingHeld = false;
@@ -51,6 +55,9 @@ public class InteractableItem : MonoBehaviour
         originalPosition = transform.position;
         originalRotation = transform.rotation;
         originalScale = transform.localScale;
+
+        // 初始化交换次数
+        currentExchangeTimes = 0;
     }
 
     void Update()
@@ -199,6 +206,7 @@ public class InteractableItem : MonoBehaviour
         Debug.Log($"{currentHolder?.name} 放下了 {itemName}");
         currentHolder = null;
     }
+
     void FollowHolder()
     {
         if (currentHolder == null || isTransitioning) return;
@@ -208,6 +216,7 @@ public class InteractableItem : MonoBehaviour
         transform.rotation = GetTargetHoldRotation();
         transform.localScale = originalScale;
     }
+
     Vector3 GetTargetHoldPosition()
     {
         return currentHolder.transform.position +
@@ -254,7 +263,24 @@ public class InteractableItem : MonoBehaviour
     {
         isExchangeLocked = true;
         lastExchangeZone = fromZoneID;
-        Debug.Log($"物品 {itemName} 被标记为已交换，来自区域 {fromZoneID}");
+
+        // 增加交换次数
+        if (limitExchangeTimes)
+        {
+            currentExchangeTimes++;
+            Debug.Log($"物品 {itemName} 被标记为已交换，来自区域 {fromZoneID}，交换次数: {currentExchangeTimes}/{maxExchangeTimes}");
+
+            // 检查是否达到交换次数限制
+            if (currentExchangeTimes >= maxExchangeTimes)
+            {
+                canBeExchanged = false;
+                Debug.Log($"物品 {itemName} 已达到最大交换次数 ({maxExchangeTimes})，禁止再次交换");
+            }
+        }
+        else
+        {
+            Debug.Log($"物品 {itemName} 被标记为已交换，来自区域 {fromZoneID}");
+        }
     }
 
     // 重置交换锁定
@@ -271,6 +297,13 @@ public class InteractableItem : MonoBehaviour
     // 检查是否可以交换到指定区域
     public bool CanExchangeTo(string targetZoneID)
     {
+        // 检查交换次数限制
+        if (limitExchangeTimes && currentExchangeTimes >= maxExchangeTimes)
+        {
+            if (showDebugInfo) Debug.Log($"物品 {itemName} 已达到最大交换次数，无法交换");
+            return false;
+        }
+
         if (!canBeExchanged || isExchangeLocked || isBeingHeld || isInExchangeProcess)
             return false;
 
@@ -295,6 +328,29 @@ public class InteractableItem : MonoBehaviour
         transform.localScale = originalScale;
         isInExchangeProcess = false;
         ResetExchangeLock();
+    }
+
+    // 重置交换次数（用于特殊情况下重置物品状态）
+    public void ResetExchangeTimes()
+    {
+        currentExchangeTimes = 0;
+        canBeExchanged = true;
+        Debug.Log($"物品 {itemName} 的交换次数已重置");
+    }
+
+    // 设置交换次数限制
+    public void SetExchangeLimit(int maxTimes)
+    {
+        maxExchangeTimes = maxTimes;
+        limitExchangeTimes = true;
+        Debug.Log($"物品 {itemName} 的交换次数限制设置为: {maxTimes}");
+    }
+
+    // 移除交换次数限制
+    public void RemoveExchangeLimit()
+    {
+        limitExchangeTimes = false;
+        Debug.Log($"物品 {itemName} 的交换次数限制已移除");
     }
 
     // 重置物理状态
@@ -352,6 +408,15 @@ public class InteractableItem : MonoBehaviour
         {
             Gizmos.color = Color.red;
             Gizmos.DrawWireCube(transform.position, Vector3.one * 1.2f);
+        }
+
+        // 显示交换次数信息
+        if (limitExchangeTimes && showDebugInfo)
+        {
+#if UNITY_EDITOR
+            string exchangeInfo = $"{itemName}\n交换: {currentExchangeTimes}/{maxExchangeTimes}";
+            UnityEditor.Handles.Label(transform.position + Vector3.up * 1.5f, exchangeInfo);
+#endif
         }
     }
 }
