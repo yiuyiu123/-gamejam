@@ -56,7 +56,7 @@ public class PasswordLock : MonoBehaviour
     void Update()
     {
         // 检测玩家是否在范围内且按下F键
-        if (isPlayerInRange && Input.GetKeyDown(KeyCode.H) && !isOpened)
+        if (isPlayerInRange && Input.GetKeyDown(KeyCode.F) && !isOpened)
         {
             Debug.Log("玩家打开解密页面");
             ShowPasswordUI();
@@ -199,7 +199,7 @@ public class PasswordLock : MonoBehaviour
     // 触发器检测玩家进入范围
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player2"))
+        if (other.CompareTag("Player1"))
         {
             isPlayerInRange = true;
             Debug.Log("玩家进入范围");
@@ -212,7 +212,7 @@ public class PasswordLock : MonoBehaviour
     // 触发器检测玩家离开范围
     void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player2"))
+        if (other.CompareTag("Player1"))
         {
             isPlayerInRange = false;
             Debug.Log("玩家进入范围不");
