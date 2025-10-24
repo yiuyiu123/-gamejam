@@ -11,6 +11,10 @@ public class PlayerController : MonoBehaviour
     public float interactionRange = 2f;
     public float throwRange = 10f;
 
+    [Header("交互冷却设置")]
+    public float interactionCooldown = 0.5f; // 交互冷却时间
+    public bool enableInteractionCooldown = true; // 启用交互冷却
+
     [Header("特殊物品设置")]
     public string wateringCanItemName = "水壶"; // 水壶的物品名称
 
@@ -51,6 +55,11 @@ public class PlayerController : MonoBehaviour
     [Header("动画控制")]
     public PlayerAnimationController animationController;
 
+    // 新增：交互状态控制
+    private bool isInteractionInProgress = false;
+    private float lastInteractionTime = 0f;
+    private Coroutine interactionCooldownCoroutine; 
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -84,6 +93,16 @@ public class PlayerController : MonoBehaviour
 
     void HandleInteraction()
     {
+        // 检查交互冷却和进行中的交互
+        if (IsInteractionBlocked())
+        {
+            if (showInteractionDebug && Input.GetKeyDown(interactKey))
+            {
+                Debug.Log($"{playerName} 交互被阻止 - 冷却中或进行中");
+            }
+            return;
+        }
+
         if (Input.GetKeyDown(interactKey))
         {
             if (showInteractionDebug)
@@ -116,6 +135,107 @@ public class PlayerController : MonoBehaviour
                 TryPickUpItem();
             }
         }
+    }
+
+    // 新增：检查交互是否被阻止
+    bool IsInteractionBlocked()
+    {
+        // 检查临时锁定
+        if (isTemporarilyLocked) return true;
+
+        // 检查交互冷却
+        if (enableInteractionCooldown && Time.time - lastInteractionTime < interactionCooldown)
+            return true;
+
+        // 检查是否有进行中的交互
+        if (isInteractionInProgress) return true;
+
+        return false;
+    }
+
+    // 新增：开始交互流程
+    void StartInteraction()
+    {
+        isInteractionInProgress = true;
+        lastInteractionTime = Time.time;
+
+        try
+        {
+            if (heldItem != null)
+            {
+                // 如果持有水壶，优先尝试浇花
+                if (heldItem.itemName == wateringCanItemName && TryWateringFlowers())
+                {
+                    Debug.Log($"{playerName} 成功开始浇花");
+                    EndInteraction();
+                    return;
+                }
+
+                // 如果持有物品，尝试抛掷到合成区域
+                if (TryThrowToSynthesisZone())
+                {
+                    Debug.Log($"{playerName} 成功抛掷物品到合成区域");
+                    EndInteraction();
+                    return;
+                }
+                else
+                {
+                    // 否则放下物品
+                    DropItem();
+                }
+            }
+            else
+            {
+                // 尝试捡起物品
+                TryPickUpItem();
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"{playerName} 交互过程中发生错误: {e.Message}");
+            ForceEndInteraction();
+        }
+    }
+
+    // 新增：强制结束交互（用于错误恢复）
+    void ForceEndInteraction()
+    {
+        isInteractionInProgress = false;
+        heldItem = null;
+
+        // 重置动画状态
+        if (animationController != null)
+        {
+            animationController.ForceEndAnimationLock();
+            animationController.SetHoldingState(false);
+        }
+
+        // 启动冷却协程
+        if (interactionCooldownCoroutine != null)
+            StopCoroutine(interactionCooldownCoroutine);
+
+        interactionCooldownCoroutine = StartCoroutine(InteractionCooldownCoroutine());
+
+        Debug.LogWarning($"{playerName} 强制结束交互流程");
+    }
+
+    // 新增：交互冷却协程
+    System.Collections.IEnumerator InteractionCooldownCoroutine()
+    {
+        yield return new WaitForSeconds(interactionCooldown);
+        // 冷却结束后，isInteractionInProgress 已经在 EndInteraction 中设置为 false
+    }
+
+    // 新增：正常结束交互
+    void EndInteraction()
+    {
+        isInteractionInProgress = false;
+
+        // 启动冷却协程
+        if (interactionCooldownCoroutine != null)
+            StopCoroutine(interactionCooldownCoroutine);
+
+        interactionCooldownCoroutine = StartCoroutine(InteractionCooldownCoroutine());
     }
 
     #region 张奕忻scene5输入
@@ -365,6 +485,13 @@ public class PlayerController : MonoBehaviour
 
     void TryPickUpItem()
     {
+        // 安全检查：确保没有进行中的交互
+        if (isInteractionInProgress && heldItem != null)
+        {
+            Debug.LogWarning($"{playerName} 尝试捡起物品时检测到状态冲突");
+            return;
+        }
+
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, interactionRange);
         InteractableItem closestItem = null;
         float closestDistance = Mathf.Infinity;
@@ -391,78 +518,187 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log($"{playerName} 附近没有可拾取的物品");
         }
+        EndInteraction(); // 没有找到物品，结束交互
     }
 
+    //void PickUpItem(InteractableItem item)
+    //{
+    //    heldItem = item;
+    //    item.Interact(gameObject);
+
+    //    // 触发拾取动画
+    //    if (animationController != null)
+    //    {
+    //        animationController.TriggerPickUpAnimation();
+    //    }
+
+    //    // 检查是否是手电筒
+    //    if (item.itemName == flashLight)
+    //    {
+    //        currentFlashlight = item.GetComponent<FlashlightController>();
+    //        isHoldFlashLight = true;
+    //        OnFlashlightPickedUp?.Invoke(); // 触发事件
+
+    //        // 如果是player2拿起手电筒，自动开灯
+    //        if (gameObject.CompareTag("Player2") && currentFlashlight != null)
+    //        {
+    //            currentFlashlight.TurnOn();
+    //        }
+    //    }
+    //    if (showInteractionDebug)
+    //    {
+    //        Debug.Log($"{playerName} 捡起了 {item.itemName}");
+    //    }
+    //}
+    // 修改：PickUpItem 方法，添加状态验证
     void PickUpItem(InteractableItem item)
     {
+        // 状态验证
+        if (heldItem != null)
+        {
+            Debug.LogError($"{playerName} 尝试捡起物品时已经持有物品: {heldItem.itemName}");
+            ForceEndInteraction();
+            return;
+        }
+
+        if (!item.canBePickedUp || item.isBeingHeld)
+        {
+            Debug.LogError($"{playerName} 尝试捡起不可拾取或已被持有的物品: {item.itemName}");
+            ForceEndInteraction();
+            return;
+        }
+
         heldItem = item;
-        item.Interact(gameObject);
 
-        // 触发拾取动画
-        if (animationController != null)
+        try
         {
-            animationController.TriggerPickUpAnimation();
-        }
+            item.Interact(gameObject);
 
-        // 检查是否是手电筒
-        if (item.itemName == flashLight)
-        {
-            currentFlashlight = item.GetComponent<FlashlightController>();
-            isHoldFlashLight = true;
-            OnFlashlightPickedUp?.Invoke(); // 触发事件
-
-            // 如果是player2拿起手电筒，自动开灯
-            if (gameObject.CompareTag("Player2") && currentFlashlight != null)
+            // 触发拾取动画
+            if (animationController != null)
             {
-                currentFlashlight.TurnOn();
+                animationController.TriggerPickUpAnimation();
             }
+
+            // 检查是否是手电筒
+            if (item.itemName == flashLight)
+            {
+                currentFlashlight = item.GetComponent<FlashlightController>();
+                isHoldFlashLight = true;
+                OnFlashlightPickedUp?.Invoke();
+
+                if (gameObject.CompareTag("Player2") && currentFlashlight != null)
+                {
+                    currentFlashlight.TurnOn();
+                }
+            }
+
+            if (showInteractionDebug)
+            {
+                Debug.Log($"{playerName} 捡起了 {item.itemName}");
+            }
+
+            EndInteraction(); // 成功捡起，结束交互
         }
-        if (showInteractionDebug)
+        catch (System.Exception e)
         {
-            Debug.Log($"{playerName} 捡起了 {item.itemName}");
+            Debug.LogError($"{playerName} 捡起物品时发生错误: {e.Message}");
+            heldItem = null;
+            ForceEndInteraction();
         }
     }
 
+    // 修改：DropItem 方法，添加安全机制
     void DropItem()
     {
-        if (heldItem != null)
+        if (heldItem == null)
         {
+            Debug.LogWarning($"{playerName} 尝试放下空物品");
+            ForceEndInteraction();
+            return;
+        }
 
+        // 保存引用，避免空引用
+        InteractableItem itemToDrop = heldItem;
+        string itemName = itemToDrop.itemName;
+
+        try
+        {
             // 放下前如果是手电筒，关闭灯光
-            if (heldItem.itemName == flashLight && currentFlashlight != null)
+            if (itemName == flashLight && currentFlashlight != null)
             {
                 currentFlashlight.TurnOff();
                 currentFlashlight = null;
                 isHoldFlashLight = false;
             }
 
-            heldItem.Interact(gameObject);
+            itemToDrop.Interact(gameObject);
 
-            // 更新动画状态 - 确保在放下物品后立即更新
+            // 立即清除引用
+            heldItem = null;
+
+            // 更新动画状态
             if (animationController != null)
             {
                 animationController.SetHoldingState(false);
-
-                // 强制立即检查移动状态
-                StartCoroutine(ForceAnimationUpdateNextFrame());
+                animationController.ForceEndAnimationLock(); // 强制结束任何可能的动画锁定
             }
 
             if (showInteractionDebug)
             {
-                Debug.Log($"{playerName} 放下了 {heldItem.itemName}");
+                Debug.Log($"{playerName} 放下了 {itemName}");
             }
 
+            EndInteraction(); // 成功放下，结束交互
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"{playerName} 放下物品时发生错误: {e.Message}");
             heldItem = null;
+            ForceEndInteraction();
         }
     }
+
+    //void DropItem()
+    //{
+    //    if (heldItem != null)
+    //    {
+
+    //        // 放下前如果是手电筒，关闭灯光
+    //        if (heldItem.itemName == flashLight && currentFlashlight != null)
+    //        {
+    //            currentFlashlight.TurnOff();
+    //            currentFlashlight = null;
+    //            isHoldFlashLight = false;
+    //        }
+
+    //        heldItem.Interact(gameObject);
+
+    //        // 更新动画状态 - 确保在放下物品后立即更新
+    //        if (animationController != null)
+    //        {
+    //            animationController.SetHoldingState(false);
+
+    //            // 强制立即检查移动状态
+    //            StartCoroutine(ForceAnimationUpdateNextFrame());
+    //        }
+
+    //        if (showInteractionDebug)
+    //        {
+    //            Debug.Log($"{playerName} 放下了 {heldItem.itemName}");
+    //        }
+
+    //        heldItem = null;
+    //    }
+    //}
+
     // 新增协程：在下一帧强制更新动画状态
     System.Collections.IEnumerator ForceAnimationUpdateNextFrame()
     {
-        yield return null; // 等待下一帧
+        yield return null;
 
-        if (animationController != null)
+        if (animationController != null && !isInteractionInProgress)
         {
-            // 这会触发UpdateAnimationStates中的强制更新
             animationController.SetHoldingState(false);
         }
     }
@@ -501,6 +737,24 @@ public class PlayerController : MonoBehaviour
             heldItem.ForceRelease();
             heldItem = null;
             Debug.Log($"{playerName} 强制释放了物品");
+        }
+    }
+    // 新增：获取交互状态（用于调试）
+    public string GetInteractionState()
+    {
+        return $"持有物品: {heldItem?.itemName ?? "无"}, 交互进行中: {isInteractionInProgress}, 冷却剩余: {Mathf.Max(0, interactionCooldown - (Time.time - lastInteractionTime)):F2}s";
+    }
+
+    // 新增：强制重置交互状态（用于调试和恢复）
+    [ContextMenu("强制重置交互状态")]
+    public void ForceResetInteractionState()
+    {
+        Debug.Log($"{playerName} 强制重置交互状态");
+        ForceEndInteraction();
+
+        if (animationController != null)
+        {
+            animationController.ResetAllAnimations();
         }
     }
 

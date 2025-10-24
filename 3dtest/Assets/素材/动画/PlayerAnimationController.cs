@@ -28,8 +28,13 @@ public class PlayerAnimationController : MonoBehaviour
     public float flipDeadZone = 0.3f;
 
     [Header("拾取动画设置")]
-    public float pickUpAnimationLockTime = 0.8f; // 拾取动画锁定时间
-    public bool enableAnimationLock = true; // 是否启用动画锁定
+    public float pickUpAnimationLockTime = 0.8f;
+    public bool enableAnimationLock = true;
+
+    [Header("状态恢复设置")]
+    public bool enableStateRecovery = true;
+    public float stateRecoveryCheckInterval = 1f; // 延长检查间隔
+    public float stuckStateThreshold = 10f; // 增加卡死阈值
 
     private Vector3 lastPosition;
     private bool wasMoving = false;
@@ -40,16 +45,23 @@ public class PlayerAnimationController : MonoBehaviour
     private float lastFlipTime = 0f;
     private float flipCooldown = 0.2f;
 
-    // 新增：动画锁定相关变量
+    // 动画锁定相关变量
     private bool isAnimationLocked = false;
     private float animationLockEndTime = 0f;
     private Coroutine animationLockCoroutine;
+
+    // 状态恢复相关变量
+    private float lastStateCheckTime = 0f;
+    private string lastAnimatorState = "";
+    private float stateStartTime = 0f;
+    private bool isInNormalHoldingState = false;
 
     void Start()
     {
         InitializeComponents();
         lastPosition = transform.position;
         FindPlayerCamera();
+        stateStartTime = Time.time;
     }
 
     void InitializeComponents()
@@ -109,6 +121,13 @@ public class PlayerAnimationController : MonoBehaviour
 
         UpdateAnimationStates();
 
+        // 状态恢复检查 - 只在启用且不在正常持物状态时检查
+        if (enableStateRecovery && Time.time - lastStateCheckTime >= stateRecoveryCheckInterval && !IsInNormalHoldingState())
+        {
+            CheckStateRecovery();
+            lastStateCheckTime = Time.time;
+        }
+
         // 只有在没有动画锁定时才更新方向
         if (!isAnimationLocked)
         {
@@ -124,6 +143,9 @@ public class PlayerAnimationController : MonoBehaviour
         bool isMoving = CheckMovement();
         bool currentlyHolding = playerController != null && playerController.IsHoldingItem();
 
+        // 更新正常持物状态标志
+        UpdateNormalHoldingState(currentlyHolding, isMoving);
+
         // 如果处于动画锁定状态，不更新行走状态
         if (!isAnimationLocked)
         {
@@ -137,7 +159,7 @@ public class PlayerAnimationController : MonoBehaviour
             TriggerPickUpAnimation();
         }
 
-        // 更新持有物品状态（即使动画锁定也要更新，但可能不会立即在Animator中反映）
+        // 更新持有物品状态
         if (isHoldingItem != currentlyHolding || forceStateUpdate)
         {
             isHoldingItem = currentlyHolding;
@@ -158,14 +180,30 @@ public class PlayerAnimationController : MonoBehaviour
         wasMoving = isMoving;
     }
 
+    // 新增：更新正常持物状态标志
+    void UpdateNormalHoldingState(bool currentlyHolding, bool isMoving)
+    {
+        // 正常持物状态：持有物品且处于HoldIdle或HoldWalk状态
+        isInNormalHoldingState = currentlyHolding && (GetCurrentStateName() == "HoldIdle" || GetCurrentStateName() == "HoldWalk");
+
+        // 如果处于正常持物状态，重置状态开始时间
+        if (isInNormalHoldingState)
+        {
+            stateStartTime = Time.time;
+        }
+    }
+
+    // 新增：检查是否处于正常持物状态
+    bool IsInNormalHoldingState()
+    {
+        return isInNormalHoldingState;
+    }
+
     void CheckAnimationLock()
     {
-        // 检查动画锁定是否结束
         if (isAnimationLocked && Time.time >= animationLockEndTime)
         {
             isAnimationLocked = false;
-
-            // 动画锁定结束后，强制更新一次状态
             forceStateUpdate = true;
 
             if (showDebugInfo)
@@ -173,6 +211,50 @@ public class PlayerAnimationController : MonoBehaviour
                 Debug.Log($"{playerName} 动画锁定结束");
             }
         }
+    }
+
+    // 修改：状态恢复检查，只针对真正卡死的状态
+    void CheckStateRecovery()
+    {
+        if (playerAnimator == null) return;
+
+        string currentState = GetCurrentStateName();
+        AnimatorStateInfo stateInfo = playerAnimator.GetCurrentAnimatorStateInfo(0);
+
+        // 只在状态改变时重置计时器
+        if (currentState != lastAnimatorState)
+        {
+            stateStartTime = Time.time;
+            lastAnimatorState = currentState;
+        }
+
+        // 检查是否真正卡死（排除正常持物状态）
+        if (!IsInNormalHoldingState() && Time.time - stateStartTime > stuckStateThreshold)
+        {
+            // 只对特定状态进行恢复检查
+            if (ShouldRecoverFromState(currentState, stateInfo))
+            {
+                Debug.LogWarning($"{playerName} 检测到卡死状态: {currentState}，持续 {Time.time - stateStartTime:F1}秒");
+                ForceRecoveryFromStuckState();
+            }
+        }
+
+        lastAnimatorState = currentState;
+    }
+
+    // 新增：判断是否应该从某个状态恢复
+    bool ShouldRecoverFromState(string stateName, AnimatorStateInfo stateInfo)
+    {
+        // 永远不需要从这些正常状态恢复
+        if (stateName == "Idle" || stateName == "Walk" || stateName == "HoldIdle" || stateName == "HoldWalk")
+            return false;
+
+        // 对于PickUp状态，只在动画播放多次后仍不切换时恢复
+        if (stateName == "PickUp" && stateInfo.normalizedTime > 2.0f)
+            return true;
+
+        // 对于其他状态，使用默认阈值
+        return stateInfo.normalizedTime > 3.0f;
     }
 
     bool CheckMovement()
@@ -332,14 +414,13 @@ public class PlayerAnimationController : MonoBehaviour
         }
     }
 
-    // 触发特殊动画 - 修改为支持动画锁定
+    // 触发特殊动画
     public void TriggerPickUpAnimation()
     {
         if (playerAnimator != null)
         {
             playerAnimator.SetTrigger(pickUpParameter);
 
-            // 启用动画锁定
             if (enableAnimationLock)
             {
                 StartAnimationLock(pickUpAnimationLockTime);
@@ -352,7 +433,7 @@ public class PlayerAnimationController : MonoBehaviour
         }
     }
 
-    // 新增：开始动画锁定
+    // 开始动画锁定
     public void StartAnimationLock(float lockTime)
     {
         if (animationLockCoroutine != null)
@@ -362,13 +443,12 @@ public class PlayerAnimationController : MonoBehaviour
         animationLockCoroutine = StartCoroutine(AnimationLockCoroutine(lockTime));
     }
 
-    // 新增：动画锁定协程
+    // 动画锁定协程
     private System.Collections.IEnumerator AnimationLockCoroutine(float lockTime)
     {
         isAnimationLocked = true;
         animationLockEndTime = Time.time + lockTime;
 
-        // 在锁定期间，强制设置为不移动状态，避免行走动画中断拾取动画
         playerAnimator.SetBool(walkParameter, false);
 
         if (showDebugInfo)
@@ -409,6 +489,71 @@ public class PlayerAnimationController : MonoBehaviour
         return isAnimationLocked;
     }
 
+    // 修改：强制从卡死状态恢复，保留持物状态
+    void ForceRecoveryFromStuckState()
+    {
+        if (playerAnimator == null) return;
+
+        // 获取当前实际状态
+        bool shouldHold = playerController != null && playerController.IsHoldingItem();
+        bool isMoving = CheckMovement();
+
+        // 重置触发器
+        playerAnimator.ResetTrigger(pickUpParameter);
+
+        // 设置正确的参数
+        playerAnimator.SetBool(holdParameter, shouldHold);
+        playerAnimator.SetBool(walkParameter, isMoving);
+
+        // 强制结束动画锁定
+        ForceEndAnimationLock();
+
+        // 根据状态播放正确的动画
+        if (shouldHold)
+        {
+            if (isMoving)
+            {
+                playerAnimator.Play("HoldWalk", 0, 0f);
+            }
+            else
+            {
+                playerAnimator.Play("HoldIdle", 0, 0f);
+            }
+        }
+        else
+        {
+            if (isMoving)
+            {
+                playerAnimator.Play("Walk", 0, 0f);
+            }
+            else
+            {
+                playerAnimator.Play("Idle", 0, 0f);
+            }
+        }
+
+        // 重置状态计时器
+        stateStartTime = Time.time;
+
+        Debug.Log($"{playerName} 执行状态强制恢复，状态: {(shouldHold ? (isMoving ? "HoldWalk" : "HoldIdle") : (isMoving ? "Walk" : "Idle"))}");
+    }
+
+    // 获取当前状态名称
+    string GetCurrentStateName()
+    {
+        if (playerAnimator == null) return "Unknown";
+
+        AnimatorStateInfo stateInfo = playerAnimator.GetCurrentAnimatorStateInfo(0);
+
+        if (stateInfo.IsName("Idle")) return "Idle";
+        if (stateInfo.IsName("Walk")) return "Walk";
+        if (stateInfo.IsName("PickUp")) return "PickUp";
+        if (stateInfo.IsName("HoldIdle")) return "HoldIdle";
+        if (stateInfo.IsName("HoldWalk")) return "HoldWalk";
+
+        return "Other";
+    }
+
     // 重置所有动画状态
     public void ResetAllAnimations()
     {
@@ -419,7 +564,6 @@ public class PlayerAnimationController : MonoBehaviour
             playerAnimator.ResetTrigger(pickUpParameter);
         }
 
-        // 同时结束动画锁定
         ForceEndAnimationLock();
     }
 
@@ -444,5 +588,11 @@ public class PlayerAnimationController : MonoBehaviour
         {
             playerName = playerController.playerName;
         }
+    }
+
+    // 新增：获取状态恢复信息（用于调试）
+    public string GetStateRecoveryInfo()
+    {
+        return $"状态: {GetCurrentStateName()}, 正常持物: {IsInNormalHoldingState()}, 状态持续时间: {Time.time - stateStartTime:F1}s";
     }
 }
