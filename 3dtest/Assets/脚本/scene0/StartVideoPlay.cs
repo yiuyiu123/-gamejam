@@ -9,7 +9,7 @@ public class StartVideoPlay : MonoBehaviour
     public RawImage rawImage;           
     public VideoPlayer videoPlayer;    
     public GameObject skipButton;       
-    public float skipHoldTime = 5.0f;
+    public float skipHoldTime = 1.0f;
     public float fadeTime = 2.0f;
 
     private bool skipPressed = false;
@@ -46,7 +46,7 @@ public class StartVideoPlay : MonoBehaviour
         }
         else
         {
-            skipHoldTime = 5.0f; // 重置倒计时
+            skipHoldTime = 1.0f; // 重置倒计时
         }
     }
 
