@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class IsSwitch : MonoBehaviour
 {
+    public static IsSwitch Instance;
     [Header("UIÑ¡Ïî")]
     public GameObject UI_Yes;
     public GameObject UI_NO;

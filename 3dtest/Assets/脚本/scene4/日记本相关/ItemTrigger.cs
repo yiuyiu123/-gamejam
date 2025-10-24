@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 /// <summary>
 /// 物品触发系统（2D/3D双模式支持）
@@ -40,6 +41,11 @@ public class ItemTrigger : MonoBehaviour
     [SerializeField] private bool canTriggerMultipleTimes = true;
     [SerializeField] private float cooldownTime = 0f;
 
+    [Header("张奕忻：开门次数")]
+    public int OpenDoorNumber=0;
+    public event Action OpenFirstDoor;
+    public event Action OpenSecondDoor;
+
     private Collider _collider;
     private Collider2D _collider2D;
     private bool _isInCooldown = false;
@@ -68,7 +74,7 @@ public class ItemTrigger : MonoBehaviour
         // if (_collider2D != null) _collider2D.edgeRadius  = contactOffset;
     }
 
-    private void OnTriggerEnter(Collider other) => ProcessTrigger(other.gameObject);
+    //private void OnTriggerEnter(Collider other) => ProcessTrigger(other.gameObject);
     private void OnTriggerEnter2D(Collider2D other) => ProcessTrigger(other.gameObject);
 
     private void ProcessTrigger(GameObject incomingObject)
@@ -100,6 +106,7 @@ public class ItemTrigger : MonoBehaviour
                 }
 
                 // 执行触发逻辑 
+                Debug.Log("11111111111111");
                 ExecuteTriggerRule(rule);
 
                 // 记录已触发的对象 
@@ -175,6 +182,16 @@ public class ItemTrigger : MonoBehaviour
             {
                 Destroy(rule.targetObject);
             }
+        }
+        //张奕忻：记录开门次数
+        OpenDoorNumber++;
+        if (OpenDoorNumber == 1)
+        {
+            OpenFirstDoor?.Invoke();
+        }
+        else if (OpenDoorNumber == 2)
+        {
+            OpenSecondDoor?.Invoke();
         }
     }
 

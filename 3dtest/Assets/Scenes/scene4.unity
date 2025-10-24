@@ -2228,13 +2228,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentProgress: 0
-  player1Controller: {fileID: 1046518878}
-  player2Controller: {fileID: 1243931701}
-  detectLightSwitch: {fileID: 0}
-  flowerPotZone: {fileID: 0}
+  DoorDelete: {fileID: 886136591}
+  playerMovement: {fileID: 0}
+  threeItemCraftingManager: {fileID: 0}
   dialogueManager: {fileID: 1992151985}
   useSceneTransition: 1
-  nextSceneName: scene4
+  nextSceneName: scene5
   OnTask1Start:
     m_PersistentCalls:
       m_Calls: []
@@ -2247,7 +2246,22 @@ MonoBehaviour:
   OnTask2Complete:
     m_PersistentCalls:
       m_Calls: []
-  OnAllTasksComplete:
+  OnTask3Start:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTask3Complete:
+    m_PersistentCalls:
+      m_Calls: []
+  OnFinalTaskStart:
+    m_PersistentCalls:
+      m_Calls: []
+  OnFinalTaskComplete:
+    m_PersistentCalls:
+      m_Calls: []
+  OnEndingStart:
+    m_PersistentCalls:
+      m_Calls: []
+  OnEndingComplete:
     m_PersistentCalls:
       m_Calls: []
   enableDebugLogs: 1
@@ -9141,6 +9155,7 @@ MonoBehaviour:
     m_Bits: 4294967295
   canTriggerMultipleTimes: 1
   cooldownTime: 0
+  OpenDoorNumber: 0
 --- !u!1 &886243081
 GameObject:
   m_ObjectHideFlags: 0
@@ -10868,6 +10883,8 @@ MonoBehaviour:
   interactKey: 102
   interactionRange: 2
   throwRange: 10
+  interactionCooldown: 0.5
+  enableInteractionCooldown: 1
   wateringCanItemName: "\u6C34\u58F6"
   showInputDebug: 0
   showInteractionDebug: 1
@@ -12511,6 +12528,8 @@ MonoBehaviour:
   interactKey: 104
   interactionRange: 2
   throwRange: 10
+  interactionCooldown: 0.5
+  enableInteractionCooldown: 1
   wateringCanItemName: "\u6C34\u58F6"
   showInputDebug: 0
   showInteractionDebug: 1
@@ -12612,7 +12631,7 @@ Transform:
   m_GameObject: {fileID: 1243931699}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 15.729965, y: -58.2, z: 20.179996}
+  m_LocalPosition: {x: 21.55, y: -58.2, z: 20.179996}
   m_LocalScale: {x: 3.2567, y: 3.2567, z: 3.2567}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -21910,7 +21929,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1992151983}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86b8407352e33ef4e8997533e5d575ca, type: 3}
+  m_Script: {fileID: 11500000, guid: b115d40c46de417468a3bf2626f4093d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   player1DialoguePanel: {fileID: 1046332146}
@@ -21951,13 +21970,13 @@ MonoBehaviour:
       speakerIcon: {fileID: 0}
       voiceClip: {fileID: 0}
       autoAdvance: 0
-      autoAdvanceDelay: 2
+      autoAdvanceDelay: 0
       customTypingSound: {fileID: 0}
       dialogueSide: 1
       inputRequirement: 1
       isSequenceEndLine: 0
     - player1Text: 
-      player2Text: "\u7D2F\u7684\u8BDD\u5C31\u4F11\u606F\u53ED\uFF0C\u7761\u4E00\u89C9\u8D77\u6765\u4E00\u5207\u90FD\u4F1A\u53D8\u597D\u54D2\uFF01"
+      player2Text: "\u7D2F\u7684\u8BDD\u5C31\u4F11\u606F\u53ED\uFF0C\u7761\u4E00\u89C9\u8D77\u6765\u4E00\u5207\u90FD\u4F1A\u53D8\u597D\u54D2\uFF01\n"
       speakerName: "\u6211"
       speakerIcon: {fileID: 0}
       voiceClip: {fileID: 0}
@@ -21969,19 +21988,7 @@ MonoBehaviour:
       isSequenceEndLine: 0
     onSequenceStart:
       m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: Scene3UI_Manager, Assembly-CSharp
-          m_MethodName: StartPlot1
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+        m_Calls: []
     onSequenceEnd:
       m_PersistentCalls:
         m_Calls: []
@@ -21999,7 +22006,29 @@ MonoBehaviour:
       inputRequirement: 1
       isSequenceEndLine: 0
     - player1Text: 
-      player2Text: "\u5FEB\u628A\u7709\u5934\u8212\u5C55\u5F00\u5440\uFF01\u996D\u56E2\u54AC\u4E00\u53E3\u8FD8\u5192\u6696\u4E4E\u4E4E\u7684\u70ED\u6C14\u5462\uFF01\u508D\u665A\u5439\u8FC7\u7684\u665A\u98CE\u3001\u8DEF\u8FB9\u4EAE\u95EA\u7684\u9713\u8679...\u90FD\u5F88\u7F8E\u597D\u5440\uFF01\n"
+      player2Text: "\u5FEB\u628A\u7709\u5934\u8212\u5C55\u5F00\u5440\uFF01"
+      speakerName: "\u6211"
+      speakerIcon: {fileID: 0}
+      voiceClip: {fileID: 0}
+      autoAdvance: 0
+      autoAdvanceDelay: 2
+      customTypingSound: {fileID: 0}
+      dialogueSide: 2
+      inputRequirement: 2
+      isSequenceEndLine: 0
+    - player1Text: 
+      player2Text: "\u996D\u56E2\u54AC\u4E00\u53E3\u8FD8\u5192\u6696\u4E4E\u4E4E\u7684\u70ED\u6C14\u5462\uFF01"
+      speakerName: "\u6211"
+      speakerIcon: {fileID: 0}
+      voiceClip: {fileID: 0}
+      autoAdvance: 0
+      autoAdvanceDelay: 2
+      customTypingSound: {fileID: 0}
+      dialogueSide: 2
+      inputRequirement: 2
+      isSequenceEndLine: 0
+    - player1Text: 
+      player2Text: "\u508D\u665A\u5439\u8FC7\u7684\u665A\u98CE\u3001\u8DEF\u8FB9\u4EAE\u95EA\u7684\u9713\u8679...\u90FD\u5F88\u7F8E\u597D\u5440\uFF01"
       speakerName: "\u6211"
       speakerIcon: {fileID: 0}
       voiceClip: {fileID: 0}
@@ -22011,19 +22040,7 @@ MonoBehaviour:
       isSequenceEndLine: 0
     onSequenceStart:
       m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: Scene3UI_Manager, Assembly-CSharp
-          m_MethodName: StartPlot2
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+        m_Calls: []
     onSequenceEnd:
       m_PersistentCalls:
         m_Calls: []
@@ -22041,7 +22058,18 @@ MonoBehaviour:
       inputRequirement: 1
       isSequenceEndLine: 0
     - player1Text: 
-      player2Text: "\u4F60\u73B0\u5728\u62AC\u5934\u770B\uFF0C\u5929\u4E0A\u7684\u4E91\u8FD8\u5728\u98D8\u5462\uFF01\u7B49\u4F60\u4E0D\u5FD9\u4E86\uFF0C\u53BB\u770B\u770B\u5927\u8349\u539F\u5427\uFF01"
+      player2Text: "\u4F60\u73B0\u5728\u62AC\u5934\u770B\uFF0C\u5929\u4E0A\u7684\u4E91\u8FD8\u5728\u98D8\u5462\uFF01"
+      speakerName: "\u6211"
+      speakerIcon: {fileID: 0}
+      voiceClip: {fileID: 0}
+      autoAdvance: 0
+      autoAdvanceDelay: 2
+      customTypingSound: {fileID: 0}
+      dialogueSide: 2
+      inputRequirement: 2
+      isSequenceEndLine: 0
+    - player1Text: 
+      player2Text: "\u7B49\u4F60\u4E0D\u5FD9\u4E86\uFF0C\u53BB\u770B\u770B\u5927\u8349\u539F\u5427\uFF01"
       speakerName: "\u6211"
       speakerIcon: {fileID: 0}
       voiceClip: {fileID: 0}
@@ -22053,19 +22081,7 @@ MonoBehaviour:
       isSequenceEndLine: 0
     onSequenceStart:
       m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: Scene3UI_Manager, Assembly-CSharp
-          m_MethodName: StartPlot2
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+        m_Calls: []
     onSequenceEnd:
       m_PersistentCalls:
         m_Calls: []
