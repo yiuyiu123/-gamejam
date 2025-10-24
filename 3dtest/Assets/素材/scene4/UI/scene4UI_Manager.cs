@@ -1,18 +1,18 @@
-ï»¿using System.Collections;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
-public class Scene3UI_Manager : MonoBehaviour
+public class Scene4UI_Manager : MonoBehaviour
 {
-    public static Scene3UI_Manager Instance;
+    public static Scene4UI_Manager Instance;
 
-    [Header("æ¸¸æˆæµç¨‹çŠ¶æ€")]
+    [Header("ÓÎÏ·Á÷³Ì×´Ì¬")]
     public GameProgress currentProgress = GameProgress.Initial;
 
-    [Header("å¼•ç”¨è„šæœ¬")]
+    [Header("ÒıÓÃ½Å±¾")]
     public PlayerController player1Controller;
-    public PlayerController player2Controller; 
+    public PlayerController player2Controller;
     public DetectLightSwitch detectLightSwitch;
     public FlowerPotZone flowerPotZone;
 
@@ -21,19 +21,19 @@ public class Scene3UI_Manager : MonoBehaviour
     private bool keyHasAppeared = false;
 
 
-    [Header("é€»è¾‘å¼•ç”¨")]
-    public Scene2DialogueManager dialogueManager; // é€šç”¨å¯¹è¯ç³»ç»Ÿ
+    [Header("Âß¼­ÒıÓÃ")]
+    public Scene2DialogueManager dialogueManager; // Í¨ÓÃ¶Ô»°ÏµÍ³
     public bool useSceneTransition = true;
     public string nextSceneName = "scene4";
 
-    [Header("ä»»åŠ¡äº‹ä»¶")]
+    [Header("ÈÎÎñÊÂ¼ş")]
     public UnityEvent OnTask1Start;
     public UnityEvent OnTask1Complete;
     public UnityEvent OnTask2Start;
     public UnityEvent OnTask2Complete;
     public UnityEvent OnAllTasksComplete;
 
-    [Header("è°ƒè¯•é€‰é¡¹")]
+    [Header("µ÷ÊÔÑ¡Ïî")]
     public bool enableDebugLogs = true;
 
     private bool plot1Completed = false;
@@ -47,12 +47,12 @@ public class Scene3UI_Manager : MonoBehaviour
     public enum GameProgress
     {
         Initial,
-        Plot1,   // ç”µé—¸ä»»åŠ¡å‰å‰§æƒ…
-        Task1,   // æ‰¾ç”µé—¸
-        Plot2,   // é’¥åŒ™ä»»åŠ¡å‰å‰§æƒ…
-        Task2,   // æ‰¾é’¥åŒ™
-        Plot3,   // å¼€é—¨å‰§æƒ…
-        Complete // å…¨éƒ¨å®Œæˆ
+        Plot1,   // µçÕ¢ÈÎÎñÇ°¾çÇé
+        Task1,   // ÕÒµçÕ¢
+        Plot2,   // Ô¿³×ÈÎÎñÇ°¾çÇé
+        Task2,   // ÕÒÔ¿³×
+        Plot3,   // ¿ªÃÅ¾çÇé
+        Complete // È«²¿Íê³É
     }
 
     void Awake()
@@ -65,17 +65,17 @@ public class Scene3UI_Manager : MonoBehaviour
 
     void Start()
     {
-        // è®¢é˜… Player1ã€Player2 çš„æ‹¾å–äº‹ä»¶
+        // ¶©ÔÄ Player1¡¢Player2 µÄÊ°È¡ÊÂ¼ş
         if (player1Controller != null)
             player1Controller.OnFlashlightPickedUp += OnFlashlightPickedUp;
         if (player2Controller != null)
             player2Controller.OnFlashlightPickedUp += OnFlashlightPickedUp;
 
-        // ç¯é—¸
+        // µÆÕ¢
         if (detectLightSwitch != null)
             detectLightSwitch.LightSwitchOn += OnLightSwitchOn;
 
-        // é’¥åŒ™ç”Ÿæˆ
+        // Ô¿³×Éú³É
         if (flowerPotZone != null)
             flowerPotZone.HasKeyAppear += OnKeyAppear;
         else
@@ -93,9 +93,9 @@ public class Scene3UI_Manager : MonoBehaviour
     IEnumerator MonitorSceneProgress()
     {
         yield return new WaitForSeconds(1f);
-        Log("Scene3å‰§æƒ…ç›‘æ§å¯åŠ¨");
+        Log("Scene3¾çÇé¼à¿ØÆô¶¯");
 
-        // å¯åŠ¨åˆå§‹å‰§æƒ…
+        // Æô¶¯³õÊ¼¾çÇé
         if (currentProgress == GameProgress.Initial)
         {
             StartPlot1();
@@ -107,17 +107,17 @@ public class Scene3UI_Manager : MonoBehaviour
         }
     }
 
-    #region å‰§æƒ…æ§åˆ¶
+    #region ¾çÇé¿ØÖÆ
     void OnFlashlightPickedUp()
     {
-        Debug.Log("äº‹ä»¶è§¦å‘ï¼šæ‰‹ç”µç­’æ¡èµ·");
+        Debug.Log("ÊÂ¼ş´¥·¢£ºÊÖµçÍ²¼ñÆğ");
         hasFlashlight = true;
         CheckTask1Completion();
     }
 
     void OnLightSwitchOn()
     {
-        Debug.Log("äº‹ä»¶è§¦å‘ï¼šç¯é—¸æ‰“å¼€");
+        Debug.Log("ÊÂ¼ş´¥·¢£ºµÆÕ¢´ò¿ª");
         hasOpenedSwitch = true;
         CheckTask1Completion();
     }
@@ -128,7 +128,7 @@ public class Scene3UI_Manager : MonoBehaviour
         CheckTask2Completion();
     }
 
-    // æ–°å¢æ–¹æ³•ï¼šä»»åŠ¡1å®Œæˆæ£€æŸ¥
+    // ĞÂÔö·½·¨£ºÈÎÎñ1Íê³É¼ì²é
     void CheckTask1Completion()
     {
         if (!task1Completed && hasFlashlight && hasOpenedSwitch)
@@ -149,12 +149,12 @@ public class Scene3UI_Manager : MonoBehaviour
     public void StartPlot1()
     {
         currentProgress = GameProgress.Plot1;
-        Log("å¼€å§‹å‰§æƒ…1ï¼šç”µé—¸ä»»åŠ¡å‰å¯¹è¯");
+        Log("¿ªÊ¼¾çÇé1£ºµçÕ¢ÈÎÎñÇ°¶Ô»°");
 
         if (dialogueManager != null)
             dialogueManager.StartDialogueSequence("Plot1");
         else
-            LogWarning("å¯¹è¯ç®¡ç†å™¨æœªæ‰¾åˆ°");
+            LogWarning("¶Ô»°¹ÜÀíÆ÷Î´ÕÒµ½");
 
         plot1Completed = true;
         StartTask1();
@@ -163,15 +163,15 @@ public class Scene3UI_Manager : MonoBehaviour
     public void StartPlot2()
     {
         currentProgress = GameProgress.Plot2;
-        Log("å¼€å§‹å‰§æƒ…2ï¼šé’¥åŒ™ä»»åŠ¡å‰å¯¹è¯");
+        Log("¿ªÊ¼¾çÇé2£ºÔ¿³×ÈÎÎñÇ°¶Ô»°");
 
         if (dialogueManager != null)
         {
-            Debug.Log("è°ƒç”¨ dialogueManager.StartDialogueSequence(\"Plot2\")");
+            Debug.Log("µ÷ÓÃ dialogueManager.StartDialogueSequence(\"Plot2\")");
             dialogueManager.StartDialogueSequence("Plot2");
         }
         else
-            LogWarning("å¯¹è¯ç®¡ç†å™¨æœªæ‰¾åˆ°");
+            LogWarning("¶Ô»°¹ÜÀíÆ÷Î´ÕÒµ½");
 
         plot2Completed = true;
         StartTask2();
@@ -180,38 +180,39 @@ public class Scene3UI_Manager : MonoBehaviour
     public void StartPlot3()
     {
         currentProgress = GameProgress.Plot3;
-        Log("å¼€å§‹å‰§æƒ…3ï¼šå¼€é—¨å‰§æƒ…");
+        Log("¿ªÊ¼¾çÇé3£º¿ªÃÅ¾çÇé");
 
         if (dialogueManager != null)
         {
             dialogueManager.StartDialogueSequence("Plot3");
-            // å¯åŠ¨åç¨‹ç›‘æ§å‰§æƒ…3å¯¹è¯æ˜¯å¦ç»“æŸ
+            // Æô¶¯Ğ­³Ì¼à¿Ø¾çÇé3¶Ô»°ÊÇ·ñ½áÊø
             StartCoroutine(MonitorPlot3DialogueEnd());
         }
         else
         {
-            LogWarning("å¯¹è¯ç®¡ç†å™¨æœªæ‰¾åˆ°");
+            LogWarning("¶Ô»°¹ÜÀíÆ÷Î´ÕÒµ½");
         }
 
         plot3Completed = true;
     }
 
-    // è½®è¯¢å‰§æƒ…3å¯¹è¯æ˜¯å¦æ’­æ”¾å®Œæ¯•
+    // ÂÖÑ¯¾çÇé3¶Ô»°ÊÇ·ñ²¥·ÅÍê±Ï
     private IEnumerator MonitorPlot3DialogueEnd()
     {
-        // ç­‰å¾…å‰§æƒ…3å¯¹è¯ç»“æŸ
+        // µÈ´ı¾çÇé3¶Ô»°½áÊø
         while (IsDialoguePlaying())
         {
             yield return null;
         }
-        Log("å‰§æƒ…3å¯¹è¯æ’­æ”¾å®Œæ¯•");
-        //StartCoroutine(DelayedSceneTransition(1f)); // å»¶è¿Ÿ2ç§’è·³åœºæ™¯
+
+        Log("¾çÇé3¶Ô»°²¥·ÅÍê±Ï£¬ÑÓ³ÙÌø×ª³¡¾°");
+        StartCoroutine(DelayedSceneTransition(1f)); // ÑÓ³Ù2ÃëÌø³¡¾°
     }
 
-    // ä½¿ç”¨ DialogueManager çš„çŠ¶æ€åˆ¤æ–­
+    // Ê¹ÓÃ DialogueManager µÄ×´Ì¬ÅĞ¶Ï
     private bool IsDialoguePlaying()
     {
-        // é€šè¿‡åå°„è®¿é—®ç§æœ‰å­—æ®µ isDialogueActive
+        // Í¨¹ı·´Éä·ÃÎÊË½ÓĞ×Ö¶Î isDialogueActive
         if (dialogueManager == null) return false;
 
         var type = dialogueManager.GetType();
@@ -224,51 +225,51 @@ public class Scene3UI_Manager : MonoBehaviour
         return false;
     }
 
-    public IEnumerator DelayedSceneTransition(float delay)
+    private IEnumerator DelayedSceneTransition(float delay)
     {
         yield return new WaitForSeconds(delay);
         PrepareNextScene();
     }
     #endregion
 
-    #region ä»»åŠ¡æ§åˆ¶
+    #region ÈÎÎñ¿ØÖÆ
     void StartTask1()
     {
         currentProgress = GameProgress.Task1;
-        Log("å¼€å§‹ä»»åŠ¡1ï¼šå¯»æ‰¾ç”µé—¸æ‰‹ç”µç­’");
+        Log("¿ªÊ¼ÈÎÎñ1£ºÑ°ÕÒµçÕ¢ÊÖµçÍ²");
         OnTask1Start?.Invoke();
     }
 
     void CompleteTask1()
     {
         task1Completed = true;
-        Debug.Log("ä»»åŠ¡1å®Œæˆï¼Œè§¦å‘å‰§æƒ…2");
+        Debug.Log("ÈÎÎñ1Íê³É£¬´¥·¢¾çÇé2");
         OnTask1Complete?.Invoke();
-        // è§¦å‘å‰§æƒ…2
+        // ´¥·¢¾çÇé2
         StartPlot2();
     }
 
     void StartTask2()
     {
         currentProgress = GameProgress.Task2;
-        Log("å¼€å§‹ä»»åŠ¡2ï¼šåˆæˆèŠ±æ´’å¯»æ‰¾é’¥åŒ™");
+        Log("¿ªÊ¼ÈÎÎñ2£ººÏ³É»¨È÷Ñ°ÕÒÔ¿³×");
         OnTask2Start?.Invoke();
     }
 
     void CompleteTask2()
     {
         task2Completed = true;
-        Log("ä»»åŠ¡2å®Œæˆï¼šè·å¾—é’¥åŒ™");
+        Log("ÈÎÎñ2Íê³É£º»ñµÃÔ¿³×");
         OnTask2Complete?.Invoke();
         StartPlot3();
     }
     #endregion
 
-    #region åœºæ™¯è·³è½¬
+    #region ³¡¾°Ìø×ª
     void PrepareNextScene()
     {
         currentProgress = GameProgress.Complete;
-        Log("Scene3å‰§æƒ…å®Œæˆï¼Œå‡†å¤‡åŠ è½½ä¸‹ä¸€åœºæ™¯");
+        Log("Scene3¾çÇéÍê³É£¬×¼±¸¼ÓÔØÏÂÒ»³¡¾°");
         OnAllTasksComplete?.Invoke();
 
         if (useSceneTransition && sceneTransition != null)
@@ -289,7 +290,7 @@ public class Scene3UI_Manager : MonoBehaviour
     }
     #endregion
 
-    #region å·¥å…·
+    #region ¹¤¾ß
     void Log(string msg)
     {
         if (enableDebugLogs) Debug.Log($"[Scene3UI_Manager] {msg}");

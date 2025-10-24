@@ -1,38 +1,54 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.Video; // æ–°å¢å¼•ç”¨ï¼Œç”¨äºæ’­æ”¾è§†é¢‘
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("½»»¥ÉèÖÃ")]
+    [Header("äº¤äº’è®¾ç½®")]
     public KeyCode interactKey = KeyCode.F;
     public float interactionRange = 2f;
     public float throwRange = 10f;
 
-    [Header("ÌØÊâÎïÆ·ÉèÖÃ")]
-    public string wateringCanItemName = "Ë®ºø"; // Ë®ºøµÄÎïÆ·Ãû³Æ
+    [Header("ç‰¹æ®Šç‰©å“è®¾ç½®")]
+    public string wateringCanItemName = "æ°´å£¶"; // æ°´å£¶çš„ç‰©å“åç§°
 
-    [Header("µ÷ÊÔÑ¡Ïî")]
+    [Header("è°ƒè¯•é€‰é¡¹")]
     public bool showInputDebug = false;
     public bool showInteractionDebug = true;
+
+    [Header("å¼ å¥•å¿»ï¼šæ˜¯å¦æ˜¯scene5")]
+    public bool isScene5 = false;
+
+    // å¼ å¥•å¿»ï¼šæ–°å¢ UI & Video å¼•ç”¨
+    [Header("Scene5 ç»“å±€ UI & è§†é¢‘")]
+    public GameObject UI_mask1; // Yesé€‰é¡¹UI
+    public GameObject UI_mask2; // Noé€‰é¡¹UI
+    public VideoPlayer video_Ending1; // Yes ç»“å±€
+    public VideoPlayer video_Ending2; // No ç»“å±€
+    private bool isHoldingSpace = false;
+    private float spaceHoldTime = 0f;
+    private bool isPlayingEnding = false;
+    private bool UI_mask1WasActive = false;
+    private bool UI_mask2WasActive = false;
 
     private Rigidbody rb;
     private Vector3 movement;
     private InteractableItem heldItem;
-    private bool isTemporarilyLocked = false; // ÁÙÊ±Ëø¶¨×´Ì¬£¨ÓÃÓÚ½½»¨µÈÌØÊâ¶¯×÷£©
+    private bool isTemporarilyLocked = false; // ä¸´æ—¶é”å®šçŠ¶æ€ï¼ˆç”¨äºæµ‡èŠ±ç­‰ç‰¹æ®ŠåŠ¨ä½œï¼‰
 
-    // Íæ¼ÒÊôĞÔ
-    public string playerName = "Íæ¼Ò";
+    // ç©å®¶å±æ€§
+    public string playerName = "ç©å®¶";
     public Color playerColor = Color.white;
 
-    [Header("ÊÖµçÍ²ÉèÖÃ")]
-    public string flashLight = "ÊÖµçÍ²"; // ÊÖµçÍ²µÄÎïÆ·Ãû³Æ
+    [Header("æ‰‹ç”µç­’è®¾ç½®")]
+    public string flashLight = "æ‰‹ç”µç­’"; // æ‰‹ç”µç­’çš„ç‰©å“åç§°
     public bool isHoldFlashLight = false;
-    public event Action OnFlashlightPickedUp;// ĞÂÔöÊÂ¼ş
-    private FlashlightController currentFlashlight; // µ±Ç°³ÖÓĞµÄÊÖµçÍ²
+    public event Action OnFlashlightPickedUp;// æ–°å¢äº‹ä»¶
+    private FlashlightController currentFlashlight; // å½“å‰æŒæœ‰çš„æ‰‹ç”µç­’
 
-    [Header("¶¯»­¿ØÖÆ")]
+    [Header("åŠ¨ç”»æ§åˆ¶")]
     public PlayerAnimationController animationController;
 
     void Start()
@@ -42,18 +58,27 @@ public class PlayerController : MonoBehaviour
         {
             rb.freezeRotation = true;
         }
+        // å¼ å¥•å¿»åˆå§‹åŒ–scene5é®ç½©é€‰é¡¹
+        if (UI_mask1 != null) UI_mask1.SetActive(false);
+        if (UI_mask2 != null) UI_mask2.SetActive(false);
     }
 
     void Update()
     {
-        if (isTemporarilyLocked) return; // Èç¹û±»ÁÙÊ±Ëø¶¨£¬²»´¦ÀíÊäÈë
-
-        //GetWASDInput();
+        if (isTemporarilyLocked) return; // å¦‚æœè¢«ä¸´æ—¶é”å®šï¼Œä¸å¤„ç†è¾“å…¥
+        //å¼ å¥•å¿»
+        /*if (isScene5)
+        {
+            HandleScene5Input(); // âœ… æ›¿æ¢ä¸ºScene5é€»è¾‘
+        }
+        else
+        {
+            HandleInteraction(); // âœ… å…¶ä»–åœºæ™¯ç»´æŒåŸé€»è¾‘
+        }*/
         HandleInteraction();
-
         if (showInputDebug && movement.magnitude > 0.1f)
         {
-            Debug.Log($"{playerName} ÒÆ¶¯ÊäÈë: {movement}");
+            Debug.Log($"{playerName} ç§»åŠ¨è¾“å…¥: {movement}");
         }
     }
 
@@ -62,59 +87,162 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(interactKey))
         {
             if (showInteractionDebug)
-                Debug.Log($"{playerName} °´ÏÂ½»»¥¼ü£¬³ÖÓĞÎïÆ·: {heldItem?.itemName}");
+                Debug.Log($"{playerName} æŒ‰ä¸‹äº¤äº’é”®ï¼ŒæŒæœ‰ç‰©å“: {heldItem?.itemName}");
 
             if (heldItem != null)
             {
-                // Èç¹û³ÖÓĞË®ºø£¬ÓÅÏÈ³¢ÊÔ½½»¨
+                // å¦‚æœæŒæœ‰æ°´å£¶ï¼Œä¼˜å…ˆå°è¯•æµ‡èŠ±
                 if (heldItem.itemName == wateringCanItemName && TryWateringFlowers())
                 {
-                    Debug.Log($"{playerName} ³É¹¦¿ªÊ¼½½»¨");
+                    Debug.Log($"{playerName} æˆåŠŸå¼€å§‹æµ‡èŠ±");
                     return;
                 }
 
-                ////ÕÅŞÈĞÃ£ºÈç¹û³ÖÓĞÊÖµçÍ²£¬Ôö¼Ó²¼¶ûÖµ
-                //if(heldItem.itemName == flashLight)
-                //{
-                //    isHoldFlashLight = true;
-                //    Debug.Log($"{playerName} ÄÃµ½ÊÖµçÍ²£¬×¼±¸¿ªÊ¼scene3¾çÇé2");
-                //}
-
-                // Èç¹û³ÖÓĞÎïÆ·£¬³¢ÊÔÅ×ÖÀµ½ºÏ³ÉÇøÓò
+                // å¦‚æœæŒæœ‰ç‰©å“ï¼Œå°è¯•æŠ›æ·åˆ°åˆæˆåŒºåŸŸ
                 if (TryThrowToSynthesisZone())
                 {
-                    Debug.Log($"{playerName} ³É¹¦Å×ÖÀÎïÆ·µ½ºÏ³ÉÇøÓò");
+                    Debug.Log($"{playerName} æˆåŠŸæŠ›æ·ç‰©å“åˆ°åˆæˆåŒºåŸŸ");
                     return;
                 }
                 else
                 {
-                    // ·ñÔò·ÅÏÂÎïÆ·
+                    // å¦åˆ™æ”¾ä¸‹ç‰©å“
                     DropItem();
                 }
             }
             else
             {
-                // ³¢ÊÔ¼ñÆğÎïÆ·
+                // å°è¯•æ¡èµ·ç‰©å“
                 TryPickUpItem();
             }
         }
     }
 
-    // ³¢ÊÔ½½»¨ - ĞŞ¸´Âß¼­
+    #region å¼ å¥•å¿»scene5è¾“å…¥
+    /*
+    // æ–°å¢ï¼šScene5 ä¸“å±äº¤äº’é€»è¾‘
+    void HandleScene5Input()
+    {
+        if (isPlayingEnding) return; // é˜²æ­¢é‡å¤è§¦å‘æ’­æ”¾
+
+        // ç©å®¶1é€‰Yesï¼ˆFé”®ï¼‰
+        if (CompareTag("Player1") && Input.GetKeyDown(KeyCode.F))
+        {
+            if (UI_mask1 != null) UI_mask1.SetActive(true);
+            if (UI_mask2 != null) UI_mask2.SetActive(false);
+            Debug.Log("ç©å®¶1é€‰æ‹©äº† YES");
+        }
+
+        // ç©å®¶2é€‰Noï¼ˆHé”®ï¼‰
+        if (CompareTag("Player2") && Input.GetKeyDown(KeyCode.H))
+        {
+            if (UI_mask2 != null) UI_mask2.SetActive(true);
+            if (UI_mask1 != null) UI_mask1.SetActive(false);
+            Debug.Log("ç©å®¶2é€‰æ‹©äº† NO");
+        }
+
+        // å¦‚æœæœ‰ä»»æ„UIæ¿€æ´»ï¼Œåˆ™å¯ä»¥è§¦å‘æŒ‰ç©ºæ ¼å€’è®¡æ—¶
+        if ((UI_mask1 != null && UI_mask1.activeSelf) || (UI_mask2 != null && UI_mask2.activeSelf))
+        {
+            if (Input.GetKey(KeyCode.Space))
+            {
+                spaceHoldTime += Time.deltaTime;
+
+                if (!isHoldingSpace && spaceHoldTime > 0.5f)
+                {
+                    Debug.Log("æ­£åœ¨æŒ‰ä½ç©ºæ ¼...");
+                    isHoldingSpace = true;
+                }
+
+                if (spaceHoldTime >= 5f && !isPlayingEnding)
+                {
+                    isPlayingEnding = true;
+                    StartCoroutine(PlayEndingVideo());
+                }
+            }
+            else
+            {
+                if (isHoldingSpace)
+                    Debug.Log("æ¾å¼€ç©ºæ ¼ï¼Œé‡ç½®è®¡æ—¶");
+
+                isHoldingSpace = false;
+                spaceHoldTime = 0f;
+            }
+        }
+    }
+
+    // æ–°å¢ï¼šæ’­æ”¾ç»“å±€è§†é¢‘
+    IEnumerator PlayEndingVideo()
+    {
+        Debug.Log("æ£€æµ‹åˆ°ç©ºæ ¼æŒ‰ä½5ç§’ï¼Œå¼€å§‹æ’­æ”¾ç»“å±€è§†é¢‘");
+        // éšè—é€‰æ‹©UI
+        if (UI_mask1 != null) UI_mask1.SetActive(false);
+        if (UI_mask2 != null) UI_mask2.SetActive(false);
+
+        // ç­‰å¾…ä¸€ç‚¹æ—¶é—´ä»¥é¿å…UIéšè—å’Œè§†é¢‘æ¿€æ´»å†²çª
+        yield return new WaitForSeconds(0.2f);
+
+        // åˆ¤æ–­æ’­æ”¾å“ªä¸€ä¸ªç»“å±€
+        bool isYesSelected = (UI_mask1 != null && UI_mask1WasActive);
+        bool isNoSelected = (UI_mask2 != null && UI_mask2WasActive);
+
+        if (isYesSelected && video_Ending1 != null)
+        {
+            video_Ending1.gameObject.SetActive(true);
+            video_Ending1.Play();
+            Debug.Log("æ’­æ”¾ YES ç»“å±€è§†é¢‘");
+        }
+        else if (isNoSelected && video_Ending2 != null)
+        {
+            video_Ending2.gameObject.SetActive(true);
+            video_Ending2.Play();
+            Debug.Log("æ’­æ”¾ NO ç»“å±€è§†é¢‘");
+        }
+        else
+        {
+            Debug.LogWarning("æœªæ£€æµ‹åˆ°ç»“å±€é€‰é¡¹ï¼Œé»˜è®¤æ’­æ”¾ YES ç»“å±€");
+            if (video_Ending1 != null)
+            {
+                video_Ending1.gameObject.SetActive(true);
+                video_Ending1.Play();
+            }
+        }
+
+        yield return null;
+    }
+    public void OnSelectYes()
+    {
+        UI_mask1WasActive = true;
+        UI_mask2WasActive = false;
+        UI_mask1.SetActive(true);
+        UI_mask2.SetActive(false);
+        Debug.Log("ç©å®¶é€‰æ‹© YES ç»“å±€");
+    }
+    public void OnSelectNo()
+    {
+        UI_mask1WasActive = false;
+        UI_mask2WasActive = true;
+        UI_mask1.SetActive(false);
+        UI_mask2.SetActive(true);
+        Debug.Log("ç©å®¶é€‰æ‹© NO ç»“å±€");
+    }*/
+    #endregion
+
+    // å°è¯•æµ‡èŠ± - ä¿®å¤é€»è¾‘
     bool TryWateringFlowers()
     {
-        // ¼ì²éÊÇ·ñ³ÖÓĞË®ºø
+        // æ£€æŸ¥æ˜¯å¦æŒæœ‰æ°´å£¶
         if (heldItem == null || heldItem.itemName != wateringCanItemName)
         {
             if (showInteractionDebug)
-                Debug.Log($"{playerName} Ã»ÓĞ³ÖÓĞË®ºø»òË®ºøÃû³Æ²»Æ¥Åä");
+                Debug.Log($"{playerName} æ²¡æœ‰æŒæœ‰æ°´å£¶æˆ–æ°´å£¶åç§°ä¸åŒ¹é…");
             return false;
         }
 
-        // ²éÕÒ¸½½üµÄ»¨ÅèÇøÓò
+        // æŸ¥æ‰¾é™„è¿‘çš„èŠ±ç›†åŒºåŸŸ
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, interactionRange);
         if (showInteractionDebug)
-            Debug.Log($"{playerName} ¼ì²âµ½ {hitColliders.Length} ¸öÅö×²Ìå");
+            Debug.Log($"{playerName} æ£€æµ‹åˆ° {hitColliders.Length} ä¸ªç¢°æ’ä½“");
 
         foreach (var hitCollider in hitColliders)
         {
@@ -122,47 +250,47 @@ public class PlayerController : MonoBehaviour
             if (flowerPot != null)
             {
                 if (showInteractionDebug)
-                    Debug.Log($"{playerName} ÕÒµ½»¨ÅèÇøÓò: {flowerPot.zoneID}");
+                    Debug.Log($"{playerName} æ‰¾åˆ°èŠ±ç›†åŒºåŸŸ: {flowerPot.zoneID}");
 
-                // ¼ì²éÍæ¼ÒÊÇ·ñÔÚ»¨ÅèÇøÓòÄÚ
+                // æ£€æŸ¥ç©å®¶æ˜¯å¦åœ¨èŠ±ç›†åŒºåŸŸå†…
                 if (flowerPot.IsPlayerInZone(gameObject))
                 {
                     if (showInteractionDebug)
-                        Debug.Log($"{playerName} ÔÚ»¨ÅèÇøÓòÄÚ£¬¿ªÊ¼½½»¨");
+                        Debug.Log($"{playerName} åœ¨èŠ±ç›†åŒºåŸŸå†…ï¼Œå¼€å§‹æµ‡èŠ±");
 
-                    // ¿ªÊ¼½½»¨
+                    // å¼€å§‹æµ‡èŠ±
                     bool wateringStarted = flowerPot.StartWatering(gameObject, heldItem.gameObject);
                     if (wateringStarted)
                     {
-                        // ½½»¨³É¹¦ºó£¬Á¢¼´ÊÍ·ÅË®ºøÒıÓÃ£¬ÒòÎª»¨Åè»á´¦ÀíË®ºøµÄÏú»Ù
+                        // æµ‡èŠ±æˆåŠŸåï¼Œç«‹å³é‡Šæ”¾æ°´å£¶å¼•ç”¨ï¼Œå› ä¸ºèŠ±ç›†ä¼šå¤„ç†æ°´å£¶çš„é”€æ¯
                         heldItem = null;
                         return true;
                     }
                     else
                     {
-                        Debug.Log($"{playerName} »¨Åè¾Ü¾ø¿ªÊ¼½½»¨");
+                        Debug.Log($"{playerName} èŠ±ç›†æ‹’ç»å¼€å§‹æµ‡èŠ±");
                     }
                 }
                 else
                 {
                     if (showInteractionDebug)
-                        Debug.Log($"{playerName} ÔÚ»¨Åè¸½½üµ«²»ÔÚÇøÓòÄÚ");
+                        Debug.Log($"{playerName} åœ¨èŠ±ç›†é™„è¿‘ä½†ä¸åœ¨åŒºåŸŸå†…");
                 }
             }
         }
 
         if (showInteractionDebug)
-            Debug.Log($"{playerName} Ã»ÓĞÕÒµ½¿ÉÓÃµÄ»¨ÅèÇøÓò");
+            Debug.Log($"{playerName} æ²¡æœ‰æ‰¾åˆ°å¯ç”¨çš„èŠ±ç›†åŒºåŸŸ");
         return false;
     }
 
     bool TryThrowToSynthesisZone()
     {
-        // ²éÕÒÇ°·½µÄºÏ³ÉÇøÓò - Í¬Ê±¼ì²â SynthesisZone ºÍ TutorialSynthesisZone
+        // æŸ¥æ‰¾å‰æ–¹çš„åˆæˆåŒºåŸŸ - åŒæ—¶æ£€æµ‹ SynthesisZone å’Œ TutorialSynthesisZone
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.forward, out hit, throwRange))
         {
-            // ÏÈ³¢ÊÔÆÕÍ¨ºÏ³ÉÇøÓò
+            // å…ˆå°è¯•æ™®é€šåˆæˆåŒºåŸŸ
             SynthesisZone zone = hit.collider.GetComponent<SynthesisZone>();
             if (zone != null && heldItem != null)
             {
@@ -170,7 +298,7 @@ public class PlayerController : MonoBehaviour
                 return true;
             }
 
-            // ÔÙ³¢ÊÔ½ÌÑ§ºÏ³ÉÇøÓò
+            // å†å°è¯•æ•™å­¦åˆæˆåŒºåŸŸ
             TutorialSynthesisZone tutorialZone = hit.collider.GetComponent<TutorialSynthesisZone>();
             if (tutorialZone != null && heldItem != null)
             {
@@ -178,7 +306,7 @@ public class PlayerController : MonoBehaviour
                 return true;
             }
 
-            // ĞÂÔö£º³¢ÊÔÈıºÏ³ÉÇøÓò
+            // æ–°å¢ï¼šå°è¯•ä¸‰åˆæˆåŒºåŸŸ
             ThreeItemSynthesisZone threeItemZone = hit.collider.GetComponent<ThreeItemSynthesisZone>();
             if (threeItemZone != null && heldItem != null)
             {
@@ -190,49 +318,49 @@ public class PlayerController : MonoBehaviour
         return false;
     }
 
-    // ĞÂÔö£ºÏòÈıºÏ³ÉÇøÓòÅ×ÖÀ
+    // æ–°å¢ï¼šå‘ä¸‰åˆæˆåŒºåŸŸæŠ›æ·
     void ThrowToThreeItemZone(ThreeItemSynthesisZone zone, InteractableItem item)
     {
-        // ´ÓÍæ¼ÒÊÖÖĞÒÆ³ıÎïÆ·ÒıÓÃ
+        // ä»ç©å®¶æ‰‹ä¸­ç§»é™¤ç‰©å“å¼•ç”¨
         InteractableItem itemToThrow = heldItem;
         heldItem = null;
 
-        // ÖØÒª£ºÔÚÅ×ÖÀÇ°Ç¿ÖÆÇå³ıÎïÆ·µÄ³ÖÓĞ×´Ì¬
+        // é‡è¦ï¼šåœ¨æŠ›æ·å‰å¼ºåˆ¶æ¸…é™¤ç‰©å“çš„æŒæœ‰çŠ¶æ€
         itemToThrow.ForceRelease();
 
-        // µ÷ÓÃÈıºÏ³ÉÇøÓòµÄÅ×ÖÀ·½·¨
+        // è°ƒç”¨ä¸‰åˆæˆåŒºåŸŸçš„æŠ›æ·æ–¹æ³•
         zone.ThrowItemToZone(itemToThrow);
 
-        Debug.Log($"{playerName} ÏòÈıºÏ³ÉÇøÓòÅ×ÖÀ {itemToThrow.itemName}");
+        Debug.Log($"{playerName} å‘ä¸‰åˆæˆåŒºåŸŸæŠ›æ· {itemToThrow.itemName}");
     }
     void ThrowToZone(SynthesisZone zone, InteractableItem item)
     {
-        // ´ÓÍæ¼ÒÊÖÖĞÒÆ³ıÎïÆ·ÒıÓÃ
+        // ä»ç©å®¶æ‰‹ä¸­ç§»é™¤ç‰©å“å¼•ç”¨
         InteractableItem itemToThrow = heldItem;
         heldItem = null;
 
-        // ÖØÒª£ºÔÚÅ×ÖÀÇ°Ç¿ÖÆÇå³ıÎïÆ·µÄ³ÖÓĞ×´Ì¬
+        // é‡è¦ï¼šåœ¨æŠ›æ·å‰å¼ºåˆ¶æ¸…é™¤ç‰©å“çš„æŒæœ‰çŠ¶æ€
         itemToThrow.ForceRelease();
 
-        // µ÷ÓÃÇøÓòµÄÅ×ÖÀ·½·¨
+        // è°ƒç”¨åŒºåŸŸçš„æŠ›æ·æ–¹æ³•
         zone.ThrowItemToZone(itemToThrow);
 
-        Debug.Log($"{playerName} ÏòºÏ³ÉÇøÓòÅ×ÖÀ {itemToThrow.itemName}");
+        Debug.Log($"{playerName} å‘åˆæˆåŒºåŸŸæŠ›æ· {itemToThrow.itemName}");
     }
 
     void ThrowToTutorialZone(TutorialSynthesisZone zone, InteractableItem item)
     {
-        // ´ÓÍæ¼ÒÊÖÖĞÒÆ³ıÎïÆ·ÒıÓÃ
+        // ä»ç©å®¶æ‰‹ä¸­ç§»é™¤ç‰©å“å¼•ç”¨
         InteractableItem itemToThrow = heldItem;
         heldItem = null;
 
-        // ÖØÒª£ºÔÚÅ×ÖÀÇ°Ç¿ÖÆÇå³ıÎïÆ·µÄ³ÖÓĞ×´Ì¬
+        // é‡è¦ï¼šåœ¨æŠ›æ·å‰å¼ºåˆ¶æ¸…é™¤ç‰©å“çš„æŒæœ‰çŠ¶æ€
         itemToThrow.ForceRelease();
 
-        // µ÷ÓÃÇøÓòµÄÅ×ÖÀ·½·¨
+        // è°ƒç”¨åŒºåŸŸçš„æŠ›æ·æ–¹æ³•
         zone.ThrowItemToZone(itemToThrow);
 
-        Debug.Log($"{playerName} Ïò½ÌÑ§ÇøÓòÅ×ÖÀ {itemToThrow.itemName}");
+        Debug.Log($"{playerName} å‘æ•™å­¦åŒºåŸŸæŠ›æ· {itemToThrow.itemName}");
     }
 
     void TryPickUpItem()
@@ -261,7 +389,7 @@ public class PlayerController : MonoBehaviour
         }
         else if (showInteractionDebug)
         {
-            Debug.Log($"{playerName} ¸½½üÃ»ÓĞ¿ÉÊ°È¡µÄÎïÆ·");
+            Debug.Log($"{playerName} é™„è¿‘æ²¡æœ‰å¯æ‹¾å–çš„ç‰©å“");
         }
     }
 
@@ -270,20 +398,20 @@ public class PlayerController : MonoBehaviour
         heldItem = item;
         item.Interact(gameObject);
 
-        // ´¥·¢Ê°È¡¶¯»­
+        // è§¦å‘æ‹¾å–åŠ¨ç”»
         if (animationController != null)
         {
             animationController.TriggerPickUpAnimation();
         }
 
-        // ¼ì²éÊÇ·ñÊÇÊÖµçÍ²
+        // æ£€æŸ¥æ˜¯å¦æ˜¯æ‰‹ç”µç­’
         if (item.itemName == flashLight)
         {
             currentFlashlight = item.GetComponent<FlashlightController>();
             isHoldFlashLight = true;
-            OnFlashlightPickedUp?.Invoke(); // ´¥·¢ÊÂ¼ş
+            OnFlashlightPickedUp?.Invoke(); // è§¦å‘äº‹ä»¶
 
-            // Èç¹ûÊÇplayer2ÄÃÆğÊÖµçÍ²£¬×Ô¶¯¿ªµÆ
+            // å¦‚æœæ˜¯player2æ‹¿èµ·æ‰‹ç”µç­’ï¼Œè‡ªåŠ¨å¼€ç¯
             if (gameObject.CompareTag("Player2") && currentFlashlight != null)
             {
                 currentFlashlight.TurnOn();
@@ -291,7 +419,7 @@ public class PlayerController : MonoBehaviour
         }
         if (showInteractionDebug)
         {
-            Debug.Log($"{playerName} ¼ñÆğÁË {item.itemName}");
+            Debug.Log($"{playerName} æ¡èµ·äº† {item.itemName}");
         }
     }
 
@@ -300,7 +428,7 @@ public class PlayerController : MonoBehaviour
         if (heldItem != null)
         {
 
-            // ·ÅÏÂÇ°Èç¹ûÊÇÊÖµçÍ²£¬¹Ø±ÕµÆ¹â
+            // æ”¾ä¸‹å‰å¦‚æœæ˜¯æ‰‹ç”µç­’ï¼Œå…³é—­ç¯å…‰
             if (heldItem.itemName == flashLight && currentFlashlight != null)
             {
                 currentFlashlight.TurnOff();
@@ -310,59 +438,59 @@ public class PlayerController : MonoBehaviour
 
             heldItem.Interact(gameObject);
 
-            // ¸üĞÂ¶¯»­×´Ì¬ - È·±£ÔÚ·ÅÏÂÎïÆ·ºóÁ¢¼´¸üĞÂ
+            // æ›´æ–°åŠ¨ç”»çŠ¶æ€ - ç¡®ä¿åœ¨æ”¾ä¸‹ç‰©å“åç«‹å³æ›´æ–°
             if (animationController != null)
             {
                 animationController.SetHoldingState(false);
 
-                // Ç¿ÖÆÁ¢¼´¼ì²éÒÆ¶¯×´Ì¬
+                // å¼ºåˆ¶ç«‹å³æ£€æŸ¥ç§»åŠ¨çŠ¶æ€
                 StartCoroutine(ForceAnimationUpdateNextFrame());
             }
 
             if (showInteractionDebug)
             {
-                Debug.Log($"{playerName} ·ÅÏÂÁË {heldItem.itemName}");
+                Debug.Log($"{playerName} æ”¾ä¸‹äº† {heldItem.itemName}");
             }
 
             heldItem = null;
         }
     }
-    // ĞÂÔöĞ­³Ì£ºÔÚÏÂÒ»Ö¡Ç¿ÖÆ¸üĞÂ¶¯»­×´Ì¬
+    // æ–°å¢åç¨‹ï¼šåœ¨ä¸‹ä¸€å¸§å¼ºåˆ¶æ›´æ–°åŠ¨ç”»çŠ¶æ€
     System.Collections.IEnumerator ForceAnimationUpdateNextFrame()
     {
-        yield return null; // µÈ´ıÏÂÒ»Ö¡
+        yield return null; // ç­‰å¾…ä¸‹ä¸€å¸§
 
         if (animationController != null)
         {
-            // Õâ»á´¥·¢UpdateAnimationStatesÖĞµÄÇ¿ÖÆ¸üĞÂ
+            // è¿™ä¼šè§¦å‘UpdateAnimationStatesä¸­çš„å¼ºåˆ¶æ›´æ–°
             animationController.SetHoldingState(false);
         }
     }
-    // ĞÂÔö£ºÉèÖÃÁÙÊ±Ëø¶¨×´Ì¬
+    // æ–°å¢ï¼šè®¾ç½®ä¸´æ—¶é”å®šçŠ¶æ€
     public void SetTemporaryLock(bool locked)
     {
         isTemporarilyLocked = locked;
-        Debug.Log($"{playerName} ÁÙÊ±Ëø¶¨×´Ì¬: {locked}");
+        Debug.Log($"{playerName} ä¸´æ—¶é”å®šçŠ¶æ€: {locked}");
     }
 
-    // ¼ì²éÊÇ·ñ³ÖÓĞÎïÆ·
+    // æ£€æŸ¥æ˜¯å¦æŒæœ‰ç‰©å“
     public bool IsHoldingItem()
     {
         return heldItem != null;
     }
 
-    // »ñÈ¡µ±Ç°³ÖÓĞµÄÎïÆ·
+    // è·å–å½“å‰æŒæœ‰çš„ç‰©å“
     public InteractableItem GetHeldItem()
     {
         return heldItem;
     }
 
-    // Ç¿ÖÆÊÍ·Å³ÖÓĞµÄÎïÆ·£¨ÓÃÓÚ½½»¨µÈÌØÊâ²Ù×÷ºó£©
+    // å¼ºåˆ¶é‡Šæ”¾æŒæœ‰çš„ç‰©å“ï¼ˆç”¨äºæµ‡èŠ±ç­‰ç‰¹æ®Šæ“ä½œåï¼‰
     public void ForceReleaseItem()
     {
         if (heldItem != null)
         {
-            // ÊÍ·ÅÇ°Èç¹ûÊÇÊÖµçÍ²£¬¹Ø±ÕµÆ¹â
+            // é‡Šæ”¾å‰å¦‚æœæ˜¯æ‰‹ç”µç­’ï¼Œå…³é—­ç¯å…‰
             if (heldItem.itemName == flashLight && currentFlashlight != null)
             {
                 currentFlashlight.TurnOff();
@@ -372,7 +500,7 @@ public class PlayerController : MonoBehaviour
 
             heldItem.ForceRelease();
             heldItem = null;
-            Debug.Log($"{playerName} Ç¿ÖÆÊÍ·ÅÁËÎïÆ·");
+            Debug.Log($"{playerName} å¼ºåˆ¶é‡Šæ”¾äº†ç‰©å“");
         }
     }
 

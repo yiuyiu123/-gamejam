@@ -159,6 +159,8 @@ public class DoorController : MonoBehaviour
             }
 
             PlaySound(openSound);
+            //张奕忻
+            StartCoroutine(Scene3UI_Manager.Instance.DelayedSceneTransition(1f)); // 延迟1秒跳场景
 
             // 处理自动关门
             if (autoClose)
@@ -169,7 +171,7 @@ public class DoorController : MonoBehaviour
             }
         }
     }
-
+    #region 关门
     //[ContextMenu("关门")]
     //public void CloseDoor()
     //{
@@ -202,7 +204,7 @@ public class DoorController : MonoBehaviour
     //    else
     //        OpenDoor();
     //}
-
+    #endregion
     [ContextMenu("解锁门")]
     public void UnlockDoor()
     {
@@ -215,7 +217,7 @@ public class DoorController : MonoBehaviour
 
         }
     }
-
+    #region 锁定门
     //[ContextMenu("锁定门")]
     //public void LockDoor()
     //{
@@ -231,7 +233,7 @@ public class DoorController : MonoBehaviour
     //        PlaySound(lockSound);
     //    }
     //}
-
+    #endregion
     IEnumerator AutoCloseAfterDelay()
     {
         yield return new WaitForSeconds(autoCloseDelay);
