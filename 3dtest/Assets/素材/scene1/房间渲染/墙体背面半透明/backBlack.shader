@@ -14,9 +14,9 @@ Shader "Unlit/backBlack"
     }
     SubShader
     {
-        Tags { "Queue"="Transparent" "IgnoreProjector"="true" "RenderType"="Transparent" "ForceNoShadowCasting"="True"}
+        Tags { "Queue" = "Geometry-10"  "IgnoreProjector"="true" "RenderType"="Opaque" "ForceNoShadowCasting"="True"}
         
-        Pass//背面半透明黑
+        /*Pass//背面半透明黑
         {
             ZWrite On
             Cull Front
@@ -58,7 +58,7 @@ Shader "Unlit/backBlack"
                 return fixed4(0,0,0,_AlphaScale);
             }
             ENDCG
-        }
+        }*/
 
         Pass // 正面Phong
         {

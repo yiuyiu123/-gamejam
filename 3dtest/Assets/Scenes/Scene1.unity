@@ -1799,7 +1799,7 @@ MeshCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 1
+  m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &384588900
@@ -11876,7 +11876,7 @@ GameObject:
   - component: {fileID: 1339699896}
   - component: {fileID: 1339699902}
   - component: {fileID: 1339699901}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Player1
   m_TagString: Player1
   m_Icon: {fileID: 0}
@@ -11933,6 +11933,8 @@ MonoBehaviour:
   interactKey: 102
   interactionRange: 3.85
   throwRange: 10
+  interactionCooldown: 0.5
+  enableInteractionCooldown: 1
   wateringCanItemName: "\u6C34\u58F6"
   showInputDebug: 0
   showInteractionDebug: 1
@@ -12034,8 +12036,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1111268581
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: -1861198606, guid: d7d8f3ced615b7e4e8c1c2ac93ef6af6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -12075,6 +12077,9 @@ MonoBehaviour:
   flipDeadZone: 0.3
   pickUpAnimationLockTime: 0.8
   enableAnimationLock: 1
+  enableStateRecovery: 1
+  stateRecoveryCheckInterval: 1
+  stuckStateThreshold: 10
   showDebugInfo: 0
 --- !u!95 &1339699902
 Animator:
@@ -17188,7 +17193,7 @@ Transform:
   m_GameObject: {fileID: 1425182096}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.78, y: -64.22, z: -4.55}
+  m_LocalPosition: {x: 5.2, y: -74, z: -4.55}
   m_LocalScale: {x: 33.291145, y: 0.19339272, z: 33.19193}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -18430,7 +18435,7 @@ GameObject:
   - component: {fileID: 1667462935}
   - component: {fileID: 1667462934}
   - component: {fileID: 1667462933}
-  m_Layer: 7
+  m_Layer: 11
   m_Name: player2
   m_TagString: Player2
   m_Icon: {fileID: 0}
@@ -18472,6 +18477,8 @@ MonoBehaviour:
   interactKey: 104
   interactionRange: 2
   throwRange: 10
+  interactionCooldown: 0.5
+  enableInteractionCooldown: 1
   wateringCanItemName: "\u6C34\u58F6"
   showInputDebug: 0
   showInteractionDebug: 1
@@ -18571,8 +18578,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1111268581
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 1328465434, guid: 130f039f74e64874191b8dfab9576231, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -20043,6 +20050,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 1e187500b1cfbf444a64cf0089758d89, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: -4372536172839912495, guid: 2dec811dfe68e6e44ab1c785cf467938, type: 3}
     - target: {fileID: 919132149155446097, guid: 1e187500b1cfbf444a64cf0089758d89, type: 3}
       propertyPath: m_Name
       value: PUZZLE(2)AY
