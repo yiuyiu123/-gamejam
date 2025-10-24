@@ -23,7 +23,7 @@ TagManager:
   - CameraCollision
   - obj
   - "\u7279\u6548"
-  - "\u89D2\u8272"
+  - 
   - 
   - 
   - 
@@ -47,10 +47,4 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
-    locked: 0
-  - name: "\u573A\u666F\u5899"
-    uniqueID: 1071011815
-    locked: 0
-  - name: "\u89D2\u8272"
-    uniqueID: 1111268581
     locked: 0
