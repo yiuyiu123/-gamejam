@@ -12,18 +12,18 @@ public class FlowerPotZone : MonoBehaviour
     [Header("浇花效果")]
     public ParticleSystem wateringEffect;    // 浇水粒子效果
     public GameObject flowerPrefab;          // 花的预制体（动画）
-    public Transform flowerSpawnPoint;       // 花生长的位置
+    public Transform flowerSpawnPoint;       // 花生长的位置 
     public GameObject keyPrefab;             // 生成的钥匙预制体
-    public Transform keySpawnPoint;          // 钥匙生成位置
+    public Transform keySpawnPoint;          // 钥匙生成位置 
 
     [Header("浇花时间设置")]
     public float wateringDuration = 2f;      // 浇水持续时间
     public float flowerGrowthDelay = 1f;     // 花生长延迟
-    public float keySpawnDelay = 2f;         // 钥匙生成延迟
+    public float keySpawnDelay = 2f;         // 钥匙生成延迟 
     public Vector3 customFlowerRotation = Vector3.zero;
 
     [Header("水壶设置")]
-    public bool destroyWateringCanAfterUse = true; // 使用后删除水壶
+    public bool destroyWateringCanAfterUse = true; // 使用后删除水壶 
 
     [Header("状态")]
     public bool hasBeenWatered = false;      // 是否已经浇过水
@@ -71,13 +71,13 @@ public class FlowerPotZone : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player1")|| other.CompareTag("Player2"))
+        if (other.CompareTag("Player1") || other.CompareTag("Player2"))
         {
             if (!playersInZone.Contains(other.gameObject))
             {
                 playersInZone.Add(other.gameObject);
                 if (showDebugInfo)
-                    Debug.Log($"玩家 {other.name} 进入花盆区域 {zoneID}，区域内玩家数: {playersInZone.Count}");
+                    Debug.Log($"玩家 {other.name}  进入花盆区域 {zoneID}，区域内玩家数: {playersInZone.Count}");
             }
         }
     }
@@ -90,7 +90,7 @@ public class FlowerPotZone : MonoBehaviour
             {
                 playersInZone.Remove(other.gameObject);
                 if (showDebugInfo)
-                    Debug.Log($"玩家 {other.name} 离开花盆区域 {zoneID}，区域内玩家数: {playersInZone.Count}");
+                    Debug.Log($"玩家 {other.name}  离开花盆区域 {zoneID}，区域内玩家数: {playersInZone.Count}");
             }
         }
     }
@@ -100,11 +100,11 @@ public class FlowerPotZone : MonoBehaviour
     {
         bool isInZone = playersInZone.Contains(player);
         if (showDebugInfo)
-            Debug.Log($"检查玩家 {player.name} 是否在花盆区域: {isInZone}");
+            Debug.Log($"检查玩家 {player.name}  是否在花盆区域: {isInZone}");
         return isInZone;
     }
 
-    // 开始浇花过程
+    // 开始浇花过程 
     public bool StartWatering(GameObject player, GameObject wateringCan)
     {
         if (hasBeenWatered)
@@ -122,7 +122,7 @@ public class FlowerPotZone : MonoBehaviour
         isWatering = true;
 
         if (showDebugInfo)
-            Debug.Log($"花盆 {zoneID} 开始浇水过程，玩家: {player.name}, 水壶: {wateringCan.name}");
+            Debug.Log($"花盆 {zoneID} 开始浇水过程，玩家: {player.name},  水壶: {wateringCan.name}");
 
         StartCoroutine(WateringProcess(player, wateringCan));
         return true;
@@ -133,7 +133,7 @@ public class FlowerPotZone : MonoBehaviour
     {
         Debug.Log($"开始浇花过程协程，玩家: {player.name}");
 
-        // 锁定玩家和水壶状态
+        // 锁定玩家和水壶状态 
         PlayerController playerController = player.GetComponent<PlayerController>();
         InteractableItem wateringCanItem = wateringCan.GetComponent<InteractableItem>();
 
@@ -147,13 +147,13 @@ public class FlowerPotZone : MonoBehaviour
             wateringCanItem.isInExchangeProcess = true;
         }
 
-        // 1. 播放浇水粒子效果
+        // 1. 播放浇水粒子效果 
         if (wateringEffect != null)
         {
             wateringEffect.Play();
             Debug.Log("播放浇水粒子效果");
 
-            // 播放音效
+            // 播放音效 
             if (audioSource != null && audioSource.clip != null)
             {
                 audioSource.Play();
@@ -172,13 +172,17 @@ public class FlowerPotZone : MonoBehaviour
         // 3. 等待花生长延迟
         yield return new WaitForSeconds(flowerGrowthDelay);
 
-
+        // 4. 生成花 - 修改后的逻辑
         if (flowerPrefab != null && flowerSpawnPoint != null)
         {
-            // 使用自定义方向创建旋转
-            Quaternion customRotation = Quaternion.Euler(customFlowerRotation);
-            currentFlower = Instantiate(flowerPrefab, flowerSpawnPoint.position, customRotation);
-            Debug.Log("花已生长");
+            // 使用flowerSpawnPoint的精确位置和自定义旋转 
+            Vector3 spawnPosition = flowerSpawnPoint.position;
+            Quaternion spawnRotation = Quaternion.Euler(customFlowerRotation);
+
+            currentFlower = Instantiate(flowerPrefab, spawnPosition, spawnRotation);
+            currentFlower.transform.SetParent(flowerSpawnPoint);  // 设置为花盆的子对象，保持相对位置
+
+            Debug.Log($"花已生长在指定位置: {spawnPosition}, 旋转: {customFlowerRotation}");
 
             // 播放花的生长动画（如果有）
             Animator flowerAnimator = currentFlower.GetComponent<Animator>();
@@ -187,11 +191,15 @@ public class FlowerPotZone : MonoBehaviour
                 flowerAnimator.SetTrigger("Grow");
             }
         }
+        else
+        {
+            Debug.LogWarning("花预制体或生成点未设置，无法生成花");
+        }
 
         // 5. 等待钥匙生成延迟
         yield return new WaitForSeconds(keySpawnDelay);
 
-        // 6. 生成钥匙
+        // 6. 生成钥匙 
         if (keyPrefab != null)
         {
             Vector3 spawnPosition = keySpawnPoint != null ? keySpawnPoint.position : transform.position + Vector3.up * 2f;
@@ -204,7 +212,7 @@ public class FlowerPotZone : MonoBehaviour
             {
                 Vector3 popDirection = new Vector3(UnityEngine.Random.Range(-0.5f, 0.5f), 1f, UnityEngine.Random.Range(-0.5f, 0.5f)).normalized;
                 keyRb.AddForce(popDirection * 5f, ForceMode.Impulse);
-                //张奕忻
+                //张奕忻 
                 HasKeyAppear?.Invoke();
             }
         }
@@ -225,7 +233,7 @@ public class FlowerPotZone : MonoBehaviour
             Debug.Log("水壶已被删除");
         }
 
-        // 标记为已浇水
+        // 标记为已浇水 
         hasBeenWatered = true;
         isWatering = false;
 

@@ -238,7 +238,7 @@ GameObject:
   m_Component:
   - component: {fileID: 17338748}
   - component: {fileID: 17338749}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1134,7 +1134,7 @@ GameObject:
   m_Component:
   - component: {fileID: 217497654}
   - component: {fileID: 217497655}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1799,7 +1799,7 @@ MeshCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &384588900
@@ -2595,6 +2595,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 542730699}
   m_CullTransparentMesh: 1
+--- !u!1 &555494318
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 555494319}
+  m_Layer: 0
+  m_Name: "\u6444\u50CF\u673A\u9650\u5236\u8FB9\u754C\uFF01"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &555494319
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 555494318}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 902.4681, y: 9.982259, z: 454.5638}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &557366481
 GameObject:
   m_ObjectHideFlags: 0
@@ -8878,8 +8909,8 @@ Transform:
   m_GameObject: {fileID: 888723740}
   serializedVersion: 2
   m_LocalRotation: {x: 0.70710677, y: 0, z: 0, w: 0.70710677}
-  m_LocalPosition: {x: -5.13, y: -54.85, z: -20.399994}
-  m_LocalScale: {x: -7.45406, y: 1.2652098, z: 4.480058}
+  m_LocalPosition: {x: 18.6, y: -54.85, z: -20.399994}
+  m_LocalScale: {x: -5.7847233, y: 0.981866, z: 3.476749}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1134905128}
@@ -11905,6 +11936,11 @@ MonoBehaviour:
   wateringCanItemName: "\u6C34\u58F6"
   showInputDebug: 0
   showInteractionDebug: 1
+  isScene5: 0
+  UI_mask1: {fileID: 0}
+  UI_mask2: {fileID: 0}
+  video_Ending1: {fileID: 0}
+  video_Ending2: {fileID: 0}
   playerName: "\u73A9\u5BB6"
   playerColor: {r: 1, g: 1, b: 1, a: 1}
   flashLight: "\u624B\u7535\u7B52"
@@ -17511,7 +17547,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1512556236}
   - component: {fileID: 1512556237}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18439,6 +18475,11 @@ MonoBehaviour:
   wateringCanItemName: "\u6C34\u58F6"
   showInputDebug: 0
   showInteractionDebug: 1
+  isScene5: 0
+  UI_mask1: {fileID: 0}
+  UI_mask2: {fileID: 0}
+  video_Ending1: {fileID: 0}
+  video_Ending2: {fileID: 0}
   playerName: player2
   playerColor: {r: 1, g: 1, b: 1, a: 1}
   flashLight: "\u624B\u7535\u7B52"
@@ -19228,7 +19269,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1803106023}
   - component: {fileID: 1803106024}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -20588,3 +20629,4 @@ SceneRoots:
   - {fileID: 1847902462}
   - {fileID: 1315176180}
   - {fileID: 1525018702}
+  - {fileID: 555494319}
