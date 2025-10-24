@@ -16,10 +16,17 @@ public class PlayerMovement : MonoBehaviour
     [Header("摄像机控制")]
     [SerializeField] private Camera playerCamera; // 拖拽主摄像机到这里 
 
+    [Header("动画控制")]
+    [SerializeField] private Animator animator; // 拖拽角色的Animator组件到这里 
+    [SerializeField] private string idleAnimationName = "Idle";
+    [SerializeField] private string runAnimationName = "Run";
+
     private Rigidbody2D rb;
     private Vector3 velocity = Vector3.zero;
     private bool isGrounded;
     private bool isFacingRight = true; // 默认面朝右 
+    private string currentAnimation;
+    private float moveInput;
 
     private void Awake()
     {
@@ -32,6 +39,42 @@ public class PlayerMovement : MonoBehaviour
         {
             this.enabled = playerCamera.enabled;
         }
+
+        // 自动获取Animator组件（如果未手动赋值）
+        if (animator == null)
+        {
+            animator = GetComponent<Animator>();
+        }
+    }
+
+    private void Start()
+    {
+        // 初始播放待机动画 
+        PlayAnimation(idleAnimationName);
+    }
+
+    private void Update()
+    {
+        // 在Update中处理输入检测 
+        moveInput = 0f;
+        if (Input.GetKey(KeyCode.A)) moveInput = -1f;
+        if (Input.GetKey(KeyCode.D)) moveInput = 1f;
+
+        // 根据移动状态播放动画 
+        if (Mathf.Abs(moveInput) > 0.1f)
+        {
+            PlayAnimation(runAnimationName);
+        }
+        else
+        {
+            PlayAnimation(idleAnimationName);
+        }
+
+        // 跳跃检测（也在Update中）
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
+        }
     }
 
     private void FixedUpdate()
@@ -39,17 +82,12 @@ public class PlayerMovement : MonoBehaviour
         // 如果摄像机被禁用，直接返回 
         if (playerCamera != null && !playerCamera.enabled)
         {
-            rb.velocity = Vector2.zero;  // 停止移动 
+            rb.velocity = Vector2.zero;    // 停止移动 
             return;
         }
 
         // 地面检测 
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundedRadius, groundLayer);
-
-        // 修改为AD键控制移动（A=左，D=右）
-        float moveInput = 0f;
-        if (Input.GetKey(KeyCode.A)) moveInput = -1f;
-        if (Input.GetKey(KeyCode.D)) moveInput = 1f;
 
         // 平滑移动 
         Vector3 targetVelocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
@@ -64,11 +102,16 @@ public class PlayerMovement : MonoBehaviour
         {
             Flip();
         }
+    }
 
-        // 跳跃 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+    // 播放动画方法 
+    private void PlayAnimation(string animationName)
+    {
+        if (animator != null && currentAnimation != animationName)
         {
-            rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
+            // 使用CrossFade确保动画平滑过渡并持续播放 
+            animator.CrossFade(animationName, 0.1f);
+            currentAnimation = animationName;
         }
     }
 

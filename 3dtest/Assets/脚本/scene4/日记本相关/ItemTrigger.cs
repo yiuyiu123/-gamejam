@@ -42,7 +42,7 @@ public class ItemTrigger : MonoBehaviour
     [SerializeField] private float cooldownTime = 0f;
 
     [Header("张奕忻：开门次数")]
-    public int OpenDoorNumber=0;
+    public int OpenDoorNumber = 0;
     public event Action OpenFirstDoor;
     public event Action OpenSecondDoor;
 
@@ -69,12 +69,10 @@ public class ItemTrigger : MonoBehaviour
             else if (_collider is MeshCollider meshCollider)
                 meshCollider.contactOffset = contactOffset;
         }
-
-        // Collider2D没有edgeRadius属性，移除这行 
-        // if (_collider2D != null) _collider2D.edgeRadius  = contactOffset;
     }
 
-    //private void OnTriggerEnter(Collider other) => ProcessTrigger(other.gameObject);
+    // 修复：取消注释3D碰撞检测
+    private void OnTriggerEnter(Collider other) => ProcessTrigger(other.gameObject);
     private void OnTriggerEnter2D(Collider2D other) => ProcessTrigger(other.gameObject);
 
     private void ProcessTrigger(GameObject incomingObject)
@@ -89,7 +87,7 @@ public class ItemTrigger : MonoBehaviour
         // 检查重复触发 
         if (!canTriggerMultipleTimes && _processedObjects.Contains(incomingObject))
         {
-            if (debugMode) Debug.Log($"物品 [{incomingObject.name}]  已触发过，忽略重复触发", this);
+            if (debugMode) Debug.Log($"物品 [{incomingObject.name}]   已触发过，忽略重复触发", this);
             return;
         }
 
@@ -101,7 +99,7 @@ public class ItemTrigger : MonoBehaviour
             {
                 if (debugMode)
                 {
-                    Debug.Log($"触发规则匹配: 物品[{incomingObject.name}]   " +
+                    Debug.Log($"触发规则匹配: 物品[{incomingObject.name}]    " +
                              $"标签[{rule.requiredTag}]", this);
                 }
 
@@ -170,8 +168,8 @@ public class ItemTrigger : MonoBehaviour
         {
             if (debugMode)
             {
-                Debug.Log($"正在删除目标: {rule.targetObject.name}   " +
-                         $"(延迟{rule.delayTime}  秒)", this);
+                Debug.Log($"正在删除目标: {rule.targetObject.name}    " +
+                         $"(延迟{rule.delayTime}   秒)", this);
             }
 
             if (rule.delayTime > 0)
@@ -183,7 +181,7 @@ public class ItemTrigger : MonoBehaviour
                 Destroy(rule.targetObject);
             }
         }
-        //张奕忻：记录开门次数
+        //张奕忻：记录开门次数 
         OpenDoorNumber++;
         if (OpenDoorNumber == 1)
         {
