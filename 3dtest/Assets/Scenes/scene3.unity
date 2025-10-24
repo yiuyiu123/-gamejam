@@ -4585,7 +4585,7 @@ Light:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 5.33
   m_Range: 10
-  m_SpotAngle: 165
+  m_SpotAngle: 42.132343
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
@@ -4641,13 +4641,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 462078650}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.009424264, y: 0.6363001, z: 0.00777429, w: 0.77134496}
-  m_LocalPosition: {x: 0.0271, y: 0.2481, z: 0.0626}
-  m_LocalScale: {x: 1.6659, y: 1.6659, z: 1.6659}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0.0271, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 406414494}
-  m_LocalEulerAnglesHint: {x: -1.4, y: 79.04, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &464372523 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5117213551918833794, guid: ba6faa00edd1d5b48aae00a419db3530, type: 3}
@@ -15412,14 +15412,6 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -2.387
       objectReference: {fileID: 0}
-    - target: {fileID: 651936764332830178, guid: a87d066a8f4c36f44aff1d32f0d50366, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1.103408
-      objectReference: {fileID: 0}
-    - target: {fileID: 651936764332830178, guid: a87d066a8f4c36f44aff1d32f0d50366, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1.09
-      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: a87d066a8f4c36f44aff1d32f0d50366, type: 3}
       propertyPath: m_Name
       value: "drawingroom\uFF08child\uFF09"
@@ -15448,10 +15440,6 @@ PrefabInstance:
       propertyPath: m_LocalPosition.x
       value: -1.968
       objectReference: {fileID: 0}
-    - target: {fileID: 7622661218638243942, guid: a87d066a8f4c36f44aff1d32f0d50366, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 99d1c1c07aa93a640a93bd01c3900b17, type: 2}
     - target: {fileID: 9084179321126114330, guid: a87d066a8f4c36f44aff1d32f0d50366, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.475
