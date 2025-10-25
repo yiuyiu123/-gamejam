@@ -31,6 +31,13 @@ public class DualPlayerController : MonoBehaviour
     [Header("移动锁定设置")]
     public bool enableMovementLock = true; // 是否启用移动锁定功能
 
+    [Header("移动音效设置")]
+    public string player1MoveSoundGroupID = "玩家1脚步声";
+    public string player2MoveSoundGroupID = "玩家2脚步声";
+    public float moveSoundFadeInTime = 0.2f;
+    public float moveSoundFadeOutTime = 0.3f;
+    public float moveSoundInterval = 1.5f; // 音效播放间隔
+
     [Header("调试选项")]
     public bool showDebugInfo = false;
 
@@ -46,6 +53,22 @@ public class DualPlayerController : MonoBehaviour
     private float player1VisualVelocity;
     private float player2VisualVelocity;
 
+    // 移动音效相关变量
+    private bool isPlayer1Moving = false;
+    private bool isPlayer2Moving = false;
+
+    // 存储每个玩家实际的移动状态
+    private bool player1ActuallyMoving = false;
+    private bool player2ActuallyMoving = false;
+    private Vector3 lastPlayer1Position;
+    private Vector3 lastPlayer2Position;
+
+    // 音效计时器
+    private float player1SoundTimer = 0f;
+    private float player2SoundTimer = 0f;
+    private bool player1SoundReady = true;
+    private bool player2SoundReady = true;
+
     // Sprite旋转模式枚举
     public enum SpriteRotationMode
     {
@@ -58,6 +81,11 @@ public class DualPlayerController : MonoBehaviour
     {
         InitializePlayers();
         SetupCameraListeners();
+
+        // 初始化位置记录
+        if (player1 != null) lastPlayer1Position = player1.transform.position;
+        if (player2 != null) lastPlayer2Position = player2.transform.position;
+
         Debug.Log("双人控制器初始化完成 - 2D Sprite模式");
     }
 
@@ -135,6 +163,15 @@ public class DualPlayerController : MonoBehaviour
             {
                 // 可在这里触发对应UI逻辑
             }
+
+            // 清空移动状态
+            movement1 = Vector3.zero;
+            movement2 = Vector3.zero;
+            isPlayer1Moving = false;
+            isPlayer2Moving = false;
+            player1ActuallyMoving = false;
+            player2ActuallyMoving = false;
+
             return;
         }
 
@@ -142,12 +179,19 @@ public class DualPlayerController : MonoBehaviour
         if (!isMovementLocked)
         {
             GetPlayerInput();
+
+            // 检测实际移动（基于位置变化）
+            DetectActualMovement();
         }
         else
         {
-            // 移动被锁定时清空输入
+            // 移动被锁定时清空输入和移动状态
             movement1 = Vector3.zero;
             movement2 = Vector3.zero;
+            isPlayer1Moving = false;
+            isPlayer2Moving = false;
+            player1ActuallyMoving = false;
+            player2ActuallyMoving = false;
 
             if (showDebugInfo && Time.frameCount % 60 == 0)
             {
@@ -159,6 +203,9 @@ public class DualPlayerController : MonoBehaviour
         {
             UpdateSpriteRotations();
         }
+
+        // 更新移动音效
+        UpdateMovementSound();
 
         if (showDebugInfo && Input.GetKeyDown(KeyCode.F1))
         {
@@ -180,6 +227,7 @@ public class DualPlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.W)) v1 += 1f;
         if (Input.GetKey(KeyCode.S)) v1 -= 1f;
         movement1 = new Vector3(h1, 0f, v1).normalized;
+        isPlayer1Moving = movement1.magnitude > 0.1f;
 
         // 玩家2输入 (IJKL)
         float h2 = 0f, v2 = 0f;
@@ -188,6 +236,34 @@ public class DualPlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.I)) v2 += 1f;
         if (Input.GetKey(KeyCode.K)) v2 -= 1f;
         movement2 = new Vector3(h2, 0f, v2).normalized;
+        isPlayer2Moving = movement2.magnitude > 0.1f;
+    }
+
+    void DetectActualMovement()
+    {
+        // 检测玩家1是否真的在移动（基于位置变化）
+        if (player1 != null)
+        {
+            Vector3 currentPos1 = player1.transform.position;
+            float distance1 = Vector3.Distance(currentPos1, lastPlayer1Position);
+            player1ActuallyMoving = distance1 > 0.01f; // 微小阈值，避免浮点误差
+            lastPlayer1Position = currentPos1;
+        }
+
+        // 检测玩家2是否真的在移动（基于位置变化）
+        if (player2 != null)
+        {
+            Vector3 currentPos2 = player2.transform.position;
+            float distance2 = Vector3.Distance(currentPos2, lastPlayer2Position);
+            player2ActuallyMoving = distance2 > 0.01f;
+            lastPlayer2Position = currentPos2;
+        }
+
+        // 调试信息
+        if (showDebugInfo && Time.frameCount % 120 == 0)
+        {
+            Debug.Log($"移动状态 - P1输入:{isPlayer1Moving} 实际:{player1ActuallyMoving} | P2输入:{isPlayer2Moving} 实际:{player2ActuallyMoving}");
+        }
     }
 
     void MovePlayers()
@@ -214,6 +290,79 @@ public class DualPlayerController : MonoBehaviour
         else if (rb2 != null)
         {
             rb2.velocity = new Vector3(0f, rb2.velocity.y, 0f);
+        }
+    }
+
+    void UpdateMovementSound()
+    {
+        // 更新音效计时器
+        UpdateSoundTimers();
+
+        // 玩家1移动音效
+        if (player1ActuallyMoving && !isMovementLocked && player1SoundReady)
+        {
+            PlayPlayerMoveSound(true);
+            player1SoundReady = false;
+            player1SoundTimer = moveSoundInterval;
+        }
+
+        // 玩家2移动音效
+        if (player2ActuallyMoving && !isMovementLocked && player2SoundReady)
+        {
+            PlayPlayerMoveSound(false);
+            player2SoundReady = false;
+            player2SoundTimer = moveSoundInterval;
+        }
+    }
+
+    void UpdateSoundTimers()
+    {
+        // 更新玩家1音效计时器
+        if (!player1SoundReady)
+        {
+            player1SoundTimer -= Time.deltaTime;
+            if (player1SoundTimer <= 0f)
+            {
+                player1SoundReady = true;
+            }
+        }
+
+        // 更新玩家2音效计时器
+        if (!player2SoundReady)
+        {
+            player2SoundTimer -= Time.deltaTime;
+            if (player2SoundTimer <= 0f)
+            {
+                player2SoundReady = true;
+            }
+        }
+    }
+
+    void PlayPlayerMoveSound(bool isPlayer1)
+    {
+        if (AudioManager.Instance != null)
+        {
+            string soundGroupID = isPlayer1 ? player1MoveSoundGroupID : player2MoveSoundGroupID;
+
+            if (!string.IsNullOrEmpty(soundGroupID))
+            {
+                // 使用OneShot播放，避免循环导致的重复
+                AudioManager.Instance.PlayOneShot(
+                    soundGroupID,
+                    -1,                    // 随机选择音效
+                    true,                  // 淡入
+                    moveSoundFadeInTime,
+                    false,                 // 淡出
+                    0f,
+                    isPlayer1,             // 声道分配
+                    false                  // 2D音效
+                );
+
+                if (showDebugInfo)
+                {
+                    Debug.Log($"播放{(isPlayer1 ? "玩家1" : "玩家2")}移动音效");
+                }
+            }
         }
     }
 
@@ -317,8 +466,7 @@ public class DualPlayerController : MonoBehaviour
     }
 
     /// <summary>
-    /// 设置移动锁定状态
-    /// 当对话出现时调用此方法锁定移动，但允许摄像机控制
+    /// 设置移动锁定状态 - 确保更新音效状态
     /// </summary>
     /// <param name="locked">true=锁定移动，false=解锁移动</param>
     public void SetMovementLock(bool locked)
@@ -333,10 +481,14 @@ public class DualPlayerController : MonoBehaviour
             if (rb1 != null)
             {
                 rb1.velocity = new Vector3(0f, rb1.velocity.y, 0f);
+                isPlayer1Moving = false;
+                player1ActuallyMoving = false;
             }
             if (rb2 != null)
             {
                 rb2.velocity = new Vector3(0f, rb2.velocity.y, 0f);
+                isPlayer2Moving = false;
+                player2ActuallyMoving = false;
             }
         }
 
@@ -362,13 +514,15 @@ public class DualPlayerController : MonoBehaviour
     {
         return movement1;
     }
- 
-    /// 获取玩家2的输入方向（供动画控制器使用）
 
+    /// <summary>
+    /// 获取玩家2的输入方向（供动画控制器使用）
+    /// </summary>
     public Vector3 GetPlayer2InputDirection()
     {
         return movement2;
     }
+
     /// <summary>
     /// 获取玩家1的摄像机
     /// </summary>
@@ -384,6 +538,7 @@ public class DualPlayerController : MonoBehaviour
     {
         return player2Camera;
     }
+
     void DebugRotationState()
     {
         Debug.Log("=== 2D Sprite旋转状态 ===");

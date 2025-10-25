@@ -18,6 +18,11 @@ public class PlayerController : MonoBehaviour
     [Header("特殊物品设置")]
     public string wateringCanItemName = "水壶"; // 水壶的物品名称
 
+    [Header("音效设置")]
+    public string pickupSoundGroupID = "拾取物品"; // 拾取音效组ID
+    public string dropSoundGroupID = "放下物品";   // 放下音效组ID
+    public string throwSoundGroupID = "抛掷物品";  // 抛掷音效组ID
+
     [Header("调试选项")]
     public bool showInputDebug = false;
     public bool showInteractionDebug = true;
@@ -58,7 +63,7 @@ public class PlayerController : MonoBehaviour
     // 新增：交互状态控制
     private bool isInteractionInProgress = false;
     private float lastInteractionTime = 0f;
-    private Coroutine interactionCooldownCoroutine; 
+    private Coroutine interactionCooldownCoroutine;
 
     void Start()
     {
@@ -237,6 +242,79 @@ public class PlayerController : MonoBehaviour
 
         interactionCooldownCoroutine = StartCoroutine(InteractionCooldownCoroutine());
     }
+
+    // 拾取物品音效
+    void PlayPickupSound()
+    {
+        if (AudioManager.Instance != null && !string.IsNullOrEmpty(pickupSoundGroupID))
+        {
+            bool isPlayer1 = gameObject.CompareTag("Player1");
+            AudioManager.Instance.PlayOneShot(
+                pickupSoundGroupID,
+                -1,           // 随机选择音效
+                false,        // 不淡入
+                0f,
+                false,        // 不淡出
+                0f,
+                isPlayer1,    // 声道分配
+                false         // 2D音效
+            );
+
+            if (showInteractionDebug)
+            {
+                Debug.Log($"{playerName} 播放拾取音效");
+            }
+        }
+    }
+
+    // 放下物品音效
+    void PlayDropSound()
+    {
+        if (AudioManager.Instance != null && !string.IsNullOrEmpty(dropSoundGroupID))
+        {
+            bool isPlayer1 = gameObject.CompareTag("Player1");
+            AudioManager.Instance.PlayOneShot(
+                dropSoundGroupID,
+                -1,           // 随机选择音效
+                false,        // 不淡入
+                0f,
+                false,        // 不淡出
+                0f,
+                isPlayer1,    // 声道分配
+                false         // 2D音效
+            );
+
+            if (showInteractionDebug)
+            {
+                Debug.Log($"{playerName} 播放放下音效");
+            }
+        }
+    }
+
+    // 抛掷物品音效
+    void PlayThrowSound()
+    {
+        if (AudioManager.Instance != null && !string.IsNullOrEmpty(throwSoundGroupID))
+        {
+            bool isPlayer1 = gameObject.CompareTag("Player1");
+            AudioManager.Instance.PlayOneShot(
+                throwSoundGroupID,
+                -1,           // 随机选择音效
+                false,        // 不淡入
+                0f,
+                false,        // 不淡出
+                0f,
+                isPlayer1,    // 声道分配
+                false         // 2D音效
+            );
+
+            if (showInteractionDebug)
+            {
+                Debug.Log($"{playerName} 播放抛掷音效");
+            }
+        }
+    }
+
 
     #region 张奕忻scene5输入
     /*
@@ -450,6 +528,8 @@ public class PlayerController : MonoBehaviour
 
         // 调用三合成区域的抛掷方法
         zone.ThrowItemToZone(itemToThrow);
+        // 播放抛掷音效
+        PlayThrowSound();
 
         Debug.Log($"{playerName} 向三合成区域抛掷 {itemToThrow.itemName}");
     }
@@ -464,6 +544,8 @@ public class PlayerController : MonoBehaviour
 
         // 调用区域的抛掷方法
         zone.ThrowItemToZone(itemToThrow);
+        // 播放抛掷音效
+        PlayThrowSound();
 
         Debug.Log($"{playerName} 向合成区域抛掷 {itemToThrow.itemName}");
     }
@@ -479,7 +561,8 @@ public class PlayerController : MonoBehaviour
 
         // 调用区域的抛掷方法
         zone.ThrowItemToZone(itemToThrow);
-
+        // 播放抛掷音效
+        PlayThrowSound();
         Debug.Log($"{playerName} 向教学区域抛掷 {itemToThrow.itemName}");
     }
 
@@ -521,36 +604,7 @@ public class PlayerController : MonoBehaviour
         EndInteraction(); // 没有找到物品，结束交互
     }
 
-    //void PickUpItem(InteractableItem item)
-    //{
-    //    heldItem = item;
-    //    item.Interact(gameObject);
 
-    //    // 触发拾取动画
-    //    if (animationController != null)
-    //    {
-    //        animationController.TriggerPickUpAnimation();
-    //    }
-
-    //    // 检查是否是手电筒
-    //    if (item.itemName == flashLight)
-    //    {
-    //        currentFlashlight = item.GetComponent<FlashlightController>();
-    //        isHoldFlashLight = true;
-    //        OnFlashlightPickedUp?.Invoke(); // 触发事件
-
-    //        // 如果是player2拿起手电筒，自动开灯
-    //        if (gameObject.CompareTag("Player2") && currentFlashlight != null)
-    //        {
-    //            currentFlashlight.TurnOn();
-    //        }
-    //    }
-    //    if (showInteractionDebug)
-    //    {
-    //        Debug.Log($"{playerName} 捡起了 {item.itemName}");
-    //    }
-    //}
-    // 修改：PickUpItem 方法，添加状态验证
     void PickUpItem(InteractableItem item)
     {
         // 状态验证
@@ -574,6 +628,8 @@ public class PlayerController : MonoBehaviour
         {
             item.Interact(gameObject);
 
+            // 播放拾取音效
+            PlayPickupSound();
             // 触发拾取动画
             if (animationController != null)
             {
@@ -634,6 +690,8 @@ public class PlayerController : MonoBehaviour
 
             itemToDrop.Interact(gameObject);
 
+            // 播放放下音效
+            PlayDropSound();
             // 立即清除引用
             heldItem = null;
 

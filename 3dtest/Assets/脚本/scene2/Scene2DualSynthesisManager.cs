@@ -278,14 +278,38 @@ public class Scene2DualSynthesisManager : MonoBehaviour
         {
             LockItemsForSynthesis(laptop, emptyUSB); // 锁定物品
 
+            // ========== 修改开始：传递区域信息 ==========
+            // 设置合成区域（使用玩家1的区域，因为结果在玩家1区域生成）
+            if (CraftingManager.Instance != null && player1SynthesisZone != null)
+            {
+                CraftingManager.Instance.SetLastUsedZone(player1SynthesisZone);
+            }
+
+            // 创建物品列表用于合成
+            List<InteractableItem> synthesisItems = new List<InteractableItem> { laptop, emptyUSB };
+
+            // 调用合成管理器
+            CraftingRecipe matchedRecipe = CraftingManager.Instance.CombineItems(synthesisItems, player1SynthesisZone);
+            // ========== 修改结束 ==========
+
             yield return StartCoroutine(PlaySynthesisEffects()); // 播放合成效果
 
-            DestroySynthesisItems(laptop, emptyUSB); // 销毁原材料
+            // 如果合成成功，处理后续逻辑
+            if (matchedRecipe != null)
+            {
+                DestroySynthesisItems(laptop, emptyUSB); // 销毁原材料
 
-            // 生成新物品
-            yield return StartCoroutine(SpawnNewItem(infoUSBPrefab, task1SpawnPoint.position, infoUSBItemName));
+                // 生成新物品
+                yield return StartCoroutine(SpawnNewItem(infoUSBPrefab, task1SpawnPoint.position, infoUSBItemName));
 
-            CompleteTask1(); // 标记任务1完成
+                CompleteTask1(); // 标记任务1完成
+            }
+            else
+            {
+                LogError("任务1合成失败");
+                if (laptop != null) UnlockItem(laptop);
+                if (emptyUSB != null) UnlockItem(emptyUSB);
+            }
         }
         else
         {
@@ -319,14 +343,38 @@ public class Scene2DualSynthesisManager : MonoBehaviour
         {
             LockItemsForSynthesis(pen, emptyPaper); // 锁定物品
 
+            // ========== 修改开始：传递区域信息 ==========
+            // 设置合成区域（使用玩家2的区域，因为结果在玩家2区域生成）
+            if (CraftingManager.Instance != null && player2SynthesisZone != null)
+            {
+                CraftingManager.Instance.SetLastUsedZone(player2SynthesisZone);
+            }
+
+            // 创建物品列表用于合成
+            List<InteractableItem> synthesisItems = new List<InteractableItem> { pen, emptyPaper };
+
+            // 调用合成管理器
+            CraftingRecipe matchedRecipe = CraftingManager.Instance.CombineItems(synthesisItems, player2SynthesisZone);
+            // ========== 修改结束 ==========
+
             yield return StartCoroutine(PlaySynthesisEffects()); // 播放合成效果
 
-            DestroySynthesisItems(pen, emptyPaper); // 销毁原材料
+            // 如果合成成功，处理后续逻辑
+            if (matchedRecipe != null)
+            {
+                DestroySynthesisItems(pen, emptyPaper); // 销毁原材料
 
-            // 生成新物品
-            yield return StartCoroutine(SpawnNewItem(filledPaperPrefab, task2SpawnPoint.position, filledPaperItemName));
+                // 生成新物品
+                yield return StartCoroutine(SpawnNewItem(filledPaperPrefab, task2SpawnPoint.position, filledPaperItemName));
 
-            CompleteTask2(); // 标记任务2完成
+                CompleteTask2(); // 标记任务2完成
+            }
+            else
+            {
+                LogError("任务2合成失败");
+                if (pen != null) UnlockItem(pen);
+                if (emptyPaper != null) UnlockItem(emptyPaper);
+            }
         }
         else
         {
