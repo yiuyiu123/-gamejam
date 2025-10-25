@@ -131,9 +131,16 @@ public class Scene3UI_Manager : MonoBehaviour
     // 新增方法：任务1完成检查
     void CheckTask1Completion()
     {
-        if (!task1Completed && hasFlashlight && hasOpenedSwitch)
+        if (!task1Completed && hasOpenedSwitch)//&& hasFlashlight 
         {
             task1Completed = true;
+
+            // 调用 Scene2DialogueManager 的任务完成函数
+            if (dialogueManager != null)
+            {
+                dialogueManager.OnTaskCompleted(); // <-- 这里直接调用
+            }
+
             CompleteTask1();
         }
     }
@@ -143,9 +150,16 @@ public class Scene3UI_Manager : MonoBehaviour
         if (!task2Completed && keyHasAppeared)
         {
             task2Completed = true;
+
+            if (dialogueManager != null)
+            {
+                dialogueManager.OnTaskCompleted(); // <-- 调用任务完成
+            }
+
             CompleteTask2();
         }
     }
+
     public void StartPlot1()
     {
         currentProgress = GameProgress.Plot1;
