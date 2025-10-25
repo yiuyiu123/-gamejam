@@ -2,6 +2,7 @@
 {
     Properties
     {
+        _Color("Color Tint",Color)=(1,1,1,1)
         _BaseTex("Base Texture", 2D) = "white" {}
         _BaseTex_STCustom("Base Tex Tiling/Offset", Vector) = (1,1,0,0)
 
@@ -15,14 +16,16 @@
 
     SubShader
     {
-        Tags { "RenderType"="Opaque" "Queue"="Geometry" }
+        //Tags { "RenderType"="Opaque" "Queue"="Geometry" }
+        Tags { "Queue" = "Geometry-10"  "IgnoreProjector"="true" "RenderType"="Opaque" "ForceNoShadowCasting"="True"}
+        
         LOD 300
 
         CGPROGRAM
         #pragma surface surf Standard fullforwardshadows
         #pragma target 3.0
 
-        sampler2D _BaseTex;
+        sampler2D _BaseTex;  fixed4 _Color;
         float4 _BaseTex_STCustom;
 
         sampler2D _DrawTex;
@@ -58,7 +61,7 @@
         {
             // BaseTex UV
             float2 baseUV = IN.uv_BaseTex * _BaseTex_STCustom.xy + _BaseTex_STCustom.zw;
-            fixed4 baseCol = tex2D(_BaseTex, baseUV);
+            fixed4 baseCol = _Color*tex2D(_BaseTex, baseUV);
 
             // DrawTex UV + 旋转 + ST
             float2 drawUV = RotateUV(IN.uv_DrawTex, _DrawRotation);

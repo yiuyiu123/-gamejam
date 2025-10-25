@@ -9972,6 +9972,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 181.26
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 2dec811dfe68e6e44ab1c785cf467938, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ec58a7e3a3adc3b428c8d81bf5d29b63, type: 2}
     - target: {fileID: 919132149155446097, guid: 2dec811dfe68e6e44ab1c785cf467938, type: 3}
       propertyPath: m_Name
       value: "\u62FC\u56FE1"
@@ -20851,6 +20855,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 1e187500b1cfbf444a64cf0089758d89, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: ec58a7e3a3adc3b428c8d81bf5d29b63, type: 2}
     - target: {fileID: 919132149155446097, guid: 1e187500b1cfbf444a64cf0089758d89, type: 3}
       propertyPath: m_Name
       value: PUZZLE(2)AY
