@@ -17,8 +17,11 @@ public class TutorialCollaborationManager : MonoBehaviour
 
     [Header("协作完成效果")]
     public ParticleSystem collaborationEffect;
-    public AudioClip collaborationSound;
+    //public AudioClip collaborationSound;
     public Light collaborationLight;
+
+    [Header("协作成功音效")]
+    public string collaborationSoundGroupID = "协作成功"; // 音效组ID
 
     [Header("UI提示")]
     public GameObject waitingPrompt; // 显示"等待另一位玩家"的UI
@@ -26,10 +29,9 @@ public class TutorialCollaborationManager : MonoBehaviour
 
     [Header("张奕忻scene1：UI_Play开始游戏")]
     public GameObject UI_Play;
-    public bool isNotScene1=true;
+    public bool isNotScene1 = true;
     public float skipHoldTime = 5.0f;
     private bool skipPressed = false;
-
 
     private bool player1Ready = false;
     private bool player2Ready = false;
@@ -60,7 +62,7 @@ public class TutorialCollaborationManager : MonoBehaviour
         if (waitingPrompt != null) waitingPrompt.SetActive(false);
         if (successPrompt != null) successPrompt.SetActive(false);
         //张奕忻
-        UI_Play.SetActive(false);
+        if (UI_Play != null) UI_Play.SetActive(false);
 
         Debug.Log("协作教学关卡管理器已启动");
     }
@@ -100,6 +102,77 @@ public class TutorialCollaborationManager : MonoBehaviour
         }
     }
 
+    // 播放协作成功音效（双声道）
+    void PlayCollaborationSound()
+    {
+        if (AudioManager.Instance != null && !string.IsNullOrEmpty(collaborationSoundGroupID))
+        {
+            // 计算两个区域的中点位置来决定声道
+            Vector3 midpoint = CalculateMidpoint();
+            bool isPlayer1 = DetermineSoundChannel(midpoint);
+
+            AudioManager.Instance.PlayOneShot(
+                collaborationSoundGroupID,
+                -1,           // 随机选择音效
+                false,        // 不淡入
+                0f,
+                false,        // 不淡出
+                0f,
+                isPlayer1,    // 声道分配
+                false         // 2D音效
+            );
+
+            Debug.Log($"播放协作成功音效 - 声道: {(isPlayer1 ? "左(玩家1)" : "右(玩家2)")}");
+        }
+        else
+        {
+            //// 备用：使用原来的音效
+            //if (collaborationSound != null)
+            //{
+            //    AudioSource.PlayClipAtPoint(collaborationSound, Vector3.zero);
+            //}
+        }
+    }
+
+    // 计算两个区域的中点
+    Vector3 CalculateMidpoint()
+    {
+        if (player1Zone != null && player2Zone != null)
+        {
+            return (player1Zone.transform.position + player2Zone.transform.position) / 2f;
+        }
+        else if (player1Zone != null)
+        {
+            return player1Zone.transform.position;
+        }
+        else if (player2Zone != null)
+        {
+            return player2Zone.transform.position;
+        }
+
+        return Vector3.zero;
+    }
+
+    // 根据中点位置决定声道
+    bool DetermineSoundChannel(Vector3 midpoint)
+    {
+        // 查找玩家对象
+        GameObject player1 = GameObject.FindGameObjectWithTag("Player1");
+        GameObject player2 = GameObject.FindGameObjectWithTag("Player2");
+
+        if (player1 != null && player2 != null)
+        {
+            float distanceToPlayer1 = Vector3.Distance(midpoint, player1.transform.position);
+            float distanceToPlayer2 = Vector3.Distance(midpoint, player2.transform.position);
+
+            // 距离玩家1更近则使用左声道，否则使用右声道
+            return distanceToPlayer1 <= distanceToPlayer2;
+        }
+
+        // 默认使用左声道
+        return true;
+    }
+
     //张奕忻改动
     IEnumerator CompleteCollaboration()
     {
@@ -109,6 +182,9 @@ public class TutorialCollaborationManager : MonoBehaviour
         // 播放协作完成效果
         PlayCollaborationEffects();
 
+        // 播放协作成功音效
+        PlayCollaborationSound();
+
         Debug.Log($"双人协作成功！将在 {sceneTransitionDelay} 秒后跳转到场景: {targetSceneName}");
 
         //如果是scene1，等待数秒弹出Play，如果玩家长按五秒或点击Play，则切换第二关
@@ -116,38 +192,38 @@ public class TutorialCollaborationManager : MonoBehaviour
         {
             yield return new WaitForSeconds(2f);
             if (UI_Play != null)
+            {
+                UI_Play.SetActive(true);
+                while (true)
                 {
-                    UI_Play.SetActive(true);
-                    while (true)
+                    if (Input.GetKey(KeyCode.Space))
                     {
-                        if (Input.GetKey(KeyCode.Space))
-                        {
-                            skipPressed = true;
-                            Debug.Log("按下空格键");
-                        }
-                        else
-                        {
-                            skipPressed = false;
-                        }
-
-                        if (skipPressed)
-                        {
-                            skipHoldTime -= Time.deltaTime;
-
-                            if (skipHoldTime <= 0)
-                            {
-                                Debug.Log("空格长达五秒");
-                                StartCoroutine(LoadNextSceneWithFade());
-                                yield break; // 跳出当前协程
-                            }
-                        }
-                        else
-                        {
-                            skipHoldTime = 5.0f; // 重置倒计时
-                        }
-
-                        yield return null; // 每帧等待一次
+                        skipPressed = true;
+                        Debug.Log("按下空格键");
                     }
+                    else
+                    {
+                        skipPressed = false;
+                    }
+
+                    if (skipPressed)
+                    {
+                        skipHoldTime -= Time.deltaTime;
+
+                        if (skipHoldTime <= 0)
+                        {
+                            Debug.Log("空格长达五秒");
+                            StartCoroutine(LoadNextSceneWithFade());
+                            yield break; // 跳出当前协程
+                        }
+                    }
+                    else
+                    {
+                        skipHoldTime = 5.0f; // 重置倒计时
+                    }
+
+                    yield return null; // 每帧等待一次
+                }
             }
         }
         //如果不是scene1，按唤洋的程序合成后等待两秒自动跳转
@@ -188,12 +264,7 @@ public class TutorialCollaborationManager : MonoBehaviour
             collaborationEffect.Play();
         }
 
-        if (collaborationSound != null)
-        {
-            AudioSource.PlayClipAtPoint(collaborationSound, Vector3.zero);
-        }
-
-        if (isNotScene1&&collaborationLight != null)
+        if (isNotScene1 && collaborationLight != null)
         {
             StartCoroutine(FlashCollaborationLight());
         }

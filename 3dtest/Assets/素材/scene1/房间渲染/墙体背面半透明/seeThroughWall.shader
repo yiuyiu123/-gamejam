@@ -9,8 +9,7 @@ Shader "Unlit/seeThroughWall"
 
     SubShader
     {
-        Tags { "Queue"="Transparent" "RenderType"="Transparent" "IgnoreProjector"="True" "ForceNoShadowCasting"="True" }
-        LOD 200
+       Tags { "Queue" = "Geometry-10"  "IgnoreProjector"="true" "RenderType"="Opaque" "ForceNoShadowCasting"="True"} LOD 200
 
         Cull Back            // 只渲染正面（如需双面，改成 Cull Off）
         ZWrite Off            // 不写入深度缓存（不挡光、不挡视线）
