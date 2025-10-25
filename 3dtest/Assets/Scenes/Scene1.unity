@@ -12732,6 +12732,7 @@ GameObject:
   - component: {fileID: 1339699896}
   - component: {fileID: 1339699902}
   - component: {fileID: 1339699901}
+  - component: {fileID: 1339699903}
   m_Layer: 0
   m_Name: Player1
   m_TagString: Player1
@@ -12936,9 +12937,6 @@ MonoBehaviour:
   flipDeadZone: 0.3
   pickUpAnimationLockTime: 0.8
   enableAnimationLock: 1
-  enableStateRecovery: 1
-  stateRecoveryCheckInterval: 1
-  stuckStateThreshold: 10
   showDebugInfo: 0
 --- !u!95 &1339699902
 Animator:
@@ -12961,6 +12959,21 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1339699903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1339699894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b22f19df5f48b94ab66a28b84dada33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  transparencyDistance: 5.15
+  minAlpha: -0.36
+  fadeSpeed: 5
 --- !u!1 &1346909618
 GameObject:
   m_ObjectHideFlags: 0
@@ -19641,6 +19654,7 @@ GameObject:
   - component: {fileID: 1667462935}
   - component: {fileID: 1667462934}
   - component: {fileID: 1667462933}
+  - component: {fileID: 1667462939}
   m_Layer: 7
   m_Name: player2
   m_TagString: Player2
@@ -19816,6 +19830,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 58442966}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1667462939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1667462932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b22f19df5f48b94ab66a28b84dada33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  transparencyDistance: 5.15
+  minAlpha: -0.36
+  fadeSpeed: 5
 --- !u!1 &1670078536
 GameObject:
   m_ObjectHideFlags: 0
