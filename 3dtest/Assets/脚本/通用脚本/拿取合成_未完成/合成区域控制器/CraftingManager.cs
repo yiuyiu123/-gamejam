@@ -27,11 +27,23 @@ public class CraftingManager : MonoBehaviour
 
     [Header("默认合成失败效果")]
     public ParticleSystem failEffect;
-    public AudioClip failSound;
+    public string failSoundGroupID = "合成失败"; // 改为使用音效组
+
+    [Header("合成成功音效")]
+    public string successSoundGroupID = "合成成功";
 
     [Header("合成事件")]
     public UnityEvent<CraftingRecipe> OnCraftingSuccess;
     public UnityEvent OnCraftingFail;
+
+    // 存储最近的合成区域，用于确定声道
+    private SynthesisZone lastUsedZone;
+
+    // 设置最近使用的合成区域（在合成前调用）
+    public void SetLastUsedZone(SynthesisZone zone)
+    {
+        lastUsedZone = zone;
+    }
 
     void Awake()
     {
@@ -47,8 +59,14 @@ public class CraftingManager : MonoBehaviour
     }
 
     // 修改返回类型为 CraftingRecipe，这样我们可以获取配方的出生位置设置
-    public CraftingRecipe CombineItems(List<InteractableItem> items)
+    public CraftingRecipe CombineItems(List<InteractableItem> items, SynthesisZone synthesisZone = null)
     {
+        // 记录合成区域
+        if (synthesisZone != null)
+        {
+            SetLastUsedZone(synthesisZone);
+        }
+
         // 获取物品名称列表
         List<string> itemNames = new List<string>();
         foreach (var item in items)
@@ -72,10 +90,12 @@ public class CraftingManager : MonoBehaviour
         // 尝试匹配配方
         CraftingRecipe matchedRecipe = FindMatchingRecipe(itemNames);
 
-
         if (matchedRecipe != null && matchedRecipe.resultItemPrefab != null)
         {
             Debug.Log($"合成成功！配方: {matchedRecipe.recipeName}");
+
+            // 播放合成成功音效
+            PlayCraftingSuccessSound();
 
             // 触发合成成功事件
             OnCraftingSuccess?.Invoke(matchedRecipe);
@@ -92,9 +112,53 @@ public class CraftingManager : MonoBehaviour
 
             return null;
         }
+    }
+    // 播放合成成功音效
+    void PlayCraftingSuccessSound()
+    {
+        if (AudioManager.Instance != null && !string.IsNullOrEmpty(successSoundGroupID))
+        {
+            // 确定声道：如果合成区域靠近玩家1则左声道，靠近玩家2则右声道
+            bool isPlayer1 = DetermineSoundChannel();
 
+            AudioManager.Instance.PlayOneShot(
+                successSoundGroupID,
+                -1,           // 随机选择音效
+                false,        // 不淡入
+                0f,
+                false,        // 不淡出
+                0f,
+                isPlayer1,    // 声道分配
+                false         // 2D音效
+            );
+
+            Debug.Log($"播放合成成功音效 - 声道: {(isPlayer1 ? "左(玩家1)" : "右(玩家2)")}");
+        }
     }
 
+    // 确定音效声道
+    bool DetermineSoundChannel()
+    {
+        // 如果有最近的合成区域，根据位置决定声道
+        if (lastUsedZone != null)
+        {
+            // 获取玩家对象（假设场景中有玩家1和玩家2）
+            GameObject player1 = GameObject.FindGameObjectWithTag("Player1");
+            GameObject player2 = GameObject.FindGameObjectWithTag("Player2");
+
+            if (player1 != null && player2 != null)
+            {
+                float distanceToPlayer1 = Vector3.Distance(lastUsedZone.transform.position, player1.transform.position);
+                float distanceToPlayer2 = Vector3.Distance(lastUsedZone.transform.position, player2.transform.position);
+
+                // 距离玩家1更近则使用左声道，否则使用右声道
+                return distanceToPlayer1 <= distanceToPlayer2;
+            }
+        }
+
+        // 默认使用左声道
+        return true;
+    }
     CraftingRecipe FindMatchingRecipe(List<string> itemNames)
     {
         foreach (var recipe in craftingRecipes)
@@ -141,6 +205,23 @@ public class CraftingManager : MonoBehaviour
         if (failEffect != null)
         {
             Instantiate(failEffect, Vector3.zero, Quaternion.identity);
+        }
+
+        // 播放合成失败音效
+        if (AudioManager.Instance != null && !string.IsNullOrEmpty(failSoundGroupID))
+        {
+            bool isPlayer1 = DetermineSoundChannel();
+
+            AudioManager.Instance.PlayOneShot(
+                failSoundGroupID,
+                -1,           // 随机选择音效
+                false,        // 不淡入
+                0f,
+                false,        // 不淡出
+                0f,
+                isPlayer1,    // 声道分配
+                false         // 2D音效
+            );
         }
     }
 }

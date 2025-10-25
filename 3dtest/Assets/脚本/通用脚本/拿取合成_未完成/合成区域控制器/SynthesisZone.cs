@@ -223,7 +223,16 @@ public class SynthesisZone : MonoBehaviour
 
         yield return new WaitForSeconds(synthesisDelay);
 
-        CraftingRecipe matchedRecipe = CraftingManager.Instance.CombineItems(itemsToCombine);
+        // ========== 修改开始：传递区域信息 ==========
+        // 设置当前合成区域
+        if (CraftingManager.Instance != null)
+        {
+            CraftingManager.Instance.SetLastUsedZone(this);
+        }
+
+        // 调用合成，传递当前区域
+        CraftingRecipe matchedRecipe = CraftingManager.Instance.CombineItems(itemsToCombine, this);
+        // ========== 修改结束 ==========
 
         if (matchedRecipe != null && matchedRecipe.resultItemPrefab != null)
         {
