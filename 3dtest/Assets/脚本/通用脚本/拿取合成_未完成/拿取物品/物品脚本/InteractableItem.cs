@@ -1,13 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class InteractableItem : MonoBehaviour
 {
     [Header("物品设置")]
     public string itemName = "物品";
+    [TextArea(3, 5)] // 添加多行文本区域，方便输入更长的描述
+    public string itemDescription = ""; // 物品描述
     public bool canBePickedUp = true;
     public Vector3 holdOffset = new Vector3(0, 1, 1);
+
+    [Header("关键道具设置")]
+    public bool isKeyItem = false; // 是否为关键道具
+    public bool showPickupMessage = true; // 是否显示拾取提示
+
+    [Header("UI提示设置")]
+    public GameObject pickupUIPrefab; // UI预制体
+    public float displayTime = 3f; // 显示时间
+    public float fadeDuration = 0.5f; // 淡出时间
+
+    [Header("UI位置设置")]
+    [Range(0f, 1f)]
+    public float uiVerticalPosition = 0.3f; // UI垂直位置（屏幕高度的比例，0=底部，1=顶部）
+    public float uiHorizontalOffset = 0f; // 水平微调偏移
+
+    [Header("提示内容设置")]
+    public string pickupMessageFormat = "找到了 {0}"; // 提示消息格式，{0}会被itemName替换
+    [TextArea(2, 4)]
+    public string customPickupMessage = ""; // 自定义提示消息，如果为空则使用默认格式
 
     [Header("持握角度设置")]
     public Vector3 holdRotationOffset = Vector3.zero; // 持握时的角度偏移
@@ -41,6 +63,10 @@ public class InteractableItem : MonoBehaviour
     private Vector3 originalScale;
     private ExchangeZone currentZone;
 
+    // UI相关变量
+    private Dictionary<GameObject, GameObject> playerUIInstances = new Dictionary<GameObject, GameObject>();
+    private Dictionary<GameObject, Coroutine> playerUICoroutines = new Dictionary<GameObject, Coroutine>();
+
     // 添加公共属性来访问私有字段
     public Rigidbody Rb => rb;
     public Collider ItemCollider => itemCollider;
@@ -58,6 +84,12 @@ public class InteractableItem : MonoBehaviour
 
         // 初始化交换次数
         currentExchangeTimes = 0;
+
+        // 如果没有设置UI预制体，尝试动态创建一个简单的UI
+        if (pickupUIPrefab == null)
+        {
+            CreateDefaultUIPrefab();
+        }
     }
 
     void Update()
@@ -96,7 +128,7 @@ public class InteractableItem : MonoBehaviour
 
     void PickUp(GameObject player)
     {
-        if (!canBePickedUp || isTransitioning) return;
+        if (!canBePickedUp || isTransitioning || player == null) return;
 
         // 立即设置基础状态，避免逻辑错误
         isBeingHeld = true;
@@ -117,6 +149,12 @@ public class InteractableItem : MonoBehaviour
             itemCollider.enabled = false;
         }
 
+        // 显示UI提示
+        if (isKeyItem && showPickupMessage)
+        {
+            ShowPickupUI(player);
+        }
+
         // 开始过渡动画
         if (transitionCoroutine != null)
             StopCoroutine(transitionCoroutine);
@@ -124,6 +162,187 @@ public class InteractableItem : MonoBehaviour
         transitionCoroutine = StartCoroutine(PickUpTransition(player));
 
         Debug.Log($"{player.name} 拿起了 {itemName}");
+    }
+
+    // 显示拾取UI提示
+    private void ShowPickupUI(GameObject player)
+    {
+        // 如果已经有UI在显示，先停止之前的协程
+        if (playerUICoroutines.ContainsKey(player) && playerUICoroutines[player] != null)
+        {
+            StopCoroutine(playerUICoroutines[player]);
+        }
+
+        // 创建或获取UI实例
+        GameObject uiInstance = GetOrCreateUIInstance(player);
+
+        if (uiInstance != null)
+        {
+            // 开始显示UI的协程
+            playerUICoroutines[player] = StartCoroutine(ShowPickupMessageRoutine(player, uiInstance));
+        }
+    }
+
+    // 获取或创建UI实例
+    private GameObject GetOrCreateUIInstance(GameObject player)
+    {
+        // 清理已销毁的引用
+        if (playerUIInstances.ContainsKey(player) && playerUIInstances[player] == null)
+        {
+            playerUIInstances.Remove(player);
+        }
+
+        if (playerUICoroutines.ContainsKey(player) && playerUICoroutines[player] == null)
+        {
+            playerUICoroutines.Remove(player);
+        }
+
+        if (!playerUIInstances.ContainsKey(player) || playerUIInstances[player] == null)
+        {
+            if (pickupUIPrefab != null)
+            {
+                // 创建新的UI实例
+                GameObject uiInstance = Instantiate(pickupUIPrefab);
+
+                // 设置UI的父对象为Canvas
+                Canvas canvas = FindObjectOfType<Canvas>();
+                if (canvas != null)
+                {
+                    uiInstance.transform.SetParent(canvas.transform, false);
+                }
+
+                // 设置UI位置和锚点
+                RectTransform rectTransform = uiInstance.GetComponent<RectTransform>();
+                if (rectTransform != null)
+                {
+                    int playerIndex = GetPlayerIndex(player);
+
+                    if (playerIndex == 0) // 玩家1 - 左屏
+                    {
+                        // 左屏底部居中：水平0-50%，垂直底部
+                        rectTransform.anchorMin = new Vector2(0f, 0f);
+                        rectTransform.anchorMax = new Vector2(0.5f, 0f);
+                        rectTransform.pivot = new Vector2(0.5f, 0f);
+                        rectTransform.anchoredPosition = new Vector2(0, uiVerticalPosition * 100);
+                    }
+                    else // 玩家2 - 右屏
+                    {
+                        // 右屏底部居中：水平50%-100%，垂直底部
+                        rectTransform.anchorMin = new Vector2(0.5f, 0f);
+                        rectTransform.anchorMax = new Vector2(1f, 0f);
+                        rectTransform.pivot = new Vector2(0.5f, 0f);
+                        rectTransform.anchoredPosition = new Vector2(0, uiVerticalPosition * 100);
+                    }
+                }
+
+                playerUIInstances[player] = uiInstance;
+            }
+            else
+            {
+                Debug.LogWarning("Pickup UI Prefab 未设置！");
+                return null;
+            }
+        }
+
+        return playerUIInstances[player];
+    }
+
+    // 获取玩家索引
+    private int GetPlayerIndex(GameObject player)
+    {
+        // 根据玩家对象的名称或标签判断是哪个玩家
+        if (player.name.Contains("Player1") || player.CompareTag("Player1"))
+            return 0;
+        else if (player.name.Contains("Player2") || player.CompareTag("Player2"))
+            return 1;
+        else
+        {
+            Debug.LogWarning($"无法确定玩家索引: {player.name}");
+            return 0;
+        }
+    }
+
+    // 生成提示消息
+    private string GeneratePickupMessage()
+    {
+        // 如果有自定义消息，优先使用
+        if (!string.IsNullOrEmpty(customPickupMessage))
+        {
+            return customPickupMessage;
+        }
+
+        // 否则使用格式化消息
+        if (!string.IsNullOrEmpty(pickupMessageFormat))
+        {
+            return string.Format(pickupMessageFormat, itemName);
+        }
+
+        // 默认消息
+        return $"找到了 {itemName}";
+    }
+
+    // 显示拾取消息的协程
+    private IEnumerator ShowPickupMessageRoutine(GameObject player, GameObject uiInstance)
+    {
+        // 立即检查对象是否有效
+        if (uiInstance == null || player == null)
+            yield break;
+
+        // 获取文本组件
+        TextMeshProUGUI textComponent = uiInstance.GetComponentInChildren<TextMeshProUGUI>();
+        if (textComponent == null)
+        {
+            Debug.LogWarning("UI实例中未找到TextMeshProUGUI组件！");
+            yield break;
+        }
+
+        // 设置文本内容
+        textComponent.text = GeneratePickupMessage();
+
+        // 立即显示（不透明）
+        textComponent.color = new Color(textComponent.color.r, textComponent.color.g, textComponent.color.b, 1f);
+        uiInstance.SetActive(true);
+
+        // 等待显示时间
+        yield return new WaitForSeconds(displayTime);
+
+        // 淡出效果
+        float elapsedTime = 0f;
+        Color startColor = textComponent.color;
+        Color targetColor = new Color(startColor.r, startColor.g, startColor.b, 0f);
+
+        while (elapsedTime < fadeDuration)
+        {
+            // 每帧都检查对象是否仍然有效
+            if (uiInstance == null || textComponent == null)
+                yield break;
+
+            elapsedTime += Time.deltaTime;
+            float alpha = Mathf.Lerp(1f, 0f, elapsedTime / fadeDuration);
+            textComponent.color = new Color(startColor.r, startColor.g, startColor.b, alpha);
+            yield return null;
+        }
+
+        // 完全透明后隐藏UI，检查对象是否仍然有效
+        if (uiInstance != null && textComponent != null)
+        {
+            textComponent.color = targetColor;
+            uiInstance.SetActive(false);
+        }
+
+        // 清理协程引用
+        if (playerUICoroutines.ContainsKey(player))
+        {
+            playerUICoroutines[player] = null;
+        }
+    }
+
+    // 创建默认UI预制体（如果没有设置的话）
+    private void CreateDefaultUIPrefab()
+    {
+        // 这里可以创建一个简单的UI预制体
+        // 在实际项目中，建议在编辑器中设置好UI预制体
+        Debug.Log("请设置Pickup UI Prefab或在编辑器中创建UI元素");
     }
 
     IEnumerator PickUpTransition(GameObject player)
@@ -389,6 +608,43 @@ public class InteractableItem : MonoBehaviour
             }
 
             Debug.Log($"强制释放物品: {itemName}");
+        }
+    }
+
+    void OnDestroy()
+    {
+        // 停止所有运行的协程
+        foreach (var pair in playerUICoroutines)
+        {
+            if (pair.Value != null)
+            {
+                StopCoroutine(pair.Value);
+            }
+        }
+
+        // 清理所有UI实例
+        foreach (var uiInstance in playerUIInstances.Values)
+        {
+            if (uiInstance != null)
+            {
+                Destroy(uiInstance);
+            }
+        }
+        playerUIInstances.Clear();
+        playerUICoroutines.Clear();
+    }
+
+    // 添加物品被禁用时的清理
+    void OnDisable()
+    {
+        // 停止所有协程但不销毁UI，因为物品可能只是暂时禁用
+        foreach (var pair in playerUICoroutines)
+        {
+            if (pair.Value != null)
+            {
+                StopCoroutine(pair.Value);
+                playerUICoroutines[pair.Key] = null;
+            }
         }
     }
 
