@@ -38,7 +38,7 @@ public class DetectLightSwitch : MonoBehaviour
         if (pivot != null && !hasRotated)
         {
             // 沿 pivot 世界位置向下旋转
-            transform.RotateAround(pivot.position, -transform.forward, -rotationAngle);
+            transform.RotateAround(pivot.position, -transform.up, -rotationAngle);
             hasRotated = true;
             UI_Black.SetActive(false);
         }

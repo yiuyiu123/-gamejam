@@ -2,13 +2,25 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class scene1UI_Manager : MonoBehaviour
 {
     [Header("UI References")]
     public GameObject UI_Conversation;
     public GameObject UI_Settings;
+    public GameObject panel_TaskPrompt;
     public bool noInputAnything=false;//只能点击F H
+
+    [Header("引用打字机")]
+    public TextMeshProUGUI text_Task;
+    private AudioSource audioSource;
+    public AudioClip taskSound; 
+    public float typingSpeed = 0.05f;
+    public bool IsTyping { get; private set; }
+    public string OriginalText { get; private set; }
+    private TextMeshProUGUI textMeshPro;
+    private Coroutine typingCoroutine;
 
     private bool conversationStarted = false; // 是否已经进入对话阶段
     private Conversation_Manager conversation;
@@ -17,6 +29,7 @@ public class scene1UI_Manager : MonoBehaviour
     {
         UI_Settings.SetActive(false);
         UI_Conversation.SetActive(false);
+        panel_TaskPrompt.SetActive(false);
 
         conversation = FindObjectOfType<Conversation_Manager>();
         //FindObjectOfType<SceneBGM>().PlayBGM();
@@ -45,11 +58,39 @@ public class scene1UI_Manager : MonoBehaviour
         }
     }
 
+    private IEnumerator TypeRoutine(TextMeshProUGUI text)
+    {
+        // 不再尝试 GetComponent
+        textMeshPro = text;
+
+        // 获取原始文字（你可以改成动态文本）
+        OriginalText = "合成拼图";
+
+        IsTyping = true;
+
+        // 播放文字滚动音效
+        if (audioSource != null && taskSound != null)
+            audioSource.PlayOneShot(taskSound);
+
+        // 确保清空旧文字
+        textMeshPro.text = "";
+
+        foreach (char c in OriginalText)
+        {
+            textMeshPro.text += c;
+            yield return new WaitForSeconds(typingSpeed);
+        }
+
+        IsTyping = false;
+    }
+
     public void OverConversation()
     {
         UI_Conversation.SetActive(false);
+        panel_TaskPrompt.SetActive(true);
         noInputAnything =false;
         conversationStarted = false;//恢复输入
+        StartCoroutine(TypeRoutine(text_Task));
         //OnSettings();
         // 播放 "点击" 组第0个元素点击音效
         //AudioManager.Instance.PlayClick("点击", volume: 1f, index: 0);
