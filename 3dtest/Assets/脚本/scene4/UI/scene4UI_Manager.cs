@@ -129,19 +129,19 @@ public class Scene4UI_Manager : MonoBehaviour
         DoorDelete.OpenSecondDoor -= OnDoorOpened2;
         Debug.Log("事件触发：捡起日记本");
         hasDoorSecondOpen = true;
-        CheckTask1Completion();
+        CheckTask2Completion();
     }
 
     void OverReadDiary()
     {
         Debug.Log("事件触发：A阅读完日记本");
         hasOverReadDiary = true;
-        CheckTask2Completion();
+        CheckTask3Completion();
     }
     void OnQuestion()
     {
         CanQuestion = true;
-        CheckTask2Completion();
+        CheckFinalTaskCompletion();
     }
     #endregion
 
@@ -159,7 +159,7 @@ public class Scene4UI_Manager : MonoBehaviour
         task1Completed = true;
         Log("任务1完成，触发剧情1");
         OnTask1Complete?.Invoke();
-       //StartPlot1();
+        StartPlot1();
     }
 
     void StartTask2()
@@ -184,9 +184,9 @@ public class Scene4UI_Manager : MonoBehaviour
     }
     void CompleteTask3()
     {
-        task2Completed = true;
+        task3Completed = true;
         Log("任务3完成,触发剧情3");
-        OnTask2Complete?.Invoke();
+        OnTask3Complete?.Invoke();
         StartPlot3();
     }
     void StartFinalTask()
@@ -197,7 +197,7 @@ public class Scene4UI_Manager : MonoBehaviour
     }
     void CompleteFinalTask()
     {
-        task2Completed = true;
+        FinalTaskCompleted = true;
         Log("最终任务完成,触发提问");
         OnFinalTaskComplete?.Invoke();
         StartEnding();
@@ -241,13 +241,13 @@ public class Scene4UI_Manager : MonoBehaviour
     #endregion
 
     #region 开始剧情
-   /* public void StartPlot1()
+    public void StartPlot1()
     {
         currentProgress = GameProgress.Plot1;
         Log("开始剧情1");
         dialogueManager.StartDialogueSequence("Plot1");
         plot1Completed = true;
-    }*/
+    }
 
     public void StartPlot2()
     {
@@ -266,13 +266,13 @@ public class Scene4UI_Manager : MonoBehaviour
     }
     public void StartEnding()
     {
-        currentProgress = GameProgress.Plot3;
-        Log("开始提问");
-        dialogueManager.StartDialogueSequence("Plot3");
-        plot3Completed = true;
-        // 启动协程监控结局视频是否播放完成
+        currentProgress = GameProgress.Ending;
+        Log("开始提问剧情");
+        dialogueManager.StartDialogueSequence("Ending");
+        EndingCompleted = true;
         StartCoroutine(MonitorVideoEnd());
     }
+
     #endregion
 
     // 轮询剧情3对话是否播放完毕
@@ -338,12 +338,12 @@ public class Scene4UI_Manager : MonoBehaviour
     #region 工具
     void Log(string msg)
     {
-        if (enableDebugLogs) Debug.Log($"[Scene3UI_Manager] {msg}");
+        if (enableDebugLogs) Debug.Log($"[Scene4UI_Manager] {msg}");
     }
 
     void LogWarning(string msg)
     {
-        if (enableDebugLogs) Debug.LogWarning($"[Scene3UI_Manager] {msg}");
+        if (enableDebugLogs) Debug.LogWarning($"[Scene4UI_Manager] {msg}");
     }
     #endregion
 }
