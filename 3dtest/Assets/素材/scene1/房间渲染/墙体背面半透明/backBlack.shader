@@ -14,8 +14,7 @@ Shader "Unlit/backBlack"
     }
     SubShader
     {
-        Tags { "Queue"="Transparent" "IgnoreProjector"="true" "RenderType"="Transparent" "ForceNoShadowCasting"="True"}
-        
+        Tags { "Queue" = "Geometry-10"  "IgnoreProjector"="true" "RenderType"="Opaque" "ForceNoShadowCasting"="True"}
         Pass//背面半透明黑
         {
             ZWrite On
