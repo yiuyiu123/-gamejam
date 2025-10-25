@@ -1680,7 +1680,7 @@ MeshRenderer:
   m_GameObject: {fileID: 370451056}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -9934,7 +9934,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2dec811dfe68e6e44ab1c785cf467938, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.67
+      value: 3.9
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2dec811dfe68e6e44ab1c785cf467938, type: 3}
       propertyPath: m_LocalPosition.y
@@ -9942,7 +9942,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2dec811dfe68e6e44ab1c785cf467938, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.23
+      value: 2.49
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2dec811dfe68e6e44ab1c785cf467938, type: 3}
       propertyPath: m_LocalRotation.w
