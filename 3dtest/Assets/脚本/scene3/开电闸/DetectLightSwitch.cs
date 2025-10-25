@@ -12,9 +12,16 @@ public class DetectLightSwitch : MonoBehaviour
     public string playerTag = "Player";
     public event Action LightSwitchOn;
 
+    [Header("黑色遮罩")]
+    public GameObject UI_Black;
+
     private bool playerInRange = false; // 玩家是否在触发范围
     private bool hasRotated = false;    // 防止重复旋转
 
+    private void Start()
+    {
+        UI_Black.SetActive(true);
+    }
     void Update()
     {
         if (!IsSwitchOpen && playerInRange && Input.GetKeyDown(KeyCode.F))
@@ -33,6 +40,7 @@ public class DetectLightSwitch : MonoBehaviour
             // 沿 pivot 世界位置向下旋转
             transform.RotateAround(pivot.position, -transform.forward, -rotationAngle);
             hasRotated = true;
+            UI_Black.SetActive(false);
         }
         else if (pivot == null)
         {

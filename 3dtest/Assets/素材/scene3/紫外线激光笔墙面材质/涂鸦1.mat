@@ -45,8 +45,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _DrawTex:
         m_Texture: {fileID: 2800000, guid: 5a7a7f465240ff443921d528907230b3, type: 3}
-        m_Scale: {x: 3.5, y: 1.51}
-        m_Offset: {x: -2.34, y: -0.49}
+        m_Scale: {x: 6.1, y: 5.12}
+        m_Offset: {x: -4.72, y: -2.17}
     - _EmissionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
