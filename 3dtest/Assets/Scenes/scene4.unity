@@ -325,8 +325,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -1433,8 +1443,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -1940,8 +1960,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u795E\u79D8\u9053\u51773"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: 0, y: 0, z: 0}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -2255,8 +2285,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -2387,8 +2427,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: 0, y: 0, z: 0}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -2869,8 +2919,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -3753,8 +3813,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -4295,8 +4365,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -5035,8 +5115,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -5200,6 +5290,11 @@ MonoBehaviour:
   rotationMode: 0
   spriteRotationSmoothTime: 0
   enableMovementLock: 1
+  player1MoveSoundGroupID: "\u73A9\u5BB61\u811A\u6B65\u58F0"
+  player2MoveSoundGroupID: "\u73A9\u5BB62\u811A\u6B65\u58F0"
+  moveSoundFadeInTime: 0.2
+  moveSoundFadeOutTime: 0.3
+  moveSoundInterval: 1.5
   showDebugInfo: 0
 --- !u!1 &464596741 stripped
 GameObject:
@@ -5492,8 +5587,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: 0, y: 0, z: 0}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -5622,8 +5727,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -7327,6 +7442,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -198.4
       objectReference: {fileID: 0}
+    - target: {fileID: -2851633671787301983, guid: 38ae9112a6465ce41861de088bad210a, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 108.44
+      objectReference: {fileID: 0}
     - target: {fileID: -2796287592501252699, guid: 38ae9112a6465ce41861de088bad210a, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -8060,8 +8179,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -9472,8 +9601,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -11112,8 +11251,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -11521,8 +11670,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -12138,6 +12297,9 @@ MonoBehaviour:
   interactionCooldown: 0.5
   enableInteractionCooldown: 1
   wateringCanItemName: "\u6C34\u58F6"
+  pickupSoundGroupID: "\u62FE\u53D6\u7269\u54C1"
+  dropSoundGroupID: "\u653E\u4E0B\u7269\u54C1"
+  throwSoundGroupID: "\u629B\u63B7\u7269\u54C1"
   showInputDebug: 0
   showInteractionDebug: 1
   isScene5: 0
@@ -13153,8 +13315,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -13391,8 +13563,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -13641,8 +13823,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -13927,6 +14119,9 @@ MonoBehaviour:
   interactionCooldown: 0.5
   enableInteractionCooldown: 1
   wateringCanItemName: "\u6C34\u58F6"
+  pickupSoundGroupID: "\u62FE\u53D6\u7269\u54C1"
+  dropSoundGroupID: "\u653E\u4E0B\u7269\u54C1"
+  throwSoundGroupID: "\u629B\u63B7\u7269\u54C1"
   showInputDebug: 0
   showInteractionDebug: 1
   isScene5: 0
@@ -14148,8 +14343,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: 0, y: 0, z: 0}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -14383,8 +14588,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -14542,8 +14757,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -45, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -15159,8 +15384,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: 0, y: 0, z: 0}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -15370,8 +15605,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -15552,8 +15797,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -15682,8 +15937,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -15787,8 +16052,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -15892,8 +16167,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -16459,8 +16744,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -45, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -16630,8 +16925,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -16941,8 +17246,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -18825,8 +19140,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -19592,8 +19917,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -45, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -19965,8 +20300,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -20211,8 +20556,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -20850,8 +21205,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -21753,8 +22118,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -22621,8 +22996,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: 0, y: 0, z: 0}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -23032,6 +23417,205 @@ Transform:
   m_Children: []
   m_Father: {fileID: 562707990}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1861867613
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: b91b8d08316e82241a4a2257c33225fd, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 910.326
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b91b8d08316e82241a4a2257c33225fd, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3.833
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b91b8d08316e82241a4a2257c33225fd, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 477.86
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b91b8d08316e82241a4a2257c33225fd, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b91b8d08316e82241a4a2257c33225fd, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b91b8d08316e82241a4a2257c33225fd, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b91b8d08316e82241a4a2257c33225fd, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b91b8d08316e82241a4a2257c33225fd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b91b8d08316e82241a4a2257c33225fd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b91b8d08316e82241a4a2257c33225fd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -6271134433671772177, guid: b91b8d08316e82241a4a2257c33225fd, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.356
+      objectReference: {fileID: 0}
+    - target: {fileID: -2753723818031340547, guid: b91b8d08316e82241a4a2257c33225fd, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2.002
+      objectReference: {fileID: 0}
+    - target: {fileID: -2753723818031340547, guid: b91b8d08316e82241a4a2257c33225fd, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -9.395
+      objectReference: {fileID: 0}
+    - target: {fileID: -2636022358278396249, guid: b91b8d08316e82241a4a2257c33225fd, type: 3}
+      propertyPath: m_Materials.Array.data[2]
+      value: 
+      objectReference: {fileID: 2100000, guid: d24d03ccfd49f894fac266742d963cc9, type: 2}
+    - target: {fileID: -2168006373012973740, guid: b91b8d08316e82241a4a2257c33225fd, type: 3}
+      propertyPath: m_TagString
+      value: NEW2
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b91b8d08316e82241a4a2257c33225fd, type: 3}
+      propertyPath: m_Name
+      value: "\u65E5\u8BB0\u672C\u4EA4\u4E92\u7269\u54C1\uFF08\u6F2B\u753B\uFF0C\u65E5\u8BB0\u672C\uFF09"
+      objectReference: {fileID: 0}
+    - target: {fileID: 3332727545434934017, guid: b91b8d08316e82241a4a2257c33225fd, type: 3}
+      propertyPath: m_TagString
+      value: NEW1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: -2168006373012973740, guid: b91b8d08316e82241a4a2257c33225fd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1861867619}
+    - targetCorrespondingSourceObject: {fileID: -2168006373012973740, guid: b91b8d08316e82241a4a2257c33225fd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1861867618}
+    - targetCorrespondingSourceObject: {fileID: 3332727545434934017, guid: b91b8d08316e82241a4a2257c33225fd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1861867617}
+    - targetCorrespondingSourceObject: {fileID: 3332727545434934017, guid: b91b8d08316e82241a4a2257c33225fd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1861867616}
+  m_SourcePrefab: {fileID: 100100000, guid: b91b8d08316e82241a4a2257c33225fd, type: 3}
+--- !u!1 &1861867614 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3332727545434934017, guid: b91b8d08316e82241a4a2257c33225fd, type: 3}
+  m_PrefabInstance: {fileID: 1861867613}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1861867615 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -2168006373012973740, guid: b91b8d08316e82241a4a2257c33225fd, type: 3}
+  m_PrefabInstance: {fileID: 1861867613}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &1861867616
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1861867614}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 218.37, y: 113.7, z: 275.5}
+  m_Center: {x: -4.0472167e-20, y: 11.945275, z: 0.00005340576}
+--- !u!54 &1861867617
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1861867614}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!65 &1861867618
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1861867615}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 324, y: 93.2, z: 223.9}
+  m_Center: {x: 0, y: 21.792463, z: -0.000015258789}
+--- !u!54 &1861867619
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1861867615}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &1873427945 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8978923827421514408, guid: 38ae9112a6465ce41861de088bad210a, type: 3}
@@ -23153,8 +23737,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\u7269\u54C1"
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -44.5, y: -7.5, z: -162}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -25805,5 +26399,6 @@ SceneRoots:
   - {fileID: 1736290757}
   - {fileID: 2115562573}
   - {fileID: 1707616137}
-  - {fileID: 1536312581}
   - {fileID: 1599096114}
+  - {fileID: 1861867613}
+  - {fileID: 1536312581}
