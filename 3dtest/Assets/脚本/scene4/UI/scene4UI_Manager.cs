@@ -15,8 +15,6 @@ public class Scene4UI_Manager : MonoBehaviour
     public ItemTrigger DoorDelete;
     public HintTrigger playerMovement;
     public ThreeItemCraftingManager threeItemCraftingManager;
-    //ÈÃÇÐ»»Ïà»ú¼àÌý
-    public event Action IsPlayingPlot;
 
     private bool hasDoorFirstOpen = false;
     private bool hasDoorSecondOpen = false;

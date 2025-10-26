@@ -34,6 +34,8 @@ public class scene4DialogueManager : MonoBehaviour
     public float typingSpeed = 0.05f;     // 打字速度
     public KeyCode player1NextKey = KeyCode.F; // 玩家1下一页按键
     public KeyCode player2NextKey = KeyCode.H; // 玩家2下一页按键
+    //让切换相机监听
+    public event Action IsPlayingPlot;
 
     [Header("打字音效设置")]
     public AudioClip typingSound;         // 打字音效
@@ -129,9 +131,6 @@ public class scene4DialogueManager : MonoBehaviour
 
     void Awake()
     {
-        //张奕忻：序列重命名
-        //DialogueLine line;
-
         // 单例模式初始化
         if (Instance == null)
         {
@@ -170,22 +169,6 @@ public class scene4DialogueManager : MonoBehaviour
         if (player2DialoguePanel != null) player2DialoguePanel.SetActive(false);
         //张奕忻：隐藏任务提示相关UI
         Panel_TaskPrompt.SetActive(false);
-
-        // 等待输入开始对话
-        //StartCoroutine(WaitForStartInput());
-    }
-
-    // 等待开始输入的协程
-    IEnumerator WaitForStartInput()
-    {
-        Log("等待任意按键开始对话...");
-
-        while (!Input.anyKeyDown)
-        {
-            yield return null;
-        }
-
-        StartDialogueSequence("Plot1"); // 开始第一个对话序列
     }
 
     // 根据标签查找玩家控制器
@@ -266,6 +249,7 @@ public class scene4DialogueManager : MonoBehaviour
     public void StartDialogueSequence(string sequenceName)
     {
         Log($"请求开始对话序列: {sequenceName}");
+        IsPlayingPlot?.Invoke();
 
         DialogueSequence sequence = dialogueSequences.Find(s => s.sequenceName == sequenceName);
         if (sequence != null)
