@@ -1,4 +1,4 @@
-﻿Shader "Custom/Ultraviolet_Fixed"
+﻿Shader "Custom/Ultraviolet"
 {
     Properties
     {
@@ -12,6 +12,8 @@
 
         _NormalMap("Normal Map", 2D) = "bump" {}
         _EmissionStrength("Emission Strength", Range(0,5)) = 1
+
+        _DrawTexVisibility("DrawTex Visibility", Range(0,1)) = 0
     }
 
     SubShader
@@ -32,19 +34,16 @@
         sampler2D _BaseTex;  fixed4 _Color;
         float4 _BaseTex_STCustom;
 
-        sampler2D _DrawTex;
-        float4 _DrawTex_STCustom;
+        sampler2D _DrawTex; float4 _DrawTex_STCustom;
         float _DrawRotation;
 
-        sampler2D _NormalMap;
-        half _EmissionStrength;
+        sampler2D _NormalMap; half _EmissionStrength;
+        float _DrawTexVisibility;
 
         struct Input
         {
             float2 uv_BaseTex;
             float2 uv_DrawTex;
-            float3 worldPos;
-            float3 viewDir;
             INTERNAL_DATA
         };
 
@@ -71,20 +70,19 @@
             drawUV = drawUV * _DrawTex_STCustom.xy + _DrawTex_STCustom.zw;
             fixed4 drawCol = tex2D(_DrawTex, drawUV);
 
-            // Base + Draw overlay
-            o.Albedo = baseCol.rgb + drawCol.rgb * drawCol.a;
-            o.Metallic = 0.0;
-            o.Smoothness = 0.3;
+            // 法线
             o.Normal = UnpackNormal(tex2D(_NormalMap, baseUV));
 
-            // ---- 安全的聚光灯 Emission 计算 ----
-            float3 lightDir = normalize(UnityWorldSpaceLightDir(IN.worldPos));
-            float NdotL = saturate(dot(o.Normal, lightDir));
+            // 用C#传的显隐值控制
+            float visibility = saturate(_DrawTexVisibility);
 
-            // 只在 NdotL 较高时启用 emission，避免 NaN
-            float visibility = step(0.2, NdotL);
-            o.Emission = drawCol.rgb * drawCol.a * _EmissionStrength * visibility;
+            o.Albedo = baseCol.rgb + drawCol.rgb * visibility;
+            o.Metallic = 0.0;
+            o.Smoothness = 0.3;
+
+            o.Emission = drawCol.rgb * _EmissionStrength * visibility;
         }
+
         ENDCG
     }
 
