@@ -22193,6 +22193,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa80704d92a81ff42888a8dacafc2ce3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scene4DialogueManager: {fileID: 1992151985}
   cameraA: {fileID: 1527102286}
   cameraB: {fileID: 1393095386}
   switchKey: 102

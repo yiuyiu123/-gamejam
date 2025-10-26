@@ -19,6 +19,10 @@ public class ObjectControlSettings
 public class AdvancedCameraSwitch : MonoBehaviour
 {
     // ========== 摄像机设置 ==========
+    [Header("张奕忻：在剧情时禁用切换摄像头")]
+    public scene4DialogueManager scene4DialogueManager;
+    private bool canSwitch = true; // 是否允许切换摄像机
+
     [Header("【摄像机设置】")]
     [Tooltip("主摄像机")]
     public Camera cameraA;
@@ -78,6 +82,9 @@ public class AdvancedCameraSwitch : MonoBehaviour
 
     void Update()
     {
+        //张奕忻
+        if (!canSwitch) return; // 剧情播放时直接返回
+
         if (isPlayerInTrigger && Input.GetKeyDown(switchKey) && Time.time > lastSwitchTime + switchCooldown)
         {
             if (canSwitchMultipleTimes || switchCount == 0)
@@ -88,6 +95,26 @@ public class AdvancedCameraSwitch : MonoBehaviour
             }
         }
     }
+
+    #region 张奕忻：允许与禁用玩家切换摄像头
+    void OnEnable()
+    {
+        // 订阅剧情事件
+        scene4DialogueManager.IsPlayingPlot += HandlePlotState;
+    }
+
+    void OnDisable()
+    {
+        // 取消订阅，防止监听残留
+        scene4DialogueManager.IsPlayingPlot -= HandlePlotState;
+    }
+
+    // 事件回调
+    private void HandlePlotState(bool isPlaying)
+    {
+        canSwitch = !isPlaying; // 剧情播放时禁止切换
+    }
+    #endregion
 
     void ExecuteSwitch()
     {

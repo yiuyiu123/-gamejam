@@ -186,8 +186,9 @@ public class ItemTrigger : MonoBehaviour
         {
             OpenFirstDoor?.Invoke();
         }
-        else if (OpenDoorNumber == 2)
+        else if (OpenDoorNumber >= 2)
         {
+            Debug.Log($"销毁第二扇门一次");
             OpenSecondDoor?.Invoke();
         }
     }

@@ -35,7 +35,7 @@ public class scene4DialogueManager : MonoBehaviour
     public KeyCode player1NextKey = KeyCode.F; // 玩家1下一页按键
     public KeyCode player2NextKey = KeyCode.H; // 玩家2下一页按键
     //让切换相机监听
-    public event Action IsPlayingPlot;
+    public event Action<bool> IsPlayingPlot;
 
     [Header("打字音效设置")]
     public AudioClip typingSound;         // 打字音效
@@ -249,7 +249,7 @@ public class scene4DialogueManager : MonoBehaviour
     public void StartDialogueSequence(string sequenceName)
     {
         Log($"请求开始对话序列: {sequenceName}");
-        IsPlayingPlot?.Invoke();
+        IsPlayingPlot?.Invoke(true);
 
         DialogueSequence sequence = dialogueSequences.Find(s => s.sequenceName == sequenceName);
         if (sequence != null)
@@ -562,6 +562,8 @@ public class scene4DialogueManager : MonoBehaviour
     {
         isDialogueActive = false;
         isLastLine = false;
+
+        IsPlayingPlot?.Invoke(false);
 
         // 隐藏对话面板
         if (player1DialoguePanel != null) player1DialoguePanel.SetActive(false);
