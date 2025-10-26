@@ -24,9 +24,9 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseTex:
-        m_Texture: {fileID: 2800000, guid: fb43908ab27bb754092651f4d9d4f847, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+        m_Texture: {fileID: 2800000, guid: ad0ec97489608904bba98c01c9eef75f, type: 3}
+        m_Scale: {x: 1.98, y: 1}
+        m_Offset: {x: -1.2, y: -0.07}
     - _BumpMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -44,9 +44,9 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DrawTex:
-        m_Texture: {fileID: 2800000, guid: 5a7a7f465240ff443921d528907230b3, type: 3}
-        m_Scale: {x: 6.1, y: 5.12}
-        m_Offset: {x: -4.72, y: -2.17}
+        m_Texture: {fileID: 2800000, guid: 3a29f645e73c51f4e883ee374f2c726c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: -0.32, y: -0.18}
     - _EmissionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -78,7 +78,7 @@ Material:
     - _DetailNormalMapScale: 1
     - _DrawIntensity: 1
     - _DrawRotation: 0
-    - _DrawTexVisibility: 0
+    - _DrawTexVisibility: 0.25649422
     - _DstBlend: 0
     - _EmissionStrength: 1
     - _FlashAngle: 59
