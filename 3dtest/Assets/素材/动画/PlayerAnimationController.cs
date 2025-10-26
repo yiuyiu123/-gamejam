@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 
 public class PlayerAnimationController : MonoBehaviour
@@ -262,6 +263,7 @@ public class PlayerAnimationController : MonoBehaviour
             lastVerticalInput = currentVertical;
         }
     }
+
 
     void UpdateCameraRelativeFlipStable()
     {
