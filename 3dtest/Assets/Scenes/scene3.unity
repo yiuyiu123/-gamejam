@@ -7771,7 +7771,7 @@ MonoBehaviour:
   currentProgress: 0
   player1Controller: {fileID: 1772867896}
   player2Controller: {fileID: 2024142366}
-  detectLightSwitch: {fileID: 0}
+  detectLightSwitch: {fileID: 1667508194}
   flowerPotZone: {fileID: 89620796}
   dialogueManager: {fileID: 187351384}
   useSceneTransition: 1
@@ -18772,8 +18772,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u8FD9\u91CC\u662F\u73A9\u5BB62\u7684\u5BF9\u8BDD\u5185\u5BB9..."
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: f906acbb266c71a43a0a05f7bdb9ebc7, type: 2}
-  m_sharedMaterial: {fileID: -7962574609310391419, guid: f906acbb266c71a43a0a05f7bdb9ebc7, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 38ae6c5c2d22e214c983764a518840f0, type: 2}
+  m_sharedMaterial: {fileID: 8567913970922329194, guid: 38ae6c5c2d22e214c983764a518840f0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -21442,7 +21442,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -2.5188599, y: 1}
-  m_SizeDelta: {x: 440.8, y: 50}
+  m_SizeDelta: {x: 452, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1673756993
 MonoBehaviour:
@@ -21468,8 +21468,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: f59ccf5a77072384ab9ca1fcabf5930a, type: 2}
-  m_sharedMaterial: {fileID: -7557160145461686264, guid: f59ccf5a77072384ab9ca1fcabf5930a, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 38ae6c5c2d22e214c983764a518840f0, type: 2}
+  m_sharedMaterial: {fileID: 8567913970922329194, guid: 38ae6c5c2d22e214c983764a518840f0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -25242,8 +25242,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u8FD9\u91CC\u662F\u73A9\u5BB61\u7684\u5BF9\u8BDD\u5185\u5BB9..."
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: f906acbb266c71a43a0a05f7bdb9ebc7, type: 2}
-  m_sharedMaterial: {fileID: -7962574609310391419, guid: f906acbb266c71a43a0a05f7bdb9ebc7, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 38ae6c5c2d22e214c983764a518840f0, type: 2}
+  m_sharedMaterial: {fileID: 8567913970922329194, guid: 38ae6c5c2d22e214c983764a518840f0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
