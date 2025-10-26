@@ -1,3 +1,4 @@
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,117 +7,132 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class Scene4DialogueManager : MonoBehaviour
+public class scene4DialogueManager : MonoBehaviour
 {
-    public static Scene4DialogueManager Instance; // µ¥ÀıÄ£Ê½
+    public static scene4DialogueManager Instance; // å•ä¾‹æ¨¡å¼
 
-    [Header("·ÖÆÁ¶Ô»°UI")]
-    public GameObject player1DialoguePanel;  // ×ó²àÍæ¼Ò¶Ô»°Ãæ°å
-    public GameObject player2DialoguePanel;  // ÓÒ²àÍæ¼Ò¶Ô»°Ãæ°å
+    [Header("å¼ å¥•å¿»ï¼šä»»åŠ¡æç¤ºç›¸å…³UI")]
+    public GameObject Panel_TaskPrompt;
+    public TextMeshProUGUI Text_TaskPrompt;//å½“å‰ä»»åŠ¡å†…å®¹
+    public AudioClip taskSuccessSound; // æˆåŠŸéŸ³æ•ˆ
 
-    [Header("Íæ¼Ò1¶Ô»°UI×é¼ş")]
-    public TextMeshProUGUI player1DialogueText; // Íæ¼Ò1¶Ô»°ÎÄ±¾
-    public Image player1SpeakerIcon;           // Íæ¼Ò1Ëµ»°ÕßÍ¼±ê
-    public TextMeshProUGUI player1SpeakerName; // Íæ¼Ò1Ëµ»°ÕßÃû³Æ
+    [Header("åˆ†å±å¯¹è¯UI")]
+    public GameObject player1DialoguePanel;  // å·¦ä¾§ç©å®¶å¯¹è¯é¢æ¿
+    public GameObject player2DialoguePanel;  // å³ä¾§ç©å®¶å¯¹è¯é¢æ¿
 
-    [Header("Íæ¼Ò2¶Ô»°UI×é¼ş")]
-    public TextMeshProUGUI player2DialogueText; // Íæ¼Ò2¶Ô»°ÎÄ±¾
-    public Image player2SpeakerIcon;           // Íæ¼Ò2Ëµ»°ÕßÍ¼±ê
-    public TextMeshProUGUI player2SpeakerName; // Íæ¼Ò2Ëµ»°ÕßÃû³Æ
+    [Header("ç©å®¶1å¯¹è¯UIç»„ä»¶")]
+    public TextMeshProUGUI player1DialogueText; // ç©å®¶1å¯¹è¯æ–‡æœ¬
+    public Image player1SpeakerIcon;           // ç©å®¶1è¯´è¯è€…å›¾æ ‡
+    public TextMeshProUGUI player1SpeakerName; // ç©å®¶1è¯´è¯è€…åç§°
 
-    [Header("¶Ô»°ÉèÖÃ")]
-    public float typingSpeed = 0.05f;     // ´ò×ÖËÙ¶È
-    public KeyCode player1NextKey = KeyCode.F; // Íæ¼Ò1ÏÂÒ»Ò³°´¼ü
-    public KeyCode player2NextKey = KeyCode.H; // Íæ¼Ò2ÏÂÒ»Ò³°´¼ü
+    [Header("ç©å®¶2å¯¹è¯UIç»„ä»¶")]
+    public TextMeshProUGUI player2DialogueText; // ç©å®¶2å¯¹è¯æ–‡æœ¬
+    public Image player2SpeakerIcon;           // ç©å®¶2è¯´è¯è€…å›¾æ ‡
+    public TextMeshProUGUI player2SpeakerName; // ç©å®¶2è¯´è¯è€…åç§°
 
-    [Header("´ò×ÖÒôĞ§ÉèÖÃ")]
-    public AudioClip typingSound;         // ´ò×ÖÒôĞ§
-    public float typingSoundVolume = 0.5f; // ÒôĞ§ÒôÁ¿
+    [Header("å¯¹è¯è®¾ç½®")]
+    public float typingSpeed = 0.05f;     // æ‰“å­—é€Ÿåº¦
+    public KeyCode player1NextKey = KeyCode.F; // ç©å®¶1ä¸‹ä¸€é¡µæŒ‰é”®
+    public KeyCode player2NextKey = KeyCode.H; // ç©å®¶2ä¸‹ä¸€é¡µæŒ‰é”®
+
+    [Header("æ‰“å­—éŸ³æ•ˆè®¾ç½®")]
+    public AudioClip typingSound;         // æ‰“å­—éŸ³æ•ˆ
+    public float typingSoundVolume = 0.5f; // éŸ³æ•ˆéŸ³é‡
     [Range(1, 10)]
-    public int charactersPerSound = 2;    // Ã¿¶àÉÙ¸ö×Ö·û²¥·ÅÒ»´ÎÒôĞ§
-    public bool playSoundOnSpace = false; // ÊÇ·ñÔÚ¿Õ¸ñÊ±²¥·ÅÒôĞ§
-    public bool playSoundOnPunctuation = true; // ÊÇ·ñÔÚ±êµãÊ±²¥·ÅÒôĞ§
+    public int charactersPerSound = 2;    // æ¯å¤šå°‘ä¸ªå­—ç¬¦æ’­æ”¾ä¸€æ¬¡éŸ³æ•ˆ
+    public bool playSoundOnSpace = false; // æ˜¯å¦åœ¨ç©ºæ ¼æ—¶æ’­æ”¾éŸ³æ•ˆ
+    public bool playSoundOnPunctuation = true; // æ˜¯å¦åœ¨æ ‡ç‚¹æ—¶æ’­æ”¾éŸ³æ•ˆ
 
-    [Header("¶Ô»°½áÊøÉèÖÃ")]
-    public bool showEndingPrompt = true;  // ÊÇ·ñÏÔÊ¾½áÊøÌáÊ¾
-    public string endingPromptText = "°´ F ºÍ H ¼ü¼ÌĞø"; // ½áÊøÌáÊ¾ÎÄ±¾
+    [Header("å¯¹è¯ç»“æŸè®¾ç½®")]
+    public bool showEndingPrompt = true;  // æ˜¯å¦æ˜¾ç¤ºç»“æŸæç¤º
+    public string endingPromptText = "æŒ‰ F å’Œ H é”®ç»§ç»­"; // ç»“æŸæç¤ºæ–‡æœ¬
 
-    [Header("¶Ô»°Êı¾İ")]
-    public List<DialogueSequence> dialogueSequences; // ¶Ô»°ĞòÁĞÁĞ±í
+    [Header("å¯¹è¯æ•°æ®")]
+    public List<DialogueSequence> dialogueSequences; // å¯¹è¯åºåˆ—åˆ—è¡¨
 
-    [Header("ÒÆ¶¯¿ØÖÆÉèÖÃ")]
-    public bool lockMovementDuringDialogue = true; // ¶Ô»°ÆÚ¼äËø¶¨ÒÆ¶¯
+    [Header("ç§»åŠ¨æ§åˆ¶è®¾ç½®")]
+    public bool lockMovementDuringDialogue = true; // å¯¹è¯æœŸé—´é”å®šç§»åŠ¨
 
-    [Header("µ÷ÊÔÑ¡Ïî")]
-    public bool enableDialogueDebug = true; // ÊÇ·ñÆôÓÃµ÷ÊÔ
+    [Header("è°ƒè¯•é€‰é¡¹")]
+    public bool enableDialogueDebug = true; // æ˜¯å¦å¯ç”¨è°ƒè¯•
 
-    // µ±Ç°¶Ô»°×´Ì¬
-    private DialogueSequence currentSequence;    // µ±Ç°¶Ô»°ĞòÁĞ
-    private int currentDialogueIndex = 0;        // µ±Ç°¶Ô»°ĞĞË÷Òı
-    private bool isDialogueActive = false;       // ¶Ô»°ÊÇ·ñ¼¤»î
-    private bool waitingForPlayer1 = false;      // µÈ´ıÍæ¼Ò1°´¼ü
-    private bool waitingForPlayer2 = false;      // µÈ´ıÍæ¼Ò2°´¼ü
-    private bool isLastLine = false;             // ÊÇ·ñÊÇ×îºóÒ»ĞĞ
-    private Coroutine typingCoroutine;           // ´ò×ÖĞ­³ÌÒıÓÃ
-    private AudioSource audioSource;             // ÒôÆµÔ´
+    // å½“å‰å¯¹è¯çŠ¶æ€
+    private DialogueSequence currentSequence;    // å½“å‰å¯¹è¯åºåˆ—
+    private int currentDialogueIndex = 0;        // å½“å‰å¯¹è¯è¡Œç´¢å¼•
+    private bool isDialogueActive = false;       // å¯¹è¯æ˜¯å¦æ¿€æ´»
+    private bool waitingForPlayer1 = false;      // ç­‰å¾…ç©å®¶1æŒ‰é”®
+    private bool waitingForPlayer2 = false;      // ç­‰å¾…ç©å®¶2æŒ‰é”®
+    private bool isLastLine = false;             // æ˜¯å¦æ˜¯æœ€åä¸€è¡Œ
+    private Coroutine typingCoroutine;           // æ‰“å­—åç¨‹å¼•ç”¨
+    private AudioSource audioSource;             // éŸ³é¢‘æº
 
-    // Íæ¼Ò¿ØÖÆÆ÷ÒıÓÃ
-    private PlayerController player1Controller; // Íæ¼Ò1¿ØÖÆÆ÷
-    private PlayerController player2Controller; // Íæ¼Ò2¿ØÖÆÆ÷
-    private DualPlayerController dualPlayerController; // Ë«ÈËÒÆ¶¯¿ØÖÆÆ÷
+    // ç©å®¶æ§åˆ¶å™¨å¼•ç”¨
+    private PlayerController player1Controller; // ç©å®¶1æ§åˆ¶å™¨
+    private PlayerController player2Controller; // ç©å®¶2æ§åˆ¶å™¨
+    private DualPlayerController dualPlayerController; // åŒäººç§»åŠ¨æ§åˆ¶å™¨
 
-    // ¶Ô»°ĞòÁĞÀà
+    // å¯¹è¯åºåˆ—ç±»
     [System.Serializable]
     public class DialogueSequence
     {
-        public string sequenceName;           // ĞòÁĞÃû³Æ
-        public List<DialogueLine> dialogueLines; // ¶Ô»°ĞĞÁĞ±í
-        public UnityEvent onSequenceStart;    // ĞòÁĞ¿ªÊ¼ÊÂ¼ş
-        public UnityEvent onSequenceEnd;      // ĞòÁĞ½áÊøÊÂ¼ş
+        public string sequenceName;           // åºåˆ—åç§°
+        public List<DialogueLine> dialogueLines; // å¯¹è¯è¡Œåˆ—è¡¨
+        public UnityEvent onSequenceStart;    // åºåˆ—å¼€å§‹äº‹ä»¶
+        public UnityEvent onSequenceEnd;      // åºåˆ—ç»“æŸäº‹ä»¶
+        //å¼ å¥•å¿»ä»»åŠ¡æç¤º
+        public bool hasTaskPrompt = false;     //åˆ¤æ–­æœ‰æ²¡æœ‰ä»»åŠ¡æç¤º
+        public string taskContent;
+        public AudioClip taskTypingSound;         // ä»»åŠ¡æç¤ºæ‰“å­—éŸ³æ•ˆ
+        public Coroutine taskTypingCoroutine; // ä¿å­˜ä»»åŠ¡æç¤ºåç¨‹å¼•ç”¨
+
+        public Func<bool> taskCompletionCheck; // å§”æ‰˜ï¼Œç”¨æ¥æ£€æŸ¥ä»»åŠ¡æ˜¯å¦å®Œæˆ
     }
 
-    // ¶Ô»°ĞĞÀà
+    // å¯¹è¯è¡Œç±»
     [System.Serializable]
     public class DialogueLine
     {
         [TextArea(3, 5)]
-        public string player1Text;        // Íæ¼Ò1¿´µ½µÄÎÄ±¾
+        public string player1Text;        // ç©å®¶1çœ‹åˆ°çš„æ–‡æœ¬
         [TextArea(3, 5)]
-        public string player2Text;        // Íæ¼Ò2¿´µ½µÄÎÄ±¾
-        public string speakerName;        // Ëµ»°ÕßÃû³Æ
-        public Sprite speakerIcon;        // Ëµ»°ÕßÍ¼±ê
-        public AudioClip voiceClip;       // ÓïÒôÆ¬¶Î
-        public bool autoAdvance = false;  // ÊÇ·ñ×Ô¶¯Ç°½ø
-        public float autoAdvanceDelay = 3f; // ×Ô¶¯Ç°½øÑÓ³Ù
-        public AudioClip customTypingSound; // ×Ô¶¨Òå´ò×ÖÒôĞ§
+        public string player2Text;        // ç©å®¶2çœ‹åˆ°çš„æ–‡æœ¬
+        public string speakerName;        // è¯´è¯è€…åç§°
+        public Sprite speakerIcon;        // è¯´è¯è€…å›¾æ ‡
+        public AudioClip voiceClip;       // è¯­éŸ³ç‰‡æ®µ
+        public bool autoAdvance = false;  // æ˜¯å¦è‡ªåŠ¨å‰è¿›
+        public float autoAdvanceDelay = 3f; // è‡ªåŠ¨å‰è¿›å»¶è¿Ÿ
+        public AudioClip customTypingSound; // è‡ªå®šä¹‰æ‰“å­—éŸ³æ•ˆ
 
-        // ¿ØÖÆ¶Ô»°ÏÔÊ¾ÔÚÄÄÒ»²àÒÔ¼°ĞèÒªÄÄ¸öÍæ¼ÒÈ·ÈÏ
+        // æ§åˆ¶å¯¹è¯æ˜¾ç¤ºåœ¨å“ªä¸€ä¾§ä»¥åŠéœ€è¦å“ªä¸ªç©å®¶ç¡®è®¤
         public DialogueSide dialogueSide = DialogueSide.Both;
         public PlayerInputRequirement inputRequirement = PlayerInputRequirement.Both;
 
-        // ĞÂÔö£º±ê¼ÇÊÇ·ñÎªĞòÁĞ½áÊøĞĞ£¨ĞèÒªË«ÈËÈ·ÈÏ£©
+        // æ–°å¢ï¼šæ ‡è®°æ˜¯å¦ä¸ºåºåˆ—ç»“æŸè¡Œï¼ˆéœ€è¦åŒäººç¡®è®¤ï¼‰
         public bool isSequenceEndLine = false;
     }
 
-    // Ã¶¾Ù£º¶Ô»°ÏÔÊ¾²à
+    // æšä¸¾ï¼šå¯¹è¯æ˜¾ç¤ºä¾§
     public enum DialogueSide
     {
-        Both,       // Á½±ß¶¼ÏÔÊ¾
-        LeftOnly,   // Ö»ÏÔÊ¾ÔÚ×ó±ß
-        RightOnly   // Ö»ÏÔÊ¾ÔÚÓÒ±ß
+        Both,       // ä¸¤è¾¹éƒ½æ˜¾ç¤º
+        LeftOnly,   // åªæ˜¾ç¤ºåœ¨å·¦è¾¹
+        RightOnly   // åªæ˜¾ç¤ºåœ¨å³è¾¹
     }
 
-    // Ã¶¾Ù£ºÍæ¼ÒÊäÈëÒªÇó
+    // æšä¸¾ï¼šç©å®¶è¾“å…¥è¦æ±‚
     public enum PlayerInputRequirement
     {
-        Both,       // ĞèÒªÁ½¸öÍæ¼Ò¶¼È·ÈÏ
-        Player1Only, // Ö»ĞèÒªÍæ¼Ò1È·ÈÏ
-        Player2Only  // Ö»ĞèÒªÍæ¼Ò2È·ÈÏ
+        Both,       // éœ€è¦ä¸¤ä¸ªç©å®¶éƒ½ç¡®è®¤
+        Player1Only, // åªéœ€è¦ç©å®¶1ç¡®è®¤
+        Player2Only  // åªéœ€è¦ç©å®¶2ç¡®è®¤
     }
 
     void Awake()
     {
-        // µ¥ÀıÄ£Ê½³õÊ¼»¯
+        //å¼ å¥•å¿»ï¼šåºåˆ—é‡å‘½å
+        //DialogueLine line;
+
+        // å•ä¾‹æ¨¡å¼åˆå§‹åŒ–
         if (Instance == null)
         {
             Instance = this;
@@ -126,7 +142,7 @@ public class Scene4DialogueManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        // Ìí¼ÓAudioSource×é¼şÓÃÓÚ²¥·ÅÒôĞ§
+        // æ·»åŠ AudioSourceç»„ä»¶ç”¨äºæ’­æ”¾éŸ³æ•ˆ
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.playOnAwake = false;
         audioSource.volume = typingSoundVolume;
@@ -134,28 +150,45 @@ public class Scene4DialogueManager : MonoBehaviour
 
     void Start()
     {
-        // ²éÕÒÍæ¼Ò¿ØÖÆÆ÷
+        // æŸ¥æ‰¾ç©å®¶æ§åˆ¶å™¨
         player1Controller = FindPlayerController("Player1");
         player2Controller = FindPlayerController("Player2");
 
-        // ²éÕÒË«ÈËÒÆ¶¯¿ØÖÆÆ÷
+        // æŸ¥æ‰¾åŒäººç§»åŠ¨æ§åˆ¶å™¨
         dualPlayerController = FindObjectOfType<DualPlayerController>();
         if (dualPlayerController == null)
         {
-            LogWarning("Î´ÕÒµ½ DualPlayerController£¡ÒÆ¶¯Ëø¶¨¹¦ÄÜ½«²»¿ÉÓÃ");
+            LogWarning("æœªæ‰¾åˆ° DualPlayerControllerï¼ç§»åŠ¨é”å®šåŠŸèƒ½å°†ä¸å¯ç”¨");
         }
         else
         {
-            Log("ÕÒµ½ DualPlayerController£¬ÒÆ¶¯Ëø¶¨¹¦ÄÜÒÑÆôÓÃ");
+            Log("æ‰¾åˆ° DualPlayerControllerï¼Œç§»åŠ¨é”å®šåŠŸèƒ½å·²å¯ç”¨");
         }
 
-        // Òş²Ø¶Ô»°Ãæ°å
+        // éšè—å¯¹è¯é¢æ¿
         if (player1DialoguePanel != null) player1DialoguePanel.SetActive(false);
         if (player2DialoguePanel != null) player2DialoguePanel.SetActive(false);
+        //å¼ å¥•å¿»ï¼šéšè—ä»»åŠ¡æç¤ºç›¸å…³UI
+        Panel_TaskPrompt.SetActive(false);
 
+        // ç­‰å¾…è¾“å…¥å¼€å§‹å¯¹è¯
+        //StartCoroutine(WaitForStartInput());
     }
 
-    // ¸ù¾İ±êÇ©²éÕÒÍæ¼Ò¿ØÖÆÆ÷
+    // ç­‰å¾…å¼€å§‹è¾“å…¥çš„åç¨‹
+    IEnumerator WaitForStartInput()
+    {
+        Log("ç­‰å¾…ä»»æ„æŒ‰é”®å¼€å§‹å¯¹è¯...");
+
+        while (!Input.anyKeyDown)
+        {
+            yield return null;
+        }
+
+        StartDialogueSequence("Plot1"); // å¼€å§‹ç¬¬ä¸€ä¸ªå¯¹è¯åºåˆ—
+    }
+
+    // æ ¹æ®æ ‡ç­¾æŸ¥æ‰¾ç©å®¶æ§åˆ¶å™¨
     PlayerController FindPlayerController(string playerTag)
     {
         GameObject player = GameObject.FindGameObjectWithTag(playerTag);
@@ -170,7 +203,7 @@ public class Scene4DialogueManager : MonoBehaviour
     {
         if (!isDialogueActive) return;
 
-        // ¼ì²âÍæ¼Ò°´¼ü
+        // æ£€æµ‹ç©å®¶æŒ‰é”®
         if (waitingForPlayer1 && Input.GetKeyDown(player1NextKey))
         {
             waitingForPlayer1 = false;
@@ -182,27 +215,72 @@ public class Scene4DialogueManager : MonoBehaviour
             waitingForPlayer2 = false;
             CheckAdvanceDialogue();
         }
+        //å¼ å¥•å¿»ï¼šæ£€æµ‹å½“å‰ä»»åŠ¡æ˜¯å¦å®Œæˆ
+        if (currentSequence != null && currentSequence.hasTaskPrompt)
+        {
+            if (currentSequence.taskCompletionCheck != null && currentSequence.taskCompletionCheck())
+            {
+                OnTaskCompleted();
+            }
+        }
     }
 
-    // ¿ªÊ¼Ö¸¶¨Ãû³ÆµÄ¶Ô»°ĞòÁĞ
+    //å¼ å¥•å¿»ï¼šä»»åŠ¡æ£€æŸ¥å®Œæˆ
+    public void OnTaskCompleted()
+    {
+        if (currentSequence == null || !currentSequence.hasTaskPrompt)
+            return;
+        // 1ï¸âƒ£ åœæ‰æ­£åœ¨è¿è¡Œçš„ä»»åŠ¡æç¤ºåç¨‹
+        if (currentSequence.taskTypingCoroutine != null)
+        {
+            StopCoroutine(currentSequence.taskTypingCoroutine);
+            currentSequence.taskTypingCoroutine = null;
+        }
+        // 2ï¸âƒ£ æ’­æ”¾ä»»åŠ¡å®ŒæˆæˆåŠŸéŸ³æ•ˆ
+        if (taskSuccessSound != null)
+            audioSource.PlayOneShot(taskSuccessSound);
+        // 3ï¸âƒ£ ç›´æ¥æ˜¾ç¤ºå®Œæ•´ä»»åŠ¡æç¤ºå†…å®¹ï¼ˆå¯é€‰ï¼‰
+        if (Text_TaskPrompt != null)
+            Text_TaskPrompt.text = "...";//currentSequence.taskContent;
+
+        // 4ï¸âƒ£ å…³é—­ä»»åŠ¡æç¤ºé¢æ¿å’Œæ–‡å­—
+        /*if (Panel_TaskPrompt != null)
+            Panel_TaskPrompt.SetActive(false);
+        if (Text_TaskPrompt != null)
+            Text_TaskPrompt.gameObject.SetActive(false);*/
+
+        // ç¡®ä¿é¢æ¿å’Œæ–‡æœ¬é‡æ–°å¯ç”¨ï¼ˆé˜²æ­¢ä¸‹ä¸€ä¸ªä»»åŠ¡æ—¶UIç°æ‰ï¼‰
+        if (Panel_TaskPrompt != null && !Panel_TaskPrompt.activeSelf)
+            Panel_TaskPrompt.SetActive(true);
+        if (Text_TaskPrompt != null && !Text_TaskPrompt.gameObject.activeSelf)
+            Text_TaskPrompt.gameObject.SetActive(true);
+
+        // 5ï¸âƒ£ æ ‡è®°ä»»åŠ¡æç¤ºå·²å®Œæˆï¼Œé˜²æ­¢é‡å¤è§¦å‘
+        currentSequence.hasTaskPrompt = false;
+
+        // 6ï¸âƒ£ å¯é€‰ï¼šè§¦å‘ä»»åŠ¡å®Œæˆäº‹ä»¶ï¼ˆå¦‚æœä½ éœ€è¦é€šçŸ¥å…¶ä»–ç³»ç»Ÿï¼‰
+        // currentSequence.onTaskCompleted?.Invoke(); // éœ€è¦åœ¨ DialogueSequence æ·»åŠ  UnityEvent
+    }
+
+    // å¼€å§‹æŒ‡å®šåç§°çš„å¯¹è¯åºåˆ—
     public void StartDialogueSequence(string sequenceName)
     {
-        Log($"ÇëÇó¿ªÊ¼¶Ô»°ĞòÁĞ: {sequenceName}");
+        Log($"è¯·æ±‚å¼€å§‹å¯¹è¯åºåˆ—: {sequenceName}");
 
         DialogueSequence sequence = dialogueSequences.Find(s => s.sequenceName == sequenceName);
         if (sequence != null)
         {
-            Log($"ÕÒµ½ĞòÁĞ: {sequenceName}£¬¶Ô»°ĞĞÊı: {sequence.dialogueLines.Count}");
+            Log($"æ‰¾åˆ°åºåˆ—: {sequenceName}ï¼Œå¯¹è¯è¡Œæ•°: {sequence.dialogueLines.Count}");
             StartDialogueSequence(sequence);
         }
         else
         {
-            Debug.LogError($"Î´ÕÒµ½¶Ô»°ĞòÁĞ: {sequenceName}");
-            Log($"¿ÉÓÃĞòÁĞ: {string.Join(", ", dialogueSequences.Select(s => s.sequenceName))}");
+            Debug.LogError($"æœªæ‰¾åˆ°å¯¹è¯åºåˆ—: {sequenceName}");
+            Log($"å¯ç”¨åºåˆ—: {string.Join(", ", dialogueSequences.Select(s => s.sequenceName))}");
         }
     }
 
-    // ¿ªÊ¼¶Ô»°ĞòÁĞ
+    // å¼€å§‹å¯¹è¯åºåˆ—
     void StartDialogueSequence(DialogueSequence sequence)
     {
         if (isDialogueActive) return;
@@ -211,19 +289,19 @@ public class Scene4DialogueManager : MonoBehaviour
         currentDialogueIndex = 0;
         isDialogueActive = true;
 
-        // Ëø¶¨Íæ¼ÒÒÆ¶¯ºÍ½»»¥
+        // é”å®šç©å®¶ç§»åŠ¨å’Œäº¤äº’
         if (lockMovementDuringDialogue)
         {
             LockPlayerControls(true);
         }
 
-        // ÏÔÊ¾¶Ô»°Ãæ°å
+        // æ˜¾ç¤ºå¯¹è¯é¢æ¿
         if (player1DialoguePanel != null) player1DialoguePanel.SetActive(true);
         if (player2DialoguePanel != null) player2DialoguePanel.SetActive(true);
 
-        sequence.onSequenceStart?.Invoke(); // ´¥·¢ĞòÁĞ¿ªÊ¼ÊÂ¼ş
+        sequence.onSequenceStart?.Invoke(); // è§¦å‘åºåˆ—å¼€å§‹äº‹ä»¶
 
-        ShowDialogueLine(currentSequence.dialogueLines[currentDialogueIndex]); // ÏÔÊ¾µÚÒ»ĞĞ¶Ô»°
+        ShowDialogueLine(currentSequence.dialogueLines[currentDialogueIndex]); // æ˜¾ç¤ºç¬¬ä¸€è¡Œå¯¹è¯
     }
 
     void ShowDialogueLine(DialogueLine line)
@@ -232,47 +310,47 @@ public class Scene4DialogueManager : MonoBehaviour
 
         isLastLine = (currentDialogueIndex == currentSequence.dialogueLines.Count - 1);
 
-        // ¸ù¾İ¶Ô»°²àÉèÖÃÏÔÊ¾¶ÔÓ¦µÄUI
+        // æ ¹æ®å¯¹è¯ä¾§è®¾ç½®æ˜¾ç¤ºå¯¹åº”çš„UI
         switch (line.dialogueSide)
         {
             case DialogueSide.LeftOnly:
-                // Ö»ÏÔÊ¾×ó±ß£¬Òş²ØÓÒ±ß
+                // åªæ˜¾ç¤ºå·¦è¾¹ï¼Œéšè—å³è¾¹
                 if (player1DialoguePanel != null) player1DialoguePanel.SetActive(true);
                 if (player2DialoguePanel != null) player2DialoguePanel.SetActive(false);
                 break;
             case DialogueSide.RightOnly:
-                // Ö»ÏÔÊ¾ÓÒ±ß£¬Òş²Ø×ó±ß
+                // åªæ˜¾ç¤ºå³è¾¹ï¼Œéšè—å·¦è¾¹
                 if (player1DialoguePanel != null) player1DialoguePanel.SetActive(false);
                 if (player2DialoguePanel != null) player2DialoguePanel.SetActive(true);
                 break;
             case DialogueSide.Both:
             default:
-                // Á½±ß¶¼ÏÔÊ¾
+                // ä¸¤è¾¹éƒ½æ˜¾ç¤º
                 if (player1DialoguePanel != null) player1DialoguePanel.SetActive(true);
                 if (player2DialoguePanel != null) player2DialoguePanel.SetActive(true);
                 break;
         }
 
-        // ÉèÖÃËµ»°ÕßĞÅÏ¢
+        // è®¾ç½®è¯´è¯è€…ä¿¡æ¯
         if (player1SpeakerName != null) player1SpeakerName.text = line.speakerName;
         if (player2SpeakerName != null) player2SpeakerName.text = line.speakerName;
         if (player1SpeakerIcon != null) player1SpeakerIcon.sprite = line.speakerIcon;
         if (player2SpeakerIcon != null) player2SpeakerIcon.sprite = line.speakerIcon;
 
-        // ÉèÖÃ×Ô¶¨Òå´ò×ÖÒôĞ§£¨Èç¹ûÓĞ£©
+        // è®¾ç½®è‡ªå®šä¹‰æ‰“å­—éŸ³æ•ˆï¼ˆå¦‚æœæœ‰ï¼‰
         AudioClip currentTypingSound = line.customTypingSound != null ? line.customTypingSound : typingSound;
 
-        // ¿ªÊ¼´ò×ÖĞ§¹û
+        // å¼€å§‹æ‰“å­—æ•ˆæœ
         typingCoroutine = StartCoroutine(TypeDialogueLine(line, currentTypingSound));
 
         if (line.autoAdvance)
         {
-            // ×Ô¶¯Ç°½ø
+            // è‡ªåŠ¨å‰è¿›
             StartCoroutine(AutoAdvanceDialogue(line.autoAdvanceDelay));
         }
         else
         {
-            // Èç¹ûÊÇĞòÁĞ½áÊøĞĞ£¬Ç¿ÖÆÒªÇóË«ÈËÈ·ÈÏ
+            // å¦‚æœæ˜¯åºåˆ—ç»“æŸè¡Œï¼Œå¼ºåˆ¶è¦æ±‚åŒäººç¡®è®¤
             if (line.isSequenceEndLine)
             {
                 waitingForPlayer1 = true;
@@ -280,22 +358,22 @@ public class Scene4DialogueManager : MonoBehaviour
             }
             else
             {
-                // ¸ù¾İÊäÈëÒªÇóÉèÖÃµÈ´ıÄÄ¸öÍæ¼Ò°´¼ü
+                // æ ¹æ®è¾“å…¥è¦æ±‚è®¾ç½®ç­‰å¾…å“ªä¸ªç©å®¶æŒ‰é”®
                 switch (line.inputRequirement)
                 {
                     case PlayerInputRequirement.Player1Only:
-                        // Ö»µÈ´ıÍæ¼Ò1°´¼ü
+                        // åªç­‰å¾…ç©å®¶1æŒ‰é”®
                         waitingForPlayer1 = true;
                         waitingForPlayer2 = false;
                         break;
                     case PlayerInputRequirement.Player2Only:
-                        // Ö»µÈ´ıÍæ¼Ò2°´¼ü
+                        // åªç­‰å¾…ç©å®¶2æŒ‰é”®
                         waitingForPlayer1 = false;
                         waitingForPlayer2 = true;
                         break;
                     case PlayerInputRequirement.Both:
                     default:
-                        // µÈ´ıÁ½¸öÍæ¼Ò°´¼ü
+                        // ç­‰å¾…ä¸¤ä¸ªç©å®¶æŒ‰é”®
                         waitingForPlayer1 = true;
                         waitingForPlayer2 = true;
                         break;
@@ -304,21 +382,21 @@ public class Scene4DialogueManager : MonoBehaviour
 
             if (showEndingPrompt)
             {
-                StartCoroutine(AddEndingPrompt(line)); // Ìí¼Ó½áÊøÌáÊ¾
+                StartCoroutine(AddEndingPrompt(line)); // æ·»åŠ ç»“æŸæç¤º
             }
         }
     }
 
-    // ´ò×ÖĞ§¹ûµÄĞ­³Ì
+    // æ‰“å­—æ•ˆæœçš„åç¨‹
     IEnumerator TypeDialogueLine(DialogueLine line, AudioClip soundClip)
     {
         int characterCount = 0;
 
-        // ¸ù¾İ¶Ô»°²àÉèÖÃÏÔÊ¾¶ÔÓ¦µÄÎÄ±¾
+        // æ ¹æ®å¯¹è¯ä¾§è®¾ç½®æ˜¾ç¤ºå¯¹åº”çš„æ–‡æœ¬
         switch (line.dialogueSide)
         {
             case DialogueSide.LeftOnly:
-                // Ö»ÔÚ×ó±ßÏÔÊ¾´ò×ÖĞ§¹û
+                // åªåœ¨å·¦è¾¹æ˜¾ç¤ºæ‰“å­—æ•ˆæœ
                 if (player1DialogueText != null)
                 {
                     player1DialogueText.text = "";
@@ -330,12 +408,12 @@ public class Scene4DialogueManager : MonoBehaviour
                         yield return new WaitForSeconds(typingSpeed);
                     }
                 }
-                // ÓÒ±ß±£³Ö¿Õ°×
+                // å³è¾¹ä¿æŒç©ºç™½
                 if (player2DialogueText != null) player2DialogueText.text = "";
                 break;
 
             case DialogueSide.RightOnly:
-                // Ö»ÔÚÓÒ±ßÏÔÊ¾´ò×ÖĞ§¹û
+                // åªåœ¨å³è¾¹æ˜¾ç¤ºæ‰“å­—æ•ˆæœ
                 if (player2DialogueText != null)
                 {
                     player2DialogueText.text = "";
@@ -347,13 +425,13 @@ public class Scene4DialogueManager : MonoBehaviour
                         yield return new WaitForSeconds(typingSpeed);
                     }
                 }
-                // ×ó±ß±£³Ö¿Õ°×
+                // å·¦è¾¹ä¿æŒç©ºç™½
                 if (player1DialogueText != null) player1DialogueText.text = "";
                 break;
 
             case DialogueSide.Both:
             default:
-                // Á½±ß¶¼ÏÔÊ¾´ò×ÖĞ§¹û
+                // ä¸¤è¾¹éƒ½æ˜¾ç¤ºæ‰“å­—æ•ˆæœ
                 if (player1DialogueText != null)
                 {
                     player1DialogueText.text = "";
@@ -381,97 +459,97 @@ public class Scene4DialogueManager : MonoBehaviour
         }
     }
 
-    // ²¥·Å´ò×ÖÒôĞ§
+    // æ’­æ”¾æ‰“å­—éŸ³æ•ˆ
     void PlayTypingSound(char character, AudioClip soundClip, int characterCount)
     {
         if (soundClip == null) return;
 
-        // ¼ì²éÊÇ·ñĞèÒªÌø¹ıÕâ¸ö×Ö·ûµÄÒôĞ§
+        // æ£€æŸ¥æ˜¯å¦éœ€è¦è·³è¿‡è¿™ä¸ªå­—ç¬¦çš„éŸ³æ•ˆ
         if (character == ' ' && !playSoundOnSpace)
             return;
 
         if (IsPunctuation(character) && !playSoundOnPunctuation)
             return;
 
-        // ¸ù¾İÉèÖÃµÄÆµÂÊ²¥·ÅÒôĞ§
+        // æ ¹æ®è®¾ç½®çš„é¢‘ç‡æ’­æ”¾éŸ³æ•ˆ
         if (characterCount % charactersPerSound == 0)
         {
             audioSource.PlayOneShot(soundClip);
         }
     }
 
-    // ¼ì²é×Ö·ûÊÇ·ñÊÇ±êµã·ûºÅ
+    // æ£€æŸ¥å­—ç¬¦æ˜¯å¦æ˜¯æ ‡ç‚¹ç¬¦å·
     bool IsPunctuation(char c)
     {
-        // ³£¼û±êµã·ûºÅ
+        // å¸¸è§æ ‡ç‚¹ç¬¦å·
         char[] punctuations = { '.', ',', '!', '?', ';', ':', '"', '\'', '(', ')', '[', ']', '{', '}' };
         return System.Array.IndexOf(punctuations, c) >= 0;
     }
 
-    // Ìí¼Ó½áÊøÌáÊ¾µÄĞ­³Ì£¨¸ù¾İÊäÈëÒªÇóÏÔÊ¾²»Í¬µÄÌáÊ¾£©
+    // æ·»åŠ ç»“æŸæç¤ºçš„åç¨‹ï¼ˆæ ¹æ®è¾“å…¥è¦æ±‚æ˜¾ç¤ºä¸åŒçš„æç¤ºï¼‰
     IEnumerator AddEndingPrompt(DialogueLine line)
     {
         yield return new WaitUntil(() => typingCoroutine == null);
 
-        // Èç¹ûÊÇĞòÁĞ½áÊøĞĞ£¬Ç¿ÖÆÏÔÊ¾Ë«ÈËÈ·ÈÏÌáÊ¾
+        // å¦‚æœæ˜¯åºåˆ—ç»“æŸè¡Œï¼Œå¼ºåˆ¶æ˜¾ç¤ºåŒäººç¡®è®¤æç¤º
         if (line.isSequenceEndLine)
         {
             if (player1DialogueText != null && !string.IsNullOrEmpty(player1DialogueText.text))
             {
-                player1DialogueText.text += $"\n\n<color=#FFFF00>°´ F ºÍ H ¼ü¼ÌĞø</color>";
+                player1DialogueText.text += $"\n\n<color=#FFFF00>æŒ‰ FFFFFFFFF å’Œ H é”®ç»§ç»­</color>";
             }
             if (player2DialogueText != null && !string.IsNullOrEmpty(player2DialogueText.text))
             {
-                player2DialogueText.text += $"\n\n<color=#FFFF00>°´ F ºÍ H ¼ü¼ÌĞø</color>";
+                player2DialogueText.text += $"\n\n<color=#FFFF00>æŒ‰ F å’Œ H é”®ç»§ç»­</color>";
             }
         }
         else
         {
-            // ¸ù¾İÊäÈëÒªÇóÏÔÊ¾²»Í¬µÄÌáÊ¾
+            // æ ¹æ®è¾“å…¥è¦æ±‚æ˜¾ç¤ºä¸åŒçš„æç¤º
             switch (line.inputRequirement)
             {
                 case PlayerInputRequirement.Player1Only:
-                    // Ö»ÔÚ×ó±ßÏÔÊ¾ÌáÊ¾
+                    // åªåœ¨å·¦è¾¹æ˜¾ç¤ºæç¤º
                     if (player1DialogueText != null && !string.IsNullOrEmpty(player1DialogueText.text))
                     {
-                        player1DialogueText.text += $"\n\n<color=#FFFF00>°´ F ¼ü¼ÌĞø</color>";
+                        player1DialogueText.text += $"\n\n<color=#FFFF00>æŒ‰ F é”®ç»§ç»­</color>";
                     }
                     break;
 
                 case PlayerInputRequirement.Player2Only:
-                    // Ö»ÔÚÓÒ±ßÏÔÊ¾ÌáÊ¾
+                    // åªåœ¨å³è¾¹æ˜¾ç¤ºæç¤º
                     if (player2DialogueText != null && !string.IsNullOrEmpty(player2DialogueText.text))
                     {
-                        player2DialogueText.text += $"\n\n<color=#FFFF00>°´ H ¼ü¼ÌĞø</color>";
+                        player2DialogueText.text += $"\n\n<color=#FFFF00>æŒ‰ H é”®ç»§ç»­</color>";
                     }
                     break;
 
                 case PlayerInputRequirement.Both:
                 default:
-                    // Á½±ß¶¼ÏÔÊ¾ÌáÊ¾
+                    // ä¸¤è¾¹éƒ½æ˜¾ç¤ºæç¤º
                     if (player1DialogueText != null && !string.IsNullOrEmpty(player1DialogueText.text))
                     {
-                        player1DialogueText.text += $"\n\n<color=#FFFF00>°´ F ºÍ H ¼ü¼ÌĞø</color>";
+                        player1DialogueText.text += $"\n\n<color=#FFFF00>æŒ‰ F å’Œ H é”®ç»§ç»­</color>";
                     }
                     if (player2DialogueText != null && !string.IsNullOrEmpty(player2DialogueText.text))
                     {
-                        player2DialogueText.text += $"\n\n<color=#FFFF00>°´ F ºÍ H ¼ü¼ÌĞø</color>";
+                        player2DialogueText.text += $"\n\n<color=#FFFF00>æŒ‰ F å’Œ H é”®ç»§ç»­</color>";
                     }
                     break;
             }
         }
 
-        Log("ÏÔÊ¾½áÊøÌáÊ¾£¬µÈ´ıÍæ¼Ò°´¼ü");
+        Log("æ˜¾ç¤ºç»“æŸæç¤ºï¼Œç­‰å¾…ç©å®¶æŒ‰é”®");
     }
 
-    // ×Ô¶¯Ç°½ø¶Ô»°µÄĞ­³Ì
+    // è‡ªåŠ¨å‰è¿›å¯¹è¯çš„åç¨‹
     IEnumerator AutoAdvanceDialogue(float delay)
     {
         yield return new WaitForSeconds(delay);
         NextDialogueLine();
     }
 
-    // ¼ì²éÊÇ·ñ¿ÉÒÔÇ°½øµ½ÏÂÒ»ĞĞ¶Ô»°
+    // æ£€æŸ¥æ˜¯å¦å¯ä»¥å‰è¿›åˆ°ä¸‹ä¸€è¡Œå¯¹è¯
     void CheckAdvanceDialogue()
     {
         if (!waitingForPlayer1 && !waitingForPlayer2)
@@ -480,7 +558,7 @@ public class Scene4DialogueManager : MonoBehaviour
         }
     }
 
-    // Ç°½øµ½ÏÂÒ»ĞĞ¶Ô»°
+    // å‰è¿›åˆ°ä¸‹ä¸€è¡Œå¯¹è¯
     void NextDialogueLine()
     {
         currentDialogueIndex++;
@@ -491,56 +569,89 @@ public class Scene4DialogueManager : MonoBehaviour
         }
         else
         {
-            EndDialogueSequence(); // ½áÊø¶Ô»°ĞòÁĞ
+            EndDialogueSequence(); // ç»“æŸå¯¹è¯åºåˆ—
         }
     }
 
-    // ½áÊø¶Ô»°ĞòÁĞ
-    void EndDialogueSequence()
+    // å·²æ‰§è¡Œï¼šç»“æŸå¯¹è¯åºåˆ—
+    void EndDialogueSequence()//DialogueLine line
     {
         isDialogueActive = false;
         isLastLine = false;
 
-        // Òş²Ø¶Ô»°Ãæ°å
+        // éšè—å¯¹è¯é¢æ¿
         if (player1DialoguePanel != null) player1DialoguePanel.SetActive(false);
         if (player2DialoguePanel != null) player2DialoguePanel.SetActive(false);
 
-        // ½âËøÍæ¼ÒÒÆ¶¯ºÍ½»»¥
+        // è§£é”ç©å®¶ç§»åŠ¨å’Œäº¤äº’
         if (lockMovementDuringDialogue)
         {
             LockPlayerControls(false);
         }
+        //å¼ å¥•å¿»ï¼šå¦‚æœæœ‰åºåˆ—ç»“æŸçš„ä»»åŠ¡æç¤º
+        //DialogueLine lastLine = null;//è·å–æœ€åä¸€è¡Œ
+        //if (currentSequence != null && currentSequence.dialogueLines.Count > 0)
+        //    lastLine = currentSequence.dialogueLines[currentSequence.dialogueLines.Count - 1];
 
-        currentSequence.onSequenceEnd?.Invoke(); // ´¥·¢ĞòÁĞ½áÊøÊÂ¼ş
+        if (currentSequence != null && currentSequence.hasTaskPrompt)
+        {
+            Panel_TaskPrompt.SetActive(true);
 
-        Log($"¶Ô»°ĞòÁĞ½áÊø: {currentSequence.sequenceName}");
+            if (currentSequence.taskTypingCoroutine != null) StopCoroutine(currentSequence.taskTypingCoroutine);
+
+            // ä½¿ç”¨ä»»åŠ¡æç¤ºéŸ³æ•ˆå¯åŠ¨æ‰“å­—åç¨‹
+            AudioClip clip = currentSequence.taskTypingSound != null ? currentSequence.taskTypingSound : typingSound;
+            currentSequence.taskTypingCoroutine = StartCoroutine(TypeTaskPrompt(currentSequence.taskContent, clip));
+        }
+        //å¼ å¥•å¿»ç»“æŸ
+        currentSequence.onSequenceEnd?.Invoke(); // è§¦å‘åºåˆ—ç»“æŸäº‹ä»¶
+
+        Log($"å¯¹è¯åºåˆ—ç»“æŸ: {currentSequence.sequenceName}");
     }
 
-    // Ëø¶¨/½âËøÍæ¼Ò¿ØÖÆ£¨ÒÆ¶¯ºÍ½»»¥£©
+    //å¼ å¥•å¿»ï¼šä»»åŠ¡æç¤ºæ‰“å­—æœºåç¨‹
+    private IEnumerator TypeTaskPrompt(string text, AudioClip soundClip)
+    {
+        Text_TaskPrompt.text = "";
+        int characterCount = 0;
+
+        foreach (char c in text)
+        {
+            Text_TaskPrompt.text += c;
+            characterCount++;
+
+            // æ’­æ”¾æ‰“å­—éŸ³æ•ˆ
+            PlayTypingSound(c, soundClip, characterCount);
+
+            yield return new WaitForSeconds(typingSpeed);
+        }
+    }
+
+    // é”å®š/è§£é”ç©å®¶æ§åˆ¶ï¼ˆç§»åŠ¨å’Œäº¤äº’ï¼‰
     void LockPlayerControls(bool locked)
     {
-        // Ëø¶¨ DualPlayerController µÄÒÆ¶¯
+        // é”å®š DualPlayerController çš„ç§»åŠ¨
         if (dualPlayerController != null)
         {
             dualPlayerController.SetMovementLock(locked);
-            Log($"DualPlayerController ÒÆ¶¯ {(locked ? "Ëø¶¨" : "½âËø")}");
+            Log($"DualPlayerController ç§»åŠ¨ {(locked ? "é”å®š" : "è§£é”")}");
         }
 
-        // Ëø¶¨ PlayerController µÄ½»»¥
+        // é”å®š PlayerController çš„äº¤äº’
         if (player1Controller != null)
         {
             player1Controller.SetTemporaryLock(locked);
-            Log($"Íæ¼Ò1½»»¥ {(locked ? "Ëø¶¨" : "½âËø")}");
+            Log($"ç©å®¶1äº¤äº’ {(locked ? "é”å®š" : "è§£é”")}");
         }
 
         if (player2Controller != null)
         {
             player2Controller.SetTemporaryLock(locked);
-            Log($"Íæ¼Ò2½»»¥ {(locked ? "Ëø¶¨" : "½âËø")}");
+            Log($"ç©å®¶2äº¤äº’ {(locked ? "é”å®š" : "è§£é”")}");
         }
     }
 
-    // Ìø¹ıµ±Ç°¶Ô»°
+    // è·³è¿‡å½“å‰å¯¹è¯
     public void SkipCurrentDialogue()
     {
         if (isDialogueActive)
@@ -549,65 +660,65 @@ public class Scene4DialogueManager : MonoBehaviour
         }
     }
 
-    // µ÷ÊÔ¹¤¾ß
-    [ContextMenu("¿ªÊ¼¾çÇé1¶Ô»°")]
+    // è°ƒè¯•å·¥å…·
+    [ContextMenu("å¼€å§‹å‰§æƒ…1å¯¹è¯")]
     public void DebugStartPlot1()
     {
         StartDialogueSequence("Plot1");
     }
 
-    [ContextMenu("¿ªÊ¼¾çÇé2¶Ô»°")]
+    [ContextMenu("å¼€å§‹å‰§æƒ…2å¯¹è¯")]
     public void DebugStartPlot2()
     {
         StartDialogueSequence("Plot2");
     }
 
-    [ContextMenu("ÏÔÊ¾µ±Ç°¶Ô»°×´Ì¬")]
+    [ContextMenu("æ˜¾ç¤ºå½“å‰å¯¹è¯çŠ¶æ€")]
     public void DebugShowDialogueState()
     {
-        Log($"=== ¶Ô»°×´Ì¬ ===");
-        Log($"µ±Ç°ĞòÁĞ: {currentSequence?.sequenceName ?? "None"}");
-        Log($"µ±Ç°Ë÷Òı: {currentDialogueIndex}");
-        Log($"µÈ´ıÍæ¼Ò1: {waitingForPlayer1}");
-        Log($"µÈ´ıÍæ¼Ò2: {waitingForPlayer2}");
-        Log($"×îºóÒ»ĞĞ: {isLastLine}");
-        Log($"ÒÆ¶¯Ëø¶¨: {lockMovementDuringDialogue}");
+        Log($"=== å¯¹è¯çŠ¶æ€ ===");
+        Log($"å½“å‰åºåˆ—: {currentSequence?.sequenceName ?? "None"}");
+        Log($"å½“å‰ç´¢å¼•: {currentDialogueIndex}");
+        Log($"ç­‰å¾…ç©å®¶1: {waitingForPlayer1}");
+        Log($"ç­‰å¾…ç©å®¶2: {waitingForPlayer2}");
+        Log($"æœ€åä¸€è¡Œ: {isLastLine}");
+        Log($"ç§»åŠ¨é”å®š: {lockMovementDuringDialogue}");
         if (dualPlayerController != null)
         {
-            Log($"DualPlayerController ×´Ì¬: {(dualPlayerController.IsMovementLocked() ? "Ëø¶¨" : "Õı³£")}");
+            Log($"DualPlayerController çŠ¶æ€: {(dualPlayerController.IsMovementLocked() ? "é”å®š" : "æ­£å¸¸")}");
         }
     }
 
-    [ContextMenu("²âÊÔÒÆ¶¯Ëø¶¨")]
+    [ContextMenu("æµ‹è¯•ç§»åŠ¨é”å®š")]
     public void TestMovementLock()
     {
         if (dualPlayerController != null)
         {
             bool currentState = dualPlayerController.IsMovementLocked();
             dualPlayerController.SetMovementLock(!currentState);
-            Log($"ÇĞ»»ÒÆ¶¯Ëø¶¨×´Ì¬: {(!currentState ? "Ëø¶¨" : "½âËø")}");
+            Log($"åˆ‡æ¢ç§»åŠ¨é”å®šçŠ¶æ€: {(!currentState ? "é”å®š" : "è§£é”")}");
         }
         else
         {
-            LogWarning("DualPlayerController Î´ÕÒµ½");
+            LogWarning("DualPlayerController æœªæ‰¾åˆ°");
         }
     }
 
-    [ContextMenu("²âÊÔ´ò×ÖÒôĞ§")]
+    [ContextMenu("æµ‹è¯•æ‰“å­—éŸ³æ•ˆ")]
     public void TestTypingSound()
     {
         if (typingSound != null)
         {
             audioSource.PlayOneShot(typingSound);
-            Log("²¥·Å´ò×ÖÒôĞ§²âÊÔ");
+            Log("æ’­æ”¾æ‰“å­—éŸ³æ•ˆæµ‹è¯•");
         }
         else
         {
-            Log("Ã»ÓĞÉèÖÃ´ò×ÖÒôĞ§");
+            Log("æ²¡æœ‰è®¾ç½®æ‰“å­—éŸ³æ•ˆ");
         }
     }
 
-    // ÈÕÖ¾¹¤¾ß·½·¨
+    // æ—¥å¿—å·¥å…·æ–¹æ³•
     void Log(string message)
     {
         if (enableDialogueDebug)

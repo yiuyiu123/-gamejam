@@ -99,8 +99,7 @@ public class ItemTrigger : MonoBehaviour
             {
                 if (debugMode)
                 {
-                    Debug.Log($"触发规则匹配: 物品[{incomingObject.name}]    " +
-                             $"标签[{rule.requiredTag}]", this);
+                    Debug.Log($"触发规则匹配: 物品[{incomingObject.name}]" +  $"标签[{rule.requiredTag}]", this);
                 }
 
                 // 执行触发逻辑 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
@@ -12,17 +13,20 @@ public class Scene4UI_Manager : MonoBehaviour
 
     [Header("引用脚本")]
     public ItemTrigger DoorDelete;
-    public PlayerMovement playerMovement;
+    public HintTrigger playerMovement;
     public ThreeItemCraftingManager threeItemCraftingManager;
+    //让切换相机监听
+    public event Action IsPlayingPlot;
 
     private bool hasDoorFirstOpen = false;
     private bool hasDoorSecondOpen = false;
-    private bool hasOverReadDiary = false;
+    //private bool hasOverReadDiary = false;
+    private bool hasFirstTriggerF=false;
     private bool CanQuestion = false;
 
 
     [Header("逻辑引用")]
-    public Scene4DialogueManager dialogueManager; 
+    public scene4DialogueManager dialogueManager; 
     public bool useSceneTransition = true;
     public string nextSceneName = "scene5";
 
@@ -81,18 +85,18 @@ public class Scene4UI_Manager : MonoBehaviour
             DoorDelete.OpenFirstDoor += OnDoorOpened1;
             DoorDelete.OpenSecondDoor += OnDoorOpened2;
         }
-        // 第三篇日记阅读完playerMovement碰到3的碰撞体
-        //if (playerMovement != null)
-            //playerMovement.HasKeyAppear += OverReadDiary;
-        // 订阅最终合成事件
+        //第三篇日记阅读完，第一次显示F
+        if (playerMovement != null)
+            playerMovement.OverReadDiary += OnOverReadDiary;
+        //订阅最终合成事件
         //if (threeItemCraftingManager != null)
             //threeItemCraftingManager.OnQuestion += OnQuestion;
         else
         {
-            dialogueManager = FindObjectOfType<Scene4DialogueManager>();
+            dialogueManager = FindObjectOfType<scene4DialogueManager>();
             threeItemCraftingManager=FindObjectOfType<ThreeItemCraftingManager>();
             DoorDelete = FindObjectOfType<ItemTrigger>();
-            playerMovement = FindObjectOfType<PlayerMovement>();
+            playerMovement = FindObjectOfType<HintTrigger>();
         }
         sceneTransition = FindObjectOfType<SimpleSceneTransitionManager>();
 
@@ -132,10 +136,11 @@ public class Scene4UI_Manager : MonoBehaviour
         CheckTask2Completion();
     }
 
-    void OverReadDiary()
+    void OnOverReadDiary()
     {
+        playerMovement.OverReadDiary -= OnOverReadDiary;
         Debug.Log("事件触发：A阅读完日记本");
-        hasOverReadDiary = true;
+        hasFirstTriggerF = true;
         CheckTask3Completion();
     }
     void OnQuestion()
@@ -186,6 +191,8 @@ public class Scene4UI_Manager : MonoBehaviour
     {
         task3Completed = true;
         Log("任务3完成,触发剧情3");
+        hasFirstTriggerF = true;
+        Log("即将触发过一次剧情3，以后不再触发");
         OnTask3Complete?.Invoke();
         StartPlot3();
     }
@@ -224,9 +231,11 @@ public class Scene4UI_Manager : MonoBehaviour
     }
     void CheckTask3Completion()
     {
-        if (!task3Completed && hasOverReadDiary)
+        if (!task3Completed && hasFirstTriggerF)
         {
-            task3Completed = true;
+            //任务三是否完成
+            Log("任务三完成检查");
+            task3Completed = false;
             CompleteTask3();
         }
     }

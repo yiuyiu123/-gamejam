@@ -29,7 +29,7 @@ public class AdvancedCameraSwitch : MonoBehaviour
     // ========== 交互设置 ==========
     [Header("【交互设置】")]
     [Tooltip("切换快捷键")]
-    public KeyCode switchKey = KeyCode.H;
+    public KeyCode switchKey = KeyCode.F;
 
     [Tooltip("允许无限次切换")]
     public bool canSwitchMultipleTimes = true;

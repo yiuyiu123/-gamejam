@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class HintTrigger : MonoBehaviour
@@ -10,6 +11,10 @@ public class HintTrigger : MonoBehaviour
     [Header("动画设置")]
     public bool useFadeEffect = true;  // 是否使用淡入淡出效果 
     public float fadeTime = 0.5f;      // 淡入淡出时间
+
+    [Header("张奕忻：剧情3监听")]
+    public bool hasFirstTiggerF = false;
+    public event Action OverReadDiary;
 
     private bool playerInTrigger = false;
     private Coroutine showCoroutine;
@@ -33,6 +38,10 @@ public class HintTrigger : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInTrigger = true;
+            //张奕忻：监听事件
+            //hasFirstTiggerF = true;
+            OverReadDiary?.Invoke();
+
             ShowHint();
         }
     }
