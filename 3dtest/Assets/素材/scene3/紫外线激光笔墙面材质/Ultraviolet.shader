@@ -13,12 +13,7 @@
         _NormalMap("Normal Map", 2D) = "bump" {}
         _EmissionStrength("Emission Strength", Range(0,5)) = 1
 
-        // 手电筒参数
-        _FlashPos("Flash Position", Vector) = (0,0,0,0)
-        _FlashDir("Flash Direction", Vector) = (0,0,1,0)
-        _FlashAngle("Flash Spot Angle", Float) = 30
-        _FlashRange("Flash Range", Float) = 5
-        _MinVisibility("Min Visibility", Float) = 0.1
+        _DrawTexVisibility("DrawTex Visibility", Range(0,1)) = 0
     }
 
     SubShader
@@ -43,23 +38,15 @@
         float _DrawRotation;
 
         sampler2D _NormalMap; half _EmissionStrength;
-
-        float3 _FlashPos;
-        float3 _FlashDir;
-        float _FlashAngle;
-        float _FlashRange;
-        float _MinVisibility;
+        float _DrawTexVisibility;
 
         struct Input
         {
             float2 uv_BaseTex;
             float2 uv_DrawTex;
-            float3 worldPos;
-            float3 viewDir;
             INTERNAL_DATA
         };
 
-        // UV旋转
         inline float2 RotateUV(float2 uv, float angle)
         {
             float rad = radians(angle);
@@ -86,31 +73,16 @@
             // 法线
             o.Normal = UnpackNormal(tex2D(_NormalMap, baseUV));
 
-            // 手电筒方向和距离衰减
-            float3 toFlash = _FlashPos - IN.worldPos;
-            float dist = length(toFlash);
-            float3 dir = normalize(toFlash);
+            // 用C#传的显隐值控制
+            float visibility = saturate(_DrawTexVisibility);
 
-            // 光照角度衰减
-            float spotDot = dot(dir, normalize(-_FlashDir));
-            float cosHalfAngle = cos(radians(_FlashAngle * 0.5));
-            float angleAtten = saturate((spotDot - cosHalfAngle) / (1.0 - cosHalfAngle));
-
-            // 光照距离衰减
-            float rangeAtten = saturate(1.0 - dist / _FlashRange);
-
-            // 总可见度
-            float visibility = angleAtten * rangeAtten;
-            visibility = visibility >= _MinVisibility ? visibility : 0.0;
-
-            // 输出颜色
-            o.Albedo = baseCol.rgb + drawCol.rgb * drawCol.a * visibility;
+            o.Albedo = baseCol.rgb + drawCol.rgb * visibility;
             o.Metallic = 0.0;
             o.Smoothness = 0.3;
 
-            // 发光
-            o.Emission = drawCol.rgb * drawCol.a * _EmissionStrength * visibility;
+            o.Emission = drawCol.rgb * _EmissionStrength * visibility;
         }
+
         ENDCG
     }
 

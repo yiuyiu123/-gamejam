@@ -78,7 +78,7 @@ Material:
     - _DetailNormalMapScale: 1
     - _DrawIntensity: 1
     - _DrawRotation: 0
-    - _DrawTexVisibility: 1
+    - _DrawTexVisibility: 0
     - _DstBlend: 0
     - _EmissionStrength: 1
     - _FlashAngle: 59
@@ -104,8 +104,8 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DrawTex_STCustom: {r: 1, g: 1, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FlashDir: {r: 0.9494658, g: -0.00000044703484, b: -0.31387186, a: 0}
-    - _FlashPos: {r: 879.5401, g: 8.54, b: 438.96545, a: 0}
+    - _FlashDir: {r: -0.9454187, g: 0.11539373, b: 0.30474246, a: 0}
+    - _FlashPos: {r: 875.5426, g: 8.620633, b: 448.4082, a: 0}
     - _SpotLightColor: {r: 5.732823, g: 3.3259428, b: 6.41, a: 6.41}
     - _SpotLightDir: {r: -0.95643014, g: -0.00000005960463, b: -0.29196143, a: 0}
     - _SpotLightPos: {r: 878.8156, g: 8.15, b: 450.19833, a: 0}

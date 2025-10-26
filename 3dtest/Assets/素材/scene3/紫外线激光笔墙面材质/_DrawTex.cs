@@ -5,47 +5,43 @@ public class _DrawTex : MonoBehaviour
 {
     [Header("手电筒")]
     public Transform flashlight;      // 手电筒 Transform
-    public Light flashlightLight;     // 手电筒 Spot Light
+    public Light flashlightLight;     // 手电筒 Light (Spot)
 
-    [Header("涂鸦墙")]
-    public Transform[] graffitiPoints;     // 每面墙的涂鸦检测点
-    public Renderer[] graffitiRenderers;   // 每面墙对应材质球
-    [Range(0f, 1f)]
-    public float minVisibility = 0.1f;     // 最小可见度
+    [Header("涂鸦墙/点")]
+    public Transform[] graffitiPoints;   // 每面墙涂鸦点
+    public Renderer[] graffitiRenderers; // 对应材质球
+    [Range(0, 1)]
+    public float minVisibility = 0.1f;   // 最小显示阈值
 
     void Update()
     {
         if (flashlight == null || flashlightLight == null) return;
-
-        Vector3 flashPos = flashlight.position;
-        Vector3 flashDir = flashlight.forward;
+        if (graffitiPoints.Length != graffitiRenderers.Length) return;
 
         for (int i = 0; i < graffitiPoints.Length; i++)
         {
             Transform spot = graffitiPoints[i];
             Renderer rend = graffitiRenderers[i];
-
             if (spot == null || rend == null) continue;
 
-            // 距离和角度计算
-            Vector3 toSpot = spot.position - flashPos;
-            float dist = toSpot.magnitude;
-            Vector3 dir = toSpot.normalized;
+            Vector3 toSpot = spot.position - flashlight.position;
+            float distance = toSpot.magnitude;
+            float angle = Vector3.Angle(flashlight.forward, toSpot);
 
-            float spotDot = Vector3.Dot(dir, flashDir);
-            float cosHalfAngle = Mathf.Cos(flashlightLight.spotAngle * 0.5f * Mathf.Deg2Rad);
-            float angleAtten = Mathf.Clamp01((spotDot - cosHalfAngle) / (1f - cosHalfAngle));
-            float rangeAtten = Mathf.Clamp01(1f - dist / flashlightLight.range);
+            // 在光锥内
+            bool insideCone = angle <= flashlightLight.spotAngle * 0.5f && distance <= flashlightLight.range;
+            float visibility = 0f;
 
-            float visibility = angleAtten * rangeAtten;
-            if (visibility < minVisibility) visibility = 0f;
+            if (insideCone)
+            {
+                // 简单距离衰减
+                visibility = 1.0f - (distance / flashlightLight.range);
+                visibility = Mathf.Clamp01(visibility);
+                if (visibility < minVisibility) visibility = 0f;
+            }
 
-            // 更新材质参数
-            rend.sharedMaterial.SetVector("_FlashPos", flashPos);
-            rend.sharedMaterial.SetVector("_FlashDir", flashDir);
-            rend.sharedMaterial.SetFloat("_FlashAngle", flashlightLight.spotAngle);
-            rend.sharedMaterial.SetFloat("_FlashRange", flashlightLight.range);
-            rend.sharedMaterial.SetFloat("_MinVisibility", minVisibility);
+            // 更新材质属性（sharedMaterial 避免泄漏）
+            rend.sharedMaterial.SetFloat("_DrawTexVisibility", visibility);
         }
     }
 }

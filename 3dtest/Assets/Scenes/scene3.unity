@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -4416,8 +4416,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 406414487}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.6981166, y: 0.11239954, z: 0.11239932, w: 0.6981161}
-  m_LocalPosition: {x: 878.88, y: 8.54, z: 439.2}
+  m_LocalRotation: {x: 0.009074473, y: -0.71544445, z: -0.6930291, w: -0.088133834}
+  m_LocalPosition: {x: 881.319, y: 9.009, z: 453.572}
   m_LocalScale: {x: 25.843445, y: 25.843445, z: 25.843445}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4426,7 +4426,7 @@ Transform:
   - {fileID: 780067791}
   - {fileID: 1266048424}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 18.293}
+  m_LocalEulerAnglesHint: {x: 263.338, y: -78.11902, z: -1909.777}
 --- !u!1 &413472415 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2151875685577457735, guid: ba6faa00edd1d5b48aae00a419db3530, type: 3}
@@ -7374,7 +7374,7 @@ MonoBehaviour:
   - {fileID: 377440693}
   - {fileID: 1124749751}
   - {fileID: 1130493906}
-  minVisibility: 1
+  minVisibility: 0
 --- !u!1 &793183174 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6637054334197212532, guid: a87d066a8f4c36f44aff1d32f0d50366, type: 3}
@@ -25169,7 +25169,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &2064432866
 Light:
   m_ObjectHideFlags: 0
