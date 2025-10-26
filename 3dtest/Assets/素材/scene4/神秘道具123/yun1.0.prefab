@@ -10,27 +10,27 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: e19f4e866674b7e40944acf65bc4caac, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.00594349
+      value: 0.002301557
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e19f4e866674b7e40944acf65bc4caac, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.005943491
+      value: 0.0023015575
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e19f4e866674b7e40944acf65bc4caac, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.0059434916
+      value: 0.0023015577
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e19f4e866674b7e40944acf65bc4caac, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 909.39
+      value: 909.38
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e19f4e866674b7e40944acf65bc4caac, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.151
+      value: 4.9924
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e19f4e866674b7e40944acf65bc4caac, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 467.42
+      value: 467.35
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e19f4e866674b7e40944acf65bc4caac, type: 3}
       propertyPath: m_LocalRotation.w
@@ -95,7 +95,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4db78b98f27e804eb70d016468cf412, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: "\u7269\u54C1"
+  itemName: "\u7AE5\u5E74\u7269\u54C1"
   itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
