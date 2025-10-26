@@ -610,27 +610,11 @@ public class InteractableItem : MonoBehaviour
             Debug.Log($"强制释放物品: {itemName}");
         }
     }
-
+    // 修改 OnDestroy 方法
     void OnDestroy()
     {
-        // 方法1：使用临时列表避免遍历时修改字典
-        var playersToClean = new List<GameObject>(playerUICoroutines.Keys);
-        foreach (var player in playersToClean)
-        {
-            if (playerUICoroutines.ContainsKey(player) && playerUICoroutines[player] != null)
-            {
-                StopCoroutine(playerUICoroutines[player]);
-            }
-        }
-
-        var uiInstancesToClean = new List<GameObject>(playerUIInstances.Keys);
-        foreach (var player in uiInstancesToClean)
-        {
-            if (playerUIInstances.ContainsKey(player) && playerUIInstances[player] != null)
-            {
-                Destroy(playerUIInstances[player]);
-            }
-        }
+        SafeStopAllCoroutines();
+        SafeDestroyAllUI();
 
         playerUIInstances.Clear();
         playerUICoroutines.Clear();
@@ -649,6 +633,38 @@ public class InteractableItem : MonoBehaviour
             }
         }
     }
+    // 新增：安全的协程停止方法
+    private void SafeStopAllCoroutines()
+    {
+        // 使用ToList()创建副本，避免枚举时修改
+        var coroutineEntries = new List<KeyValuePair<GameObject, Coroutine>>(playerUICoroutines);
+
+        foreach (var entry in coroutineEntries)
+        {
+            if (entry.Value != null)
+            {
+                StopCoroutine(entry.Value);
+                // 不立即从字典中移除，只是设置为null
+                playerUICoroutines[entry.Key] = null;
+            }
+        }
+    }
+
+    // 新增：安全的UI清理方法
+    private void SafeDestroyAllUI()
+    {
+        var uiEntries = new List<KeyValuePair<GameObject, GameObject>>(playerUIInstances);
+
+        foreach (var entry in uiEntries)
+        {
+            if (entry.Value != null)
+            {
+                Destroy(entry.Value);
+                playerUIInstances[entry.Key] = null;
+            }
+        }
+    }
+
 
     void OnDrawGizmosSelected()
     {
