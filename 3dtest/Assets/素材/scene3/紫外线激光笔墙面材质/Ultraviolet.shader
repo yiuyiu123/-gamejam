@@ -66,8 +66,8 @@
             fixed4 baseCol = tex2D(_BaseTex, baseUV) * _Color;
 
             // DrawTex
-            float2 drawUV = RotateUV(IN.uv_DrawTex, _DrawRotation);
-            drawUV = drawUV * _DrawTex_STCustom.xy + _DrawTex_STCustom.zw;
+            float2 drawUV = IN.uv_DrawTex * _DrawTex_STCustom.xy + _DrawTex_STCustom.zw;
+            drawUV = RotateUV(drawUV, _DrawRotation);
             fixed4 drawCol = tex2D(_DrawTex, drawUV);
 
             // 法线

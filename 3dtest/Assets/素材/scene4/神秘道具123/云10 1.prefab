@@ -1,0 +1,1095 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &7234613882362675853
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.37339625
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.37339625
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.37339625
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 875.26
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.7219
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 476.39
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      propertyPath: m_Name
+      value: "\u4E9110 1"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7031835006867796706, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: dfcef03a684afe14299ac3c9dca3aafe, type: 2}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8140002223985484167}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7630668302442454300}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -518407170655624547}
+    - targetCorrespondingSourceObject: {fileID: -8658422279658554519, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 3147602346350081015}
+    - targetCorrespondingSourceObject: {fileID: 4244914468155332221, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 6442227125582412679}
+    - targetCorrespondingSourceObject: {fileID: 5036666246336646893, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 7599236403632820653}
+    - targetCorrespondingSourceObject: {fileID: 7824638177861515733, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 4638367206676116585}
+    - targetCorrespondingSourceObject: {fileID: 1873015676646082291, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 9023558063035479308}
+    - targetCorrespondingSourceObject: {fileID: 2774240881332294242, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 7740730337440144194}
+    - targetCorrespondingSourceObject: {fileID: 2803357626419868296, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 8994722811126372670}
+    - targetCorrespondingSourceObject: {fileID: 7968237259721436466, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 1540413610431529057}
+    - targetCorrespondingSourceObject: {fileID: -4857994316958608967, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 659002768483030069}
+    - targetCorrespondingSourceObject: {fileID: 2994936021905090768, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 5849853321751427350}
+    - targetCorrespondingSourceObject: {fileID: 2878776081535953336, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 1141709216506337289}
+    - targetCorrespondingSourceObject: {fileID: -7610229034513142754, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 1872300408495545389}
+    - targetCorrespondingSourceObject: {fileID: 5861898248977776818, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 8608457525301152373}
+  m_SourcePrefab: {fileID: 100100000, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+--- !u!1 &644067564580993880 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7824638177861515733, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+  m_PrefabInstance: {fileID: 7234613882362675853}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4638367206676116585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 644067564580993880}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4db78b98f27e804eb70d016468cf412, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: "\u7269\u54C1"
+  itemDescription: 
+  canBePickedUp: 1
+  holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
+  holdRotationOffset: {x: 0, y: 0, z: 0}
+  canBeExchanged: 1
+  isExchangeLocked: 0
+  lastExchangeZone: 
+  limitExchangeTimes: 1
+  maxExchangeTimes: 1
+  currentExchangeTimes: 0
+  isBeingHeld: 0
+  isInExchangeProcess: 0
+  currentHolder: {fileID: 0}
+  pickUpTransitionTime: 0.3
+  pickUpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  showDebugInfo: 0
+--- !u!1 &788797815742279615 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7968237259721436466, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+  m_PrefabInstance: {fileID: 7234613882362675853}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1540413610431529057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 788797815742279615}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4db78b98f27e804eb70d016468cf412, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: "\u7269\u54C1"
+  itemDescription: 
+  canBePickedUp: 1
+  holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
+  holdRotationOffset: {x: 0, y: 0, z: 0}
+  canBeExchanged: 1
+  isExchangeLocked: 0
+  lastExchangeZone: 
+  limitExchangeTimes: 1
+  maxExchangeTimes: 1
+  currentExchangeTimes: 0
+  isBeingHeld: 0
+  isInExchangeProcess: 0
+  currentHolder: {fileID: 0}
+  pickUpTransitionTime: 0.3
+  pickUpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  showDebugInfo: 0
+--- !u!1 &2414870285071076448 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5036666246336646893, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+  m_PrefabInstance: {fileID: 7234613882362675853}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7599236403632820653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2414870285071076448}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4db78b98f27e804eb70d016468cf412, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: "\u7269\u54C1"
+  itemDescription: 
+  canBePickedUp: 1
+  holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
+  holdRotationOffset: {x: 0, y: 0, z: 0}
+  canBeExchanged: 1
+  isExchangeLocked: 0
+  lastExchangeZone: 
+  limitExchangeTimes: 1
+  maxExchangeTimes: 1
+  currentExchangeTimes: 0
+  isBeingHeld: 0
+  isInExchangeProcess: 0
+  currentHolder: {fileID: 0}
+  pickUpTransitionTime: 0.3
+  pickUpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  showDebugInfo: 0
+--- !u!1 &3836828943589589567 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5861898248977776818, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+  m_PrefabInstance: {fileID: 7234613882362675853}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8608457525301152373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3836828943589589567}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4db78b98f27e804eb70d016468cf412, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: "\u7269\u54C1"
+  itemDescription: 
+  canBePickedUp: 1
+  holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
+  holdRotationOffset: {x: 0, y: 0, z: 0}
+  canBeExchanged: 1
+  isExchangeLocked: 0
+  lastExchangeZone: 
+  limitExchangeTimes: 1
+  maxExchangeTimes: 1
+  currentExchangeTimes: 0
+  isBeingHeld: 0
+  isInExchangeProcess: 0
+  currentHolder: {fileID: 0}
+  pickUpTransitionTime: 0.3
+  pickUpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  showDebugInfo: 0
+--- !u!1 &4792115972585893893 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2803357626419868296, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+  m_PrefabInstance: {fileID: 7234613882362675853}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8994722811126372670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4792115972585893893}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4db78b98f27e804eb70d016468cf412, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: "\u7269\u54C1"
+  itemDescription: 
+  canBePickedUp: 1
+  holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
+  holdRotationOffset: {x: 0, y: 0, z: 0}
+  canBeExchanged: 1
+  isExchangeLocked: 0
+  lastExchangeZone: 
+  limitExchangeTimes: 1
+  maxExchangeTimes: 1
+  currentExchangeTimes: 0
+  isBeingHeld: 0
+  isInExchangeProcess: 0
+  currentHolder: {fileID: 0}
+  pickUpTransitionTime: 0.3
+  pickUpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  showDebugInfo: 0
+--- !u!1 &4820707151116488943 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2774240881332294242, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+  m_PrefabInstance: {fileID: 7234613882362675853}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7740730337440144194
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4820707151116488943}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4db78b98f27e804eb70d016468cf412, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: "\u7269\u54C1"
+  itemDescription: 
+  canBePickedUp: 1
+  holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
+  holdRotationOffset: {x: 0, y: 0, z: 0}
+  canBeExchanged: 1
+  isExchangeLocked: 0
+  lastExchangeZone: 
+  limitExchangeTimes: 1
+  maxExchangeTimes: 1
+  currentExchangeTimes: 0
+  isBeingHeld: 0
+  isInExchangeProcess: 0
+  currentHolder: {fileID: 0}
+  pickUpTransitionTime: 0.3
+  pickUpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  showDebugInfo: 0
+--- !u!1 &4870068404171647797 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2878776081535953336, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+  m_PrefabInstance: {fileID: 7234613882362675853}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1141709216506337289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4870068404171647797}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4db78b98f27e804eb70d016468cf412, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: "\u7269\u54C1"
+  itemDescription: 
+  canBePickedUp: 1
+  holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
+  holdRotationOffset: {x: 0, y: 0, z: 0}
+  canBeExchanged: 1
+  isExchangeLocked: 0
+  lastExchangeZone: 
+  limitExchangeTimes: 1
+  maxExchangeTimes: 1
+  currentExchangeTimes: 0
+  isBeingHeld: 0
+  isInExchangeProcess: 0
+  currentHolder: {fileID: 0}
+  pickUpTransitionTime: 0.3
+  pickUpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  showDebugInfo: 0
+--- !u!1 &5617858521425701469 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2994936021905090768, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+  m_PrefabInstance: {fileID: 7234613882362675853}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5849853321751427350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5617858521425701469}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4db78b98f27e804eb70d016468cf412, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: "\u7269\u54C1"
+  itemDescription: 
+  canBePickedUp: 1
+  holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
+  holdRotationOffset: {x: 0, y: 0, z: 0}
+  canBeExchanged: 1
+  isExchangeLocked: 0
+  lastExchangeZone: 
+  limitExchangeTimes: 1
+  maxExchangeTimes: 1
+  currentExchangeTimes: 0
+  isBeingHeld: 0
+  isInExchangeProcess: 0
+  currentHolder: {fileID: 0}
+  pickUpTransitionTime: 0.3
+  pickUpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  showDebugInfo: 0
+--- !u!1 &6409305163131425588 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -4857994316958608967, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+  m_PrefabInstance: {fileID: 7234613882362675853}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &659002768483030069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6409305163131425588}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4db78b98f27e804eb70d016468cf412, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: "\u7269\u54C1"
+  itemDescription: 
+  canBePickedUp: 1
+  holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
+  holdRotationOffset: {x: 0, y: 0, z: 0}
+  canBeExchanged: 1
+  isExchangeLocked: 0
+  lastExchangeZone: 
+  limitExchangeTimes: 1
+  maxExchangeTimes: 1
+  currentExchangeTimes: 0
+  isBeingHeld: 0
+  isInExchangeProcess: 0
+  currentHolder: {fileID: 0}
+  pickUpTransitionTime: 0.3
+  pickUpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  showDebugInfo: 0
+--- !u!1 &6813512793229546736 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4244914468155332221, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+  m_PrefabInstance: {fileID: 7234613882362675853}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6442227125582412679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6813512793229546736}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4db78b98f27e804eb70d016468cf412, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: "\u7269\u54C1"
+  itemDescription: 
+  canBePickedUp: 1
+  holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
+  holdRotationOffset: {x: 0, y: 0, z: 0}
+  canBeExchanged: 1
+  isExchangeLocked: 0
+  lastExchangeZone: 
+  limitExchangeTimes: 1
+  maxExchangeTimes: 1
+  currentExchangeTimes: 0
+  isBeingHeld: 0
+  isInExchangeProcess: 0
+  currentHolder: {fileID: 0}
+  pickUpTransitionTime: 0.3
+  pickUpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  showDebugInfo: 0
+--- !u!1 &7183690218074667492 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -8658422279658554519, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+  m_PrefabInstance: {fileID: 7234613882362675853}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3147602346350081015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7183690218074667492}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4db78b98f27e804eb70d016468cf412, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: "\u7269\u54C1"
+  itemDescription: 
+  canBePickedUp: 1
+  holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
+  holdRotationOffset: {x: 0, y: 0, z: 0}
+  canBeExchanged: 1
+  isExchangeLocked: 0
+  lastExchangeZone: 
+  limitExchangeTimes: 1
+  maxExchangeTimes: 1
+  currentExchangeTimes: 0
+  isBeingHeld: 0
+  isInExchangeProcess: 0
+  currentHolder: {fileID: 0}
+  pickUpTransitionTime: 0.3
+  pickUpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  showDebugInfo: 0
+--- !u!1 &7541254689046364124 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+  m_PrefabInstance: {fileID: 7234613882362675853}
+  m_PrefabAsset: {fileID: 0}
+--- !u!54 &8140002223985484167
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7541254689046364124}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &7630668302442454300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7541254689046364124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4db78b98f27e804eb70d016468cf412, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: "\u7269\u54C1"
+  itemDescription: 
+  canBePickedUp: 1
+  holdOffset: {x: 3.52, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
+  holdRotationOffset: {x: 1.8, y: 0, z: 0}
+  canBeExchanged: 1
+  isExchangeLocked: 0
+  lastExchangeZone: 
+  limitExchangeTimes: 1
+  maxExchangeTimes: 1
+  currentExchangeTimes: 0
+  isBeingHeld: 0
+  isInExchangeProcess: 0
+  currentHolder: {fileID: 0}
+  pickUpTransitionTime: 0.3
+  pickUpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  showDebugInfo: 0
+--- !u!65 &-518407170655624547
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7541254689046364124}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 3.7048092, y: 5.10614, z: 1.8425152}
+  m_Center: {x: -8.435735, y: -1.4880315, z: -13.830633}
+--- !u!1 &8216127015479979667 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -7610229034513142754, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+  m_PrefabInstance: {fileID: 7234613882362675853}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1872300408495545389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8216127015479979667}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4db78b98f27e804eb70d016468cf412, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: "\u7269\u54C1"
+  itemDescription: 
+  canBePickedUp: 1
+  holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
+  holdRotationOffset: {x: 0, y: 0, z: 0}
+  canBeExchanged: 1
+  isExchangeLocked: 0
+  lastExchangeZone: 
+  limitExchangeTimes: 1
+  maxExchangeTimes: 1
+  currentExchangeTimes: 0
+  isBeingHeld: 0
+  isInExchangeProcess: 0
+  currentHolder: {fileID: 0}
+  pickUpTransitionTime: 0.3
+  pickUpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  showDebugInfo: 0
+--- !u!1 &9050206837825864830 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1873015676646082291, guid: 0a62dd80c66821c4b96c13f8c957f112, type: 3}
+  m_PrefabInstance: {fileID: 7234613882362675853}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &9023558063035479308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9050206837825864830}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4db78b98f27e804eb70d016468cf412, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: "\u7269\u54C1"
+  itemDescription: 
+  canBePickedUp: 1
+  holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 0
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
+  holdRotationOffset: {x: 0, y: 0, z: 0}
+  canBeExchanged: 1
+  isExchangeLocked: 0
+  lastExchangeZone: 
+  limitExchangeTimes: 1
+  maxExchangeTimes: 1
+  currentExchangeTimes: 0
+  isBeingHeld: 0
+  isInExchangeProcess: 0
+  currentHolder: {fileID: 0}
+  pickUpTransitionTime: 0.3
+  pickUpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  showDebugInfo: 0
