@@ -78,7 +78,7 @@ Material:
     - _DetailNormalMapScale: 1
     - _DrawIntensity: 1
     - _DrawRotation: 0
-    - _DrawTexVisibility: 0.33762336
+    - _DrawTexVisibility: 0
     - _DstBlend: 0
     - _EmissionStrength: 1
     - _FlashAngle: 59

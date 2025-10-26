@@ -149,8 +149,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\"\u7A7A\u6C34\u58F6\""
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 2, z: 0.36}
+  isKeyItem: 1
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 0.3
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: 
   holdRotationOffset: {x: -90, y: 0, z: 180}
   canBeExchanged: 1
   isExchangeLocked: 0

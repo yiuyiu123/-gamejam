@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 5795222072916578904}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: 888.74994, y: 2.4932146, z: 437.19922}
+  m_LocalPosition: {x: 878.2705, y: 4.7076344, z: 450.14133}
   m_LocalScale: {x: 6.6349797, y: 2.7214699, z: 0.62617}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -126,15 +126,53 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\"\u94A5\u5319\""
+  itemDescription: 
   canBePickedUp: 1
   holdOffset: {x: 0, y: 1, z: 1}
+  isKeyItem: 1
+  showPickupMessage: 1
+  pickupUIPrefab: {fileID: 0}
+  displayTime: 3
+  fadeDuration: 0.5
+  uiVerticalPosition: 1
+  uiHorizontalOffset: 0
+  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
+  customPickupMessage: "\u5367\u5BA4\u94A5\u5319"
   holdRotationOffset: {x: 0, y: 0, z: 0}
   canBeExchanged: 1
   isExchangeLocked: 0
   lastExchangeZone: 
+  limitExchangeTimes: 1
+  maxExchangeTimes: 1
+  currentExchangeTimes: 0
   isBeingHeld: 0
   isInExchangeProcess: 0
   currentHolder: {fileID: 0}
+  pickUpTransitionTime: 0.3
+  pickUpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   showDebugInfo: 0
 --- !u!64 &-7452509453515281351
 MeshCollider:
