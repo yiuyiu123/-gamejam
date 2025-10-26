@@ -105,6 +105,7 @@ public class InteractionZone : MonoBehaviour
         {
             Destroy(spawnedItem);
             spawnedItem = null;
+
         }
     }
 }
