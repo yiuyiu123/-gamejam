@@ -24,9 +24,9 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+        m_Texture: {fileID: 2800000, guid: f7b7320444a6c4049b6fe49e580aa4b5, type: 3}
+        m_Scale: {x: 1.59, y: 1}
+        m_Offset: {x: -0.7, y: -0.23}
     - _BumpMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -44,9 +44,9 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DrawTex:
-        m_Texture: {fileID: 2800000, guid: 5a7a7f465240ff443921d528907230b3, type: 3}
-        m_Scale: {x: 4.01, y: 3.69}
-        m_Offset: {x: -2.87, y: -1.65}
+        m_Texture: {fileID: 2800000, guid: a33bd4f769ed36a439cd311666e0f7de, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -77,7 +77,7 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DrawIntensity: 1
-    - _DrawRotation: 0
+    - _DrawRotation: 12
     - _DrawTexVisibility: 0
     - _DstBlend: 0
     - _EmissionStrength: 1
@@ -101,8 +101,8 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseTex_STCustom: {r: 1, g: 1, b: 0, a: 0}
-    - _Color: {r: 0.32704395, g: 0.32704395, b: 0.32704395, a: 1}
-    - _DrawTex_STCustom: {r: 1, g: 1, b: 0, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _DrawTex_STCustom: {r: 1, g: 0.72, b: -0.43, a: -0.07}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FlashDir: {r: -0.9454187, g: 0.11539373, b: 0.30474246, a: 0}
     - _FlashPos: {r: 875.5426, g: 8.620633, b: 448.4082, a: 0}
