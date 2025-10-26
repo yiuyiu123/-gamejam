@@ -13179,6 +13179,7 @@ GameObject:
   - component: {fileID: 172662157}
   - component: {fileID: 172662159}
   - component: {fileID: 172662158}
+  - component: {fileID: 172662160}
   m_Layer: 0
   m_Name: "\u97F3\u6548manage"
   m_TagString: Untagged
@@ -13253,6 +13254,14 @@ MonoBehaviour:
   defaultAudioSourcePrefab: {fileID: 1168452774}
   musicVolume: 1
   sfxVolume: 1
+--- !u!81 &172662160
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 172662156}
+  m_Enabled: 1
 --- !u!1 &172811823
 GameObject:
   m_ObjectHideFlags: 0
@@ -13263,7 +13272,6 @@ GameObject:
   m_Component:
   - component: {fileID: 172811826}
   - component: {fileID: 172811825}
-  - component: {fileID: 172811824}
   - component: {fileID: 172811827}
   m_Layer: 0
   m_Name: Player1Camera
@@ -13272,14 +13280,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &172811824
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 172811823}
-  m_Enabled: 1
 --- !u!20 &172811825
 Camera:
   m_ObjectHideFlags: 0
@@ -88791,7 +88791,6 @@ GameObject:
   m_Component:
   - component: {fileID: 946344147}
   - component: {fileID: 946344150}
-  - component: {fileID: 946344149}
   - component: {fileID: 946344148}
   m_Layer: 0
   m_Name: Player2Camera
@@ -88844,14 +88843,6 @@ MonoBehaviour:
   wallOffset: 0.1
   currentAngle: 45
   enableAutoRotation: 1
---- !u!81 &946344149
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 946344146}
-  m_Enabled: 1
 --- !u!20 &946344150
 Camera:
   m_ObjectHideFlags: 0
@@ -130665,7 +130656,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 2.1}
+  m_AnchoredPosition: {x: -11.63, y: 2.1}
   m_SizeDelta: {x: 440.8, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1353863480
@@ -130751,7 +130742,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: -142.3187, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -139640,7 +139631,7 @@ Transform:
   m_GameObject: {fileID: 1476584229}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.84, y: -56.564407, z: 5.69}
+  m_LocalPosition: {x: 4.84, y: -56.22, z: 5.69}
   m_LocalScale: {x: 0.53446996, y: 0.53446996, z: 0.53446996}
   m_ConstrainProportionsScale: 0
   m_Children: []
