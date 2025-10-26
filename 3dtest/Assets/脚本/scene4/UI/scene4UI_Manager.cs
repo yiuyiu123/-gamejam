@@ -35,10 +35,6 @@ public class Scene4UI_Manager : MonoBehaviour
     public UnityEvent OnTask2Complete;
     public UnityEvent OnTask3Start;
     public UnityEvent OnTask3Complete;
-    public UnityEvent OnFinalTaskStart;
-    public UnityEvent OnFinalTaskComplete;
-    public UnityEvent OnEndingStart;
-    public UnityEvent OnEndingComplete;
 
     [Header("调试选项")]
     public bool enableDebugLogs = true;
@@ -49,8 +45,6 @@ public class Scene4UI_Manager : MonoBehaviour
     private bool task1Completed = false;
     private bool task2Completed = false;
     private bool task3Completed = false;
-    private bool FinalTaskCompleted = false;
-    private bool EndingCompleted = false;
 
     private SimpleSceneTransitionManager sceneTransition;
 
@@ -63,8 +57,7 @@ public class Scene4UI_Manager : MonoBehaviour
         Plot2,   // 剧情2
         Task3,   // 第三篇日记阅读完
         Plot3,   // 剧情3
-        FinalTask, // 最终合成任务成功
-        Ending, //开始提问UI
+        Ending, //结束三个剧情
     }
 
     void Awake()
@@ -86,9 +79,6 @@ public class Scene4UI_Manager : MonoBehaviour
         //第三篇日记阅读完，第一次显示F
         if (playerMovement != null)
             playerMovement.OverReadDiary += OnOverReadDiary;
-        //订阅最终合成事件
-        //if (threeItemCraftingManager != null)
-            //threeItemCraftingManager.OnQuestion += OnQuestion;
         else
         {
             dialogueManager = FindObjectOfType<scene4DialogueManager>();
@@ -141,11 +131,6 @@ public class Scene4UI_Manager : MonoBehaviour
         hasFirstTriggerF = true;
         CheckTask3Completion();
     }
-    void OnQuestion()
-    {
-        CanQuestion = true;
-        CheckFinalTaskCompletion();
-    }
     #endregion
 
 
@@ -194,19 +179,6 @@ public class Scene4UI_Manager : MonoBehaviour
         OnTask3Complete?.Invoke();
         StartPlot3();
     }
-    void StartFinalTask()
-    {
-        currentProgress = GameProgress.FinalTask;
-        Log("开始最终合成任务");
-        OnFinalTaskStart?.Invoke();
-    }
-    void CompleteFinalTask()
-    {
-        FinalTaskCompleted = true;
-        Log("最终任务完成,触发提问");
-        OnFinalTaskComplete?.Invoke();
-        StartEnding();
-    }
     #endregion
 
 
@@ -237,14 +209,6 @@ public class Scene4UI_Manager : MonoBehaviour
             CompleteTask3();
         }
     }
-    void CheckFinalTaskCompletion()
-    {
-        if (!FinalTaskCompleted && CanQuestion)
-        {
-            FinalTaskCompleted = true;
-            CompleteFinalTask();
-        }
-    }
     #endregion
 
     #region 开始剧情
@@ -271,29 +235,7 @@ public class Scene4UI_Manager : MonoBehaviour
         dialogueManager.StartDialogueSequence("Plot3");
         plot3Completed = true;
     }
-    public void StartEnding()
-    {
-        currentProgress = GameProgress.Ending;
-        Log("开始提问剧情");
-        dialogueManager.StartDialogueSequence("Ending");
-        EndingCompleted = true;
-        StartCoroutine(MonitorVideoEnd());
-    }
-
     #endregion
-
-    // 轮询剧情3对话是否播放完毕
-    private IEnumerator MonitorVideoEnd()
-    {
-        // 等待剧情3对话结束
-        while (IsDialoguePlaying())
-        {
-            yield return null;
-        }
-
-        Log("剧情3对话播放完毕，延迟跳转场景");
-        StartCoroutine(DelayedSceneTransition(1f)); // 延迟2秒跳场景
-    }
 
     // 使用 DialogueManager 的状态判断
     private bool IsDialoguePlaying()
@@ -310,37 +252,6 @@ public class Scene4UI_Manager : MonoBehaviour
 
         return false;
     }
-
-    #region 场景跳转
-    private IEnumerator DelayedSceneTransition(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        PrepareNextScene();
-    }
-
-    void PrepareNextScene()
-    {
-        //currentProgress = GameProgress.Complete;
-        Log("Scene3剧情完成，准备加载下一场景");
-        OnEndingComplete?.Invoke();
-
-        if (useSceneTransition && sceneTransition != null)
-            StartCoroutine(LoadNextSceneWithTransition());
-        else
-            Invoke("LoadNextSceneDirectly", 1f);
-    }
-
-    IEnumerator LoadNextSceneWithTransition()
-    {
-        yield return null;
-        yield return StartCoroutine(sceneTransition.TransitionToScene(nextSceneName));
-    }
-
-    void LoadNextSceneDirectly()
-    {
-        SceneManager.LoadScene(nextSceneName);
-    }
-    #endregion
 
     #region 工具
     void Log(string msg)
