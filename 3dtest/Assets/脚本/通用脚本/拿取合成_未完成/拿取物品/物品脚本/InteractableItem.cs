@@ -613,23 +613,25 @@ public class InteractableItem : MonoBehaviour
 
     void OnDestroy()
     {
-        // 停止所有运行的协程
-        foreach (var pair in playerUICoroutines)
+        // 方法1：使用临时列表避免遍历时修改字典
+        var playersToClean = new List<GameObject>(playerUICoroutines.Keys);
+        foreach (var player in playersToClean)
         {
-            if (pair.Value != null)
+            if (playerUICoroutines.ContainsKey(player) && playerUICoroutines[player] != null)
             {
-                StopCoroutine(pair.Value);
+                StopCoroutine(playerUICoroutines[player]);
             }
         }
 
-        // 清理所有UI实例
-        foreach (var uiInstance in playerUIInstances.Values)
+        var uiInstancesToClean = new List<GameObject>(playerUIInstances.Keys);
+        foreach (var player in uiInstancesToClean)
         {
-            if (uiInstance != null)
+            if (playerUIInstances.ContainsKey(player) && playerUIInstances[player] != null)
             {
-                Destroy(uiInstance);
+                Destroy(playerUIInstances[player]);
             }
         }
+
         playerUIInstances.Clear();
         playerUICoroutines.Clear();
     }
