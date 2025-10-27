@@ -1,7 +1,7 @@
 /*
- * AdvancedCameraSwitch.cs  
+ * AdvancedCameraSwitch.cs   
  * 功能：三合一控制系统（摄像机切换/脚本禁用/物理冻结）
- * 最后更新：2025-10-21 10:30
+ * 最后更新：2025-10-21 10:30 
  */
 using UnityEngine;
 using UnityEngine.UI;
@@ -57,6 +57,11 @@ public class AdvancedCameraSwitch : MonoBehaviour
     [Tooltip("动态提示文本")]
     public Text hintText;
 
+    // ========== UI图片设置 ==========
+    [Header("【UI图片控制】")]
+    [Tooltip("要控制的UI图片")]
+    public Image uiImageToControl;
+
     // ========== 状态变量 ==========
     private bool isPlayerInTrigger = false;
     private int switchCount = 0;
@@ -74,6 +79,12 @@ public class AdvancedCameraSwitch : MonoBehaviour
             physicsControl.targetRigidbody.isKinematic = physicsControl.startKinematic;
         }
 
+        // 初始化UI图片状态（隐藏）
+        if (uiImageToControl != null)
+        {
+            uiImageToControl.gameObject.SetActive(false);
+        }
+
         // 更新UI提示 
         UpdateHintText();
 
@@ -82,8 +93,8 @@ public class AdvancedCameraSwitch : MonoBehaviour
 
     void Update()
     {
-        //张奕忻
-        if (!canSwitch) return; // 剧情播放时直接返回
+        //张奕忻 
+        if (!canSwitch) return; // 剧情播放时直接返回 
 
         if (isPlayerInTrigger && Input.GetKeyDown(switchKey) && Time.time > lastSwitchTime + switchCooldown)
         {
@@ -96,23 +107,29 @@ public class AdvancedCameraSwitch : MonoBehaviour
         }
     }
 
-    #region 张奕忻：允许与禁用玩家切换摄像头
+    #region 张奕忻：允许与禁用玩家切换摄像头 
     void OnEnable()
     {
-        // 订阅剧情事件
-        scene4DialogueManager.IsPlayingPlot += HandlePlotState;
+        // 订阅剧情事件 
+        if (scene4DialogueManager != null)
+        {
+            scene4DialogueManager.IsPlayingPlot += HandlePlotState;
+        }
     }
 
     void OnDisable()
     {
         // 取消订阅，防止监听残留
-        scene4DialogueManager.IsPlayingPlot -= HandlePlotState;
+        if (scene4DialogueManager != null)
+        {
+            scene4DialogueManager.IsPlayingPlot -= HandlePlotState;
+        }
     }
 
-    // 事件回调
+    // 事件回调 
     private void HandlePlotState(bool isPlaying)
     {
-        canSwitch = !isPlaying; // 剧情播放时禁止切换
+        canSwitch = !isPlaying; // 剧情播放时禁止切换 
     }
     #endregion
 
@@ -121,6 +138,9 @@ public class AdvancedCameraSwitch : MonoBehaviour
         // 切换摄像机 
         currentCameraState = !currentCameraState;
         SetCameraState(currentCameraState, !currentCameraState);
+
+        // 控制UI图片显示/隐藏 
+        ControlUIImage();
 
         // 切换脚本状态
         if (scriptToToggle != null)
@@ -137,6 +157,25 @@ public class AdvancedCameraSwitch : MonoBehaviour
         }
 
         UpdateHintText();
+    }
+
+    void ControlUIImage()
+    {
+        if (uiImageToControl != null)
+        {
+            // 修改：当切换到主摄像机（cameraA）时显示UI图片
+            // 当切换到副摄像机（cameraB）时隐藏UI图片 
+            if (currentCameraState) // 当前是主摄像机（cameraA）
+            {
+                uiImageToControl.gameObject.SetActive(true);
+                Debug.Log("UI图片已显示（切换到主摄像机）");
+            }
+            else // 当前是副摄像机（cameraB）
+            {
+                uiImageToControl.gameObject.SetActive(false);
+                Debug.Log("UI图片已隐藏（切换到副摄像机）");
+            }
+        }
     }
 
     void SetCameraState(bool stateA, bool stateB)
@@ -179,7 +218,7 @@ public class AdvancedCameraSwitch : MonoBehaviour
     void OnValidate()
     {
         // 编辑器实时更新提示文本 
-        if(hintText != null && !Application.isPlaying) 
+        if(hintText != null && !Application.isPlaying)  
         {
             hintText.text  = $"按 {switchKey} 切换状态";
         }
