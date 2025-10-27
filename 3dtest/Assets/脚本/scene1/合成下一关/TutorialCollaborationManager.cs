@@ -20,6 +20,11 @@ public class TutorialCollaborationManager : MonoBehaviour
     //public AudioClip collaborationSound;
     public Light collaborationLight;
 
+    [Header("合成成功特效 - 新增")]
+    public ParticleSystem player1SynthesisEffect;  // Player1合成区域特效
+    public ParticleSystem player2SynthesisEffect;  // Player2合成区域特效
+    public float synthesisEffectDuration = 3.0f;   // 特效播放持续时间
+
     [Header("协作成功音效")]
     public string collaborationSoundGroupID = "协作成功"; // 音效组ID
 
@@ -36,6 +41,7 @@ public class TutorialCollaborationManager : MonoBehaviour
     private bool player1Ready = false;
     private bool player2Ready = false;
     private bool isTransitioning = false;
+    private bool hasPlayedSynthesisEffects = false; // 新增：防止重复播放特效
 
     void Awake()
     {
@@ -69,6 +75,7 @@ public class TutorialCollaborationManager : MonoBehaviour
 
     void OnPlayer1ZoneUpdated(bool hasRequiredItem)
     {
+        bool previousState = player1Ready;
         player1Ready = hasRequiredItem;
         Debug.Log($"玩家1区域状态: {(hasRequiredItem ? "就绪" : "未就绪")}");
         CheckCollaborationStatus();
@@ -76,6 +83,7 @@ public class TutorialCollaborationManager : MonoBehaviour
 
     void OnPlayer2ZoneUpdated(bool hasRequiredItem)
     {
+        bool previousState = player2Ready;
         player2Ready = hasRequiredItem;
         Debug.Log($"玩家2区域状态: {(hasRequiredItem ? "就绪" : "未就绪")}");
         CheckCollaborationStatus();
@@ -95,10 +103,84 @@ public class TutorialCollaborationManager : MonoBehaviour
         if (successPrompt != null)
             successPrompt.SetActive(bothReady);
 
+        // 如果双方都准备好了，并且之前没有播放过特效，播放合成特效
+        if (bothReady && !hasPlayedSynthesisEffects)
+        {
+            PlaySynthesisEffects();
+            hasPlayedSynthesisEffects = true;
+        }
+
         // 如果双方都准备好了，开始完成流程
         if (bothReady)
         {
             StartCoroutine(CompleteCollaboration());
+        }
+        else
+        {
+            // 如果协作状态被取消（比如物品被拿走），重置特效播放状态
+            hasPlayedSynthesisEffects = false;
+        }
+    }
+
+    // 播放合成特效（两个区域同时播放）
+    void PlaySynthesisEffects()
+    {
+        // 播放玩家1合成区域特效
+        if (player1SynthesisEffect != null)
+        {
+            // 确保特效在玩家1区域的位置
+            if (player1Zone != null)
+            {
+                player1SynthesisEffect.transform.position = player1Zone.transform.position;
+            }
+
+            // 停止之前的特效（确保重新开始）
+            player1SynthesisEffect.Stop();
+            // 清除之前的粒子
+            player1SynthesisEffect.Clear();
+            // 重新播放
+            player1SynthesisEffect.Play();
+
+            Debug.Log("播放玩家1合成区域特效");
+
+            // 启动协程，在指定时间后停止特效
+            StartCoroutine(StopEffectAfterDelay(player1SynthesisEffect, synthesisEffectDuration));
+        }
+
+        // 播放玩家2合成区域特效
+        if (player2SynthesisEffect != null)
+        {
+            // 确保特效在玩家2区域的位置
+            if (player2Zone != null)
+            {
+                player2SynthesisEffect.transform.position = player2Zone.transform.position;
+            }
+
+            // 停止之前的特效（确保重新开始）
+            player2SynthesisEffect.Stop();
+            // 清除之前的粒子
+            player2SynthesisEffect.Clear();
+            // 重新播放
+            player2SynthesisEffect.Play();
+
+            Debug.Log("播放玩家2合成区域特效");
+
+            // 启动协程，在指定时间后停止特效
+            StartCoroutine(StopEffectAfterDelay(player2SynthesisEffect, synthesisEffectDuration));
+        }
+
+        Debug.Log("=== 合成成功！两个区域同时播放特效 ===");
+    }
+
+    // 在指定时间后停止特效的协程
+    IEnumerator StopEffectAfterDelay(ParticleSystem effect, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (effect != null && effect.isPlaying)
+        {
+            effect.Stop();
+            Debug.Log($"停止播放特效: {effect.name}");
         }
     }
 
@@ -314,12 +396,26 @@ public class TutorialCollaborationManager : MonoBehaviour
         }
     }
 
+    [ContextMenu("测试合成特效")]
+    public void TestSynthesisEffects()
+    {
+        PlaySynthesisEffects();
+    }
+
     [ContextMenu("重置协作状态")]
     public void ResetCollaboration()
     {
         player1Ready = false;
         player2Ready = false;
         isTransitioning = false;
+        hasPlayedSynthesisEffects = false; // 重置特效播放状态
+
+        // 停止所有特效
+        if (player1SynthesisEffect != null && player1SynthesisEffect.isPlaying)
+            player1SynthesisEffect.Stop();
+
+        if (player2SynthesisEffect != null && player2SynthesisEffect.isPlaying)
+            player2SynthesisEffect.Stop();
 
         if (waitingPrompt != null) waitingPrompt.SetActive(false);
         if (successPrompt != null) successPrompt.SetActive(false);

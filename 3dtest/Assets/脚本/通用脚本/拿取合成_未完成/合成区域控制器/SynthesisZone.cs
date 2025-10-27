@@ -11,9 +11,12 @@ public class SynthesisZone : MonoBehaviour
     public Transform itemSpawnPoint;
 
     [Header("合成效果")]
-    public ParticleSystem synthesisEffect;
+    public ParticleSystem synthesisEffect; // 合成成功特效
     public AudioClip synthesisSound;
     public float synthesisDelay = 1f;
+
+    [Header("合成特效设置")]
+    public float synthesisEffectDuration = 3.0f;
 
     [Header("抛掷设置")]
     public float throwHeight = 3f;
@@ -23,12 +26,16 @@ public class SynthesisZone : MonoBehaviour
     public float synthesisCooldown = 2f;
 
     [Header("合成失败弹出设置")]
-    public bool enableFailEjection = true; // 是否启用失败弹出
-    public float failEjectionForce = 8f; // 弹出力度
-    public float failEjectionHeight = 2f; // 弹出高度
-    public float failEjectionRandomness = 0.5f; // 弹出随机性
+    public bool enableFailEjection = true;
+    public float failEjectionForce = 8f;
+    public float failEjectionHeight = 2f;
+    public float failEjectionRandomness = 0.5f;
     public ParticleSystem failEffect; // 失败效果
     public AudioClip failSound; // 失败音效
+
+    [Header("特效位置设置")]
+    public Vector3 effectPositionOffset = Vector3.zero;
+    public bool useZonePosition = true;
 
     private List<InteractableItem> itemsInZone = new List<InteractableItem>();
     private AudioSource audioSource;
@@ -37,6 +44,9 @@ public class SynthesisZone : MonoBehaviour
     private float lastSynthesisTime = 0f;
     private Dictionary<InteractableItem, float> itemEnterTimes = new Dictionary<InteractableItem, float>();
     private Dictionary<InteractableItem, float> failedItems = new Dictionary<InteractableItem, float>();
+
+    // 特效播放控制
+    private bool isPlayingEffect = false;
 
     void Start()
     {
@@ -54,6 +64,75 @@ public class SynthesisZone : MonoBehaviour
         if (GlobalSynthesisManager.Instance != null)
         {
             GlobalSynthesisManager.Instance.RegisterZone(this);
+        }
+
+        // 注册到 CraftingManager
+        if (CraftingManager.Instance != null)
+        {
+            CraftingManager.Instance.RegisterSynthesisZone(this);
+        }
+    }
+
+    // 播放合成特效的公共方法
+    public void PlaySynthesisEffect()
+    {
+        if (synthesisEffect != null && !isPlayingEffect)
+        {
+            StartCoroutine(PlaySynthesisEffectCoroutine());
+        }
+    }
+
+    // 播放合成特效的协程
+    IEnumerator PlaySynthesisEffectCoroutine()
+    {
+        isPlayingEffect = true;
+
+        // 停止之前的特效并清除粒子
+        synthesisEffect.Stop();
+        synthesisEffect.Clear();
+
+        // 设置特效位置
+        Vector3 effectPosition = useZonePosition ? transform.position : synthesisEffect.transform.position;
+        effectPosition += effectPositionOffset;
+        synthesisEffect.transform.position = effectPosition;
+
+        // 重新播放特效
+        synthesisEffect.Play();
+        Debug.Log($"播放合成区域 {zoneID} 的成功特效，持续 {synthesisEffectDuration} 秒");
+
+        // 等待指定时间后停止特效
+        yield return new WaitForSeconds(synthesisEffectDuration);
+
+        if (synthesisEffect != null && synthesisEffect.isPlaying)
+        {
+            synthesisEffect.Stop();
+        }
+
+        isPlayingEffect = false;
+    }
+
+    // 停止合成特效
+    public void StopSynthesisEffect()
+    {
+        if (synthesisEffect != null && synthesisEffect.isPlaying)
+        {
+            synthesisEffect.Stop();
+            isPlayingEffect = false;
+        }
+    }
+
+    // 播放失败特效
+    public void PlayFailEffect()
+    {
+        if (failEffect != null)
+        {
+            // 设置失败特效位置
+            Vector3 effectPosition = useZonePosition ? transform.position : failEffect.transform.position;
+            effectPosition += effectPositionOffset;
+            failEffect.transform.position = effectPosition;
+
+            failEffect.Play();
+            Debug.Log($"播放合成区域 {zoneID} 的失败特效");
         }
     }
 
@@ -217,13 +296,10 @@ public class SynthesisZone : MonoBehaviour
             }
         }
 
-        // 播放合成效果
-        if (synthesisEffect != null) synthesisEffect.Play();
-        if (synthesisSound != null) audioSource.PlayOneShot(synthesisSound);
+        // 移除了合成开始时的特效播放，只在成功或失败时播放
 
         yield return new WaitForSeconds(synthesisDelay);
 
-        // ========== 修改开始：传递区域信息 ==========
         // 设置当前合成区域
         if (CraftingManager.Instance != null)
         {
@@ -232,11 +308,10 @@ public class SynthesisZone : MonoBehaviour
 
         // 调用合成，传递当前区域
         CraftingRecipe matchedRecipe = CraftingManager.Instance.CombineItems(itemsToCombine, this);
-        // ========== 修改结束 ==========
 
         if (matchedRecipe != null && matchedRecipe.resultItemPrefab != null)
         {
-            // 合成成功
+            // 合成成功 - 不在这里播放特效，由 CraftingManager 统一处理
             foreach (var item in itemsToCombine)
             {
                 if (item != null)
@@ -256,7 +331,7 @@ public class SynthesisZone : MonoBehaviour
             Debug.LogWarning($"合成失败，将弹出 {itemsToCombine.Count} 个物品");
 
             // 播放失败效果
-            if (failEffect != null) failEffect.Play();
+            PlayFailEffect();
             if (failSound != null) audioSource.PlayOneShot(failSound);
 
             // 弹出所有参与合成的物品
@@ -266,7 +341,6 @@ public class SynthesisZone : MonoBehaviour
         isCombining = false;
     }
 
-    // 新增：弹出失败物品的协程
     IEnumerator EjectFailedItems(List<InteractableItem> itemsToEject)
     {
         Debug.Log($"开始弹出 {itemsToEject.Count} 个失败物品");
@@ -291,7 +365,7 @@ public class SynthesisZone : MonoBehaviour
                     item.Rb.isKinematic = false;
                     item.Rb.useGravity = true;
 
-                    // 计算弹出方向（从区域中心向外，带随机性）
+                    // 计算弹出方向
                     Vector3 ejectionDirection = CalculateEjectionDirection(item.transform.position);
 
                     // 应用弹出力
@@ -313,24 +387,19 @@ public class SynthesisZone : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
     }
 
-    // 计算弹出方向
     Vector3 CalculateEjectionDirection(Vector3 itemPosition)
     {
-        // 基本方向：从区域中心指向物品位置
         Vector3 baseDirection = (itemPosition - transform.position).normalized;
-
-        // 确保有向上的分量
         baseDirection.y = Mathf.Max(baseDirection.y, 0.3f);
 
-        // 添加随机性
         Vector3 randomVariation = new Vector3(
             Random.Range(-failEjectionRandomness, failEjectionRandomness),
-            Random.Range(0, failEjectionRandomness * 0.5f), // 减少向下的随机性
+            Random.Range(0, failEjectionRandomness * 0.5f),
             Random.Range(-failEjectionRandomness, failEjectionRandomness)
         );
 
         Vector3 finalDirection = (baseDirection + randomVariation).normalized;
-        finalDirection.y += failEjectionHeight * 0.1f; // 添加高度因子
+        finalDirection.y += failEjectionHeight * 0.1f;
 
         return finalDirection;
     }
@@ -438,6 +507,35 @@ public class SynthesisZone : MonoBehaviour
         {
             Debug.LogWarning("没有物品可用于测试弹出");
         }
+    }
+
+    [ContextMenu("测试合成特效")]
+    public void TestSynthesisEffect()
+    {
+        PlaySynthesisEffect();
+    }
+
+    [ContextMenu("测试失败特效")]
+    public void TestFailEffect()
+    {
+        PlayFailEffect();
+    }
+
+    [ContextMenu("重置特效状态")]
+    public void ResetEffectState()
+    {
+        isPlayingEffect = false;
+        if (synthesisEffect != null)
+        {
+            synthesisEffect.Stop();
+            synthesisEffect.Clear();
+        }
+        if (failEffect != null)
+        {
+            failEffect.Stop();
+            failEffect.Clear();
+        }
+        Debug.Log($"重置区域 {zoneID} 的特效状态");
     }
 
     [ContextMenu("紧急解锁所有物品")]

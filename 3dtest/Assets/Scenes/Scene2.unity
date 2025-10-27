@@ -5911,7 +5911,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 1
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -33490,7 +33490,7 @@ Transform:
   m_GameObject: {fileID: 341797654}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -24.9, y: 0.31, z: 10.13}
+  m_LocalPosition: {x: -27.76, y: 0.31, z: 16.91}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -33588,7 +33588,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 1
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -41575,7 +41575,7 @@ Transform:
   m_GameObject: {fileID: 378592489}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1023.8, y: 6.89, z: 450.3}
+  m_LocalPosition: {x: 1011.63, y: 6.89, z: 430.45}
   m_LocalScale: {x: 0.66411, y: 0.66411, z: 0.66411}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -84207,7 +84207,7 @@ Transform:
   m_GameObject: {fileID: 738316350}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -24.9, y: 0.31, z: 70.43}
+  m_LocalPosition: {x: 112.33, y: 2.4, z: -16.39}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -84305,7 +84305,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 1
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -133514,7 +133514,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 1
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -143468,6 +143468,7 @@ MonoBehaviour:
   enableGlobalFailEjection: 1
   globalFailEjectionForce: 10
   globalFailEjectionHeight: 2.5
+  enableGlobalSynthesisEffects: 1
 --- !u!1 &1348763108 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1771089155095711644, guid: 09c87d3d3a46e9c4ca9194a2c4fb37bf, type: 3}
@@ -145031,6 +145032,9 @@ MonoBehaviour:
   failEffect: {fileID: 0}
   failSoundGroupID: "\u5408\u6210\u5931\u8D25"
   successSoundGroupID: "\u5408\u6210\u6210\u529F"
+  enableSynthesisEffects: 1
+  enableDualZoneEffects: 1
+  allSynthesisZones: []
   OnCraftingSuccess:
     m_PersistentCalls:
       m_Calls: []
@@ -153044,7 +153048,7 @@ Transform:
   m_GameObject: {fileID: 1476584229}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.84, y: -56.22, z: 5.69}
+  m_LocalPosition: {x: 29.16, y: -56.22, z: 15.88}
   m_LocalScale: {x: 0.53446996, y: 0.53446996, z: 0.53446996}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -186893,9 +186897,10 @@ MonoBehaviour:
   throwTarget: {fileID: 1400169940}
   detectionRadius: 3
   itemSpawnPoint: {fileID: 0}
-  synthesisEffect: {fileID: 0}
+  synthesisEffect: {fileID: 738316353}
   synthesisSound: {fileID: 0}
   synthesisDelay: 1
+  synthesisEffectDuration: 3
   throwHeight: 3
   throwDuration: 0.8
   synthesisCooldown: 2
@@ -186905,6 +186910,8 @@ MonoBehaviour:
   failEjectionRandomness: 0.5
   failEffect: {fileID: 0}
   failSound: {fileID: 0}
+  effectPositionOffset: {x: 0, y: 0, z: 0}
+  useZonePosition: 1
 --- !u!65 &1886848472
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -193306,9 +193313,10 @@ MonoBehaviour:
   throwTarget: {fileID: 498040458}
   detectionRadius: 3
   itemSpawnPoint: {fileID: 0}
-  synthesisEffect: {fileID: 0}
+  synthesisEffect: {fileID: 341797657}
   synthesisSound: {fileID: 0}
   synthesisDelay: 1
+  synthesisEffectDuration: 3
   throwHeight: 3
   throwDuration: 0.8
   synthesisCooldown: 2
@@ -193318,6 +193326,8 @@ MonoBehaviour:
   failEjectionRandomness: 0.5
   failEffect: {fileID: 0}
   failSound: {fileID: 0}
+  effectPositionOffset: {x: 0, y: 0, z: 0}
+  useZonePosition: 1
 --- !u!1 &1952273048 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -6223110018033315523, guid: 09c87d3d3a46e9c4ca9194a2c4fb37bf, type: 3}
