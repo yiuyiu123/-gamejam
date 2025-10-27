@@ -6735,7 +6735,11 @@ PrefabInstance:
       objectReference: {fileID: 7099375}
     - target: {fileID: 8304646193496945791, guid: d8cb4734030ee3045ae74bb0c5a5a6ed, type: 3}
       propertyPath: uiVerticalPosition
-      value: 1
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8304646193496945791, guid: d8cb4734030ee3045ae74bb0c5a5a6ed, type: 3}
+      propertyPath: customPickupMessage
+      value: "\u7B14"
       objectReference: {fileID: 0}
     - target: {fileID: 8304646193496945791, guid: d8cb4734030ee3045ae74bb0c5a5a6ed, type: 3}
       propertyPath: holdRotationOffset.z
@@ -44588,14 +44592,14 @@ MonoBehaviour:
   pickupUIPrefab: {fileID: 7099375}
   displayTime: 3
   fadeDuration: 0.5
-  uiVerticalPosition: 0.3
+  uiVerticalPosition: 0.1
   uiHorizontalOffset: 0
   verticalBaseOffset: 0.1
   verticalAdjustRange: 0.2
   autoAdjustByPlayer: 1
   autoAdjustStrength: 0.05
   pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
-  customPickupMessage: 
+  customPickupMessage: "\u7A7AU\u76D8"
   holdRotationOffset: {x: 0, y: 0, z: 0}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -115268,7 +115272,11 @@ PrefabInstance:
       objectReference: {fileID: 7099375}
     - target: {fileID: 6758860128684390755, guid: ffe741b84d0a90544aad0409afbcd144, type: 3}
       propertyPath: uiVerticalPosition
-      value: 1
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6758860128684390755, guid: ffe741b84d0a90544aad0409afbcd144, type: 3}
+      propertyPath: customPickupMessage
+      value: "\u7B14\u8BB0\u672C\u7535\u8111"
       objectReference: {fileID: 0}
     - target: {fileID: 6758860128684390755, guid: ffe741b84d0a90544aad0409afbcd144, type: 3}
       propertyPath: holdRotationOffset.y
@@ -188142,7 +188150,11 @@ PrefabInstance:
       objectReference: {fileID: 7099375}
     - target: {fileID: 2040273398846650307, guid: a1dfa94c04e95b642b9e81eefec03f0f, type: 3}
       propertyPath: uiVerticalPosition
-      value: 0.3
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2040273398846650307, guid: a1dfa94c04e95b642b9e81eefec03f0f, type: 3}
+      propertyPath: customPickupMessage
+      value: "\u7A7A\u8BD5\u5377"
       objectReference: {fileID: 0}
     - target: {fileID: 2273372543521021972, guid: a1dfa94c04e95b642b9e81eefec03f0f, type: 3}
       propertyPath: m_Name
