@@ -13,7 +13,7 @@ public enum GameState
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance { get; private set; }
+    /*public static GameManager Instance { get; private set; }
 
     public GameState CurrentState { get; private set; } = GameState.Anima;
     public event Action<GameState> OnGameStateChanged;
@@ -90,4 +90,5 @@ public class GameManager : MonoBehaviour
     public void PauseGame() => ChangeState(GameState.Paused);
     public void GameOver() => ChangeState(GameState.GameOver);
     public void WinGame() => ChangeState(GameState.Victory);
+    */
 }
