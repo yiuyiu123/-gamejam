@@ -419,11 +419,36 @@ public class PlayerController : MonoBehaviour
                 ThrowToThreeItemZone(threeItemZone, heldItem);
                 return true;
             }
+
+            // 新增：尝试 item1 教学关卡合成区域
+            item1 item1Zone = hit.collider.GetComponent<item1>();
+            if (item1Zone != null && heldItem != null)
+            {
+                ThrowToItem1Zone(item1Zone, heldItem);
+                return true;
+            }
+
         }
 
         return false;
     }
+    // 新增：向 item1 教学关卡合成区域抛掷
+    void ThrowToItem1Zone(item1 zone, InteractableItem item)
+    {
+        // 从玩家手中移除物品引用
+        InteractableItem itemToThrow = heldItem;
+        heldItem = null;
 
+        // 重要：在抛掷前强制清除物品的持有状态
+        itemToThrow.ForceRelease();
+
+        // 调用区域的抛掷方法
+        zone.ThrowItemToZone(itemToThrow);
+        // 播放抛掷音效
+        PlayThrowSound();
+
+        Debug.Log($"{playerName} 向教学关卡合成区域抛掷 {itemToThrow.itemName}");
+    }
     // 新增：向三合成区域抛掷
     void ThrowToThreeItemZone(ThreeItemSynthesisZone zone, InteractableItem item)
     {
@@ -625,38 +650,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    //void DropItem()
-    //{
-    //    if (heldItem != null)
-    //    {
-
-    //        // 放下前如果是手电筒，关闭灯光
-    //        if (heldItem.itemName == flashLight && currentFlashlight != null)
-    //        {
-    //            currentFlashlight.TurnOff();
-    //            currentFlashlight = null;
-    //            isHoldFlashLight = false;
-    //        }
-
-    //        heldItem.Interact(gameObject);
-
-    //        // 更新动画状态 - 确保在放下物品后立即更新
-    //        if (animationController != null)
-    //        {
-    //            animationController.SetHoldingState(false);
-
-    //            // 强制立即检查移动状态
-    //            StartCoroutine(ForceAnimationUpdateNextFrame());
-    //        }
-
-    //        if (showInteractionDebug)
-    //        {
-    //            Debug.Log($"{playerName} 放下了 {heldItem.itemName}");
-    //        }
-
-    //        heldItem = null;
-    //    }
-    //}
 
     // 新增协程：在下一帧强制更新动画状态
     System.Collections.IEnumerator ForceAnimationUpdateNextFrame()
