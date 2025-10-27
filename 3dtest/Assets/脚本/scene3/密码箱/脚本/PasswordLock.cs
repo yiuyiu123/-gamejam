@@ -5,12 +5,12 @@ public class PasswordLock : MonoBehaviour
 {
     [Header("密码设置")]
     public string correctPassword = "1234"; // 正确密码 
-    public int passwordLength = 4; // 密码长度
+    public int passwordLength = 4; // 密码长度 
 
     [Header("UI引用")]
     public GameObject passwordUI; // 密码输入界面
     public UnityEngine.UI.InputField passwordInputField; // 密码输入框
-    public UnityEngine.UI.Text hintText; // 提示文本
+    public UnityEngine.UI.Text hintText; // 提示文本 
 
     [Header("动画引用")]
     public Animator chestAnimator; // 密码箱动画控制器 
@@ -28,15 +28,12 @@ public class PasswordLock : MonoBehaviour
     private bool isPlayerInRange = false;
     private bool isOpened = false;
 
-
-
     void Start()
     {
         // 初始化状态
         InitializeChest();
 
         // 初始化提示图标状态 
-
         interactionHint.SetActive(false);
 
         // 如果未指定摄像机，默认使用主摄像机 
@@ -48,24 +45,32 @@ public class PasswordLock : MonoBehaviour
 
     IEnumerator DisableHintAfterFrame()
     {
-        yield return null; // 等待一帧
+        yield return null; // 等待一帧 
         if (interactionHint != null)
             interactionHint.SetActive(false);
     }
 
     void Update()
     {
-        // 检测玩家是否在范围内且按下F键
+        // 检测玩家是否在范围内且按下F键 
         if (isPlayerInRange && Input.GetKeyDown(KeyCode.F) && !isOpened)
         {
             Debug.Log("玩家打开解密页面");
             ShowPasswordUI();
         }
 
+        // 检测是否按下Enter键确认密码
         if (Input.GetKeyDown(KeyCode.Return))
         {
             Debug.Log("按下Enter键确认密码");
             CheckPassword();
+        }
+
+        // 检测是否按下ESC键退出密码界面
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Debug.Log("按下ESC键尝试退出密码界面");
+            ClosePasswordUI();
         }
 
         // 每帧更新提示图标朝向摄像机 
@@ -82,7 +87,7 @@ public class PasswordLock : MonoBehaviour
 
     void InitializeChest()
     {
-        // 隐藏密码输入界面
+        // 隐藏密码输入界面 
         if (passwordUI != null)
             passwordUI.SetActive(false);
 
@@ -93,8 +98,6 @@ public class PasswordLock : MonoBehaviour
         // 重置提示文本
         if (hintText != null)
             hintText.text = "请输入" + passwordLength + "位密码";
-
-
     }
 
     void ShowPasswordUI()
@@ -103,7 +106,7 @@ public class PasswordLock : MonoBehaviour
         {
             passwordUI.SetActive(true);
 
-            // 清空输入框
+            // 清空输入框 
             if (passwordInputField != null)
             {
                 passwordInputField.text = "";
@@ -117,7 +120,7 @@ public class PasswordLock : MonoBehaviour
         }
     }
 
-    // 验证密码按钮调用的方法
+    // 验证密码按钮调用的方法 
     public void CheckPassword()
     {
         string inputPassword = passwordInputField.text;
@@ -130,7 +133,7 @@ public class PasswordLock : MonoBehaviour
             return;
         }
 
-        // 检查密码是否正确
+        // 检查密码是否正确 
         if (inputPassword == correctPassword)
         {
             PasswordCorrect();
@@ -145,7 +148,7 @@ public class PasswordLock : MonoBehaviour
     {
         isOpened = true;
 
-        // 隐藏密码界面
+        // 隐藏密码界面 
         if (passwordUI != null)
             passwordUI.SetActive(false);
 
@@ -165,7 +168,7 @@ public class PasswordLock : MonoBehaviour
         if (hintText != null)
             hintText.text = "密码错误！请重新输入";
 
-        // 清空输入框
+        // 清空输入框 
         if (passwordInputField != null)
         {
             passwordInputField.text = "";
@@ -174,16 +177,20 @@ public class PasswordLock : MonoBehaviour
         }
     }
 
-    // 关闭密码界面按钮调用的方法
+    // 关闭密码界面按钮调用的方法 
     public void ClosePasswordUI()
     {
-        if (passwordUI != null)
+        // 只有当密码界面处于激活状态时才关闭
+        if (passwordUI != null && passwordUI.activeSelf)
+        {
             passwordUI.SetActive(false);
+            Debug.Log("密码界面已关闭");
+        }
     }
 
     IEnumerator SpawnItemAndDestroy()
     {
-        // 生成物品
+        // 生成物品 
         if (itemPrefab != null && spawnPoint != null)
         {
             Instantiate(itemPrefab, spawnPoint.position, spawnPoint.rotation);
@@ -196,7 +203,7 @@ public class PasswordLock : MonoBehaviour
         Destroy(gameObject);
     }
 
-    // 触发器检测玩家进入范围
+    // 触发器检测玩家进入范围 
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player1"))
@@ -215,15 +222,13 @@ public class PasswordLock : MonoBehaviour
         if (other.CompareTag("Player1"))
         {
             isPlayerInRange = false;
-            Debug.Log("玩家进入范围不");
-            // 玩家离开时隐藏密码界面
+            Debug.Log("玩家离开范围");
+            // 玩家离开时隐藏密码界面 
             if (passwordUI != null)
                 passwordUI.SetActive(false);
             // 隐藏提示图标和密码界面
             if (interactionHint != null)
                 interactionHint.SetActive(false);
-
         }
     }
-
 }
