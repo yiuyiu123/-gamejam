@@ -2579,7 +2579,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 252905362}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: 089129be37788c641b49ac3d0fb2e083, type: 3}
+  m_VideoClip: {fileID: 32900000, guid: 1c76fa3466b65264f8b0d6f8b042d245, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}
@@ -4045,7 +4045,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 19.585, y: 11.338967, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1217550677}
   m_Father: {fileID: 1475222584}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -15004,17 +15005,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1217550676}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.118468136, y: 0.20462167, z: 2.3201983}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1475222584}
+  m_Father: {fileID: 374289407}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 0, y: 15.3}
+  m_SizeDelta: {x: 437.2, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1217550678
 MonoBehaviour:
@@ -15036,7 +15037,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Text
+  m_text: "\u6539\u6539\u6539"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 64469f0c73e9d4e40a5c54b6ad033c03, type: 2}
   m_sharedMaterial: {fileID: 3634058533457553109, guid: 64469f0c73e9d4e40a5c54b6ad033c03, type: 2}
@@ -15063,15 +15064,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 38.14
+  m_fontSizeBase: 38.14
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -18825,6 +18826,8 @@ MonoBehaviour:
   newManager: {fileID: 1150990539}
   I_Yes: {fileID: 671327026}
   I_No: {fileID: 52452892}
+  I_mask1: {fileID: 1921064143}
+  I_mask2: {fileID: 1704149037}
   panel_Ending: {fileID: 374289406}
   typewriterText: {fileID: 1217550678}
   video_Ending1: {fileID: 1529557034}
@@ -20456,7 +20459,6 @@ RectTransform:
   - {fileID: 1921064144}
   - {fileID: 52452893}
   - {fileID: 1704149038}
-  - {fileID: 1217550677}
   - {fileID: 1529557033}
   - {fileID: 252905363}
   m_Father: {fileID: 1536312581}
@@ -20968,7 +20970,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1529557032}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: 03e0c86aeac3db14085845feba5976ef, type: 3}
+  m_VideoClip: {fileID: 32900000, guid: 8ab3263bb0cf5bd4285e5f7e926b3d74, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}
@@ -22917,7 +22919,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1704149038
 RectTransform:
   m_ObjectHideFlags: 0
@@ -25482,7 +25484,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1921064144
 RectTransform:
   m_ObjectHideFlags: 0
