@@ -7,32 +7,48 @@ public class InteractableItem : MonoBehaviour
 {
     [Header("物品设置")]
     public string itemName = "物品";
-    [TextArea(3, 5)] // 添加多行文本区域，方便输入更长的描述
-    public string itemDescription = ""; // 物品描述
+    [TextArea(3, 5)]
+    public string itemDescription = "";
     public bool canBePickedUp = true;
     public Vector3 holdOffset = new Vector3(0, 1, 1);
 
     [Header("关键道具设置")]
-    public bool isKeyItem = false; // 是否为关键道具
-    public bool showPickupMessage = true; // 是否显示拾取提示
+    public bool isKeyItem = false;
+    public bool showPickupMessage = true;
 
     [Header("UI提示设置")]
-    public GameObject pickupUIPrefab; // UI预制体
-    public float displayTime = 3f; // 显示时间
-    public float fadeDuration = 0.5f; // 淡出时间
+    public GameObject pickupUIPrefab;
+    public float displayTime = 3f;
+    public float fadeDuration = 0.5f;
 
     [Header("UI位置设置")]
     [Range(0f, 1f)]
-    public float uiVerticalPosition = 0.3f; // UI垂直位置（屏幕高度的比例，0=底部，1=顶部）
-    public float uiHorizontalOffset = 0f; // 水平微调偏移
+    public float uiVerticalPosition = 0.3f;
+    public float uiHorizontalOffset = 0f;
+
+    [Header("UI垂直位置微调")]
+    [Tooltip("垂直位置的基准偏移（屏幕高度的百分比）")]
+    [Range(0f, 0.5f)]
+    public float verticalBaseOffset = 0.1f;
+
+    [Tooltip("垂直位置的最大调整范围（屏幕高度的百分比）")]
+    [Range(0f, 0.3f)]
+    public float verticalAdjustRange = 0.2f;
+
+    [Tooltip("根据玩家位置自动微调垂直位置")]
+    public bool autoAdjustByPlayer = true;
+
+    [Tooltip("自动微调的强度")]
+    [Range(0f, 0.1f)]
+    public float autoAdjustStrength = 0.05f;
 
     [Header("提示内容设置")]
-    public string pickupMessageFormat = "找到了 {0}"; // 提示消息格式，{0}会被itemName替换
+    public string pickupMessageFormat = "找到了 {0}";
     [TextArea(2, 4)]
-    public string customPickupMessage = ""; // 自定义提示消息，如果为空则使用默认格式
+    public string customPickupMessage = "";
 
     [Header("持握角度设置")]
-    public Vector3 holdRotationOffset = Vector3.zero; // 持握时的角度偏移
+    public Vector3 holdRotationOffset = Vector3.zero;
 
     [Header("传送设置")]
     public bool canBeExchanged = true;
@@ -40,9 +56,9 @@ public class InteractableItem : MonoBehaviour
     public string lastExchangeZone = "";
 
     [Header("交换次数限制")]
-    public bool limitExchangeTimes = true;  // 是否限制交换次数
-    public int maxExchangeTimes = 1;        // 最大交换次数
-    public int currentExchangeTimes = 0;    // 当前交换次数
+    public bool limitExchangeTimes = true;
+    public int maxExchangeTimes = 1;
+    public int currentExchangeTimes = 0;
 
     [Header("状态")]
     public bool isBeingHeld = false;
@@ -74,27 +90,51 @@ public class InteractableItem : MonoBehaviour
     public Quaternion OriginalRotation => originalRotation;
     public Vector3 OriginalScale => originalScale;
 
+    // 添加销毁标记 - 核心修复
+    private bool isBeingDestroyed = false;
+
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
-        itemCollider = GetComponent<Collider>();
-        originalPosition = transform.position;
-        originalRotation = transform.rotation;
-        originalScale = transform.localScale;
-
-        // 初始化交换次数
-        currentExchangeTimes = 0;
-
-        // 如果没有设置UI预制体，尝试动态创建一个简单的UI
-        if (pickupUIPrefab == null)
+        // 更安全的初始化
+        try
         {
-            CreateDefaultUIPrefab();
+            rb = GetComponent<Rigidbody>();
+            itemCollider = GetComponent<Collider>();
+
+            // 检查必要的组件
+            if (rb == null)
+            {
+                Debug.LogWarning($"物品 {itemName} 缺少 Rigidbody 组件", this);
+            }
+
+            if (itemCollider == null)
+            {
+                Debug.LogWarning($"物品 {itemName} 缺少 Collider 组件", this);
+            }
+
+            originalPosition = transform.position;
+            originalRotation = transform.rotation;
+            originalScale = transform.localScale;
+
+            currentExchangeTimes = 0;
+
+            // 更安全的 UI 预制体检查
+            if (pickupUIPrefab == null)
+            {
+                Debug.LogWarning($"物品 {itemName} 的 pickupUIPrefab 未设置！请在 Inspector 中分配 UI 预制体。", this);
+                // 禁用 UI 相关功能但不影响其他功能
+                showPickupMessage = false;
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"物品 {itemName} 初始化失败: {e.Message}", this);
         }
     }
 
     void Update()
     {
-        if (isBeingHeld && currentHolder != null && !isInExchangeProcess)
+        if (isBeingHeld && currentHolder != null && !isInExchangeProcess && !isBeingDestroyed)
         {
             FollowHolder();
         }
@@ -104,17 +144,15 @@ public class InteractableItem : MonoBehaviour
 
     void LateUpdate()
     {
-        // 在每帧的最后强制保持缩放，确保覆盖任何其他可能的缩放修改
-        if (isBeingHeld)
+        if (isBeingHeld && !isBeingDestroyed)
         {
             transform.localScale = originalScale;
         }
     }
 
-    // 在 Interact 方法中添加检查
     public void Interact(GameObject player)
     {
-        if (!canBePickedUp || isInExchangeProcess) return; // 添加 canBePickedUp 检查
+        if (!canBePickedUp || isInExchangeProcess || isBeingDestroyed) return;
 
         if (!isBeingHeld)
         {
@@ -128,16 +166,14 @@ public class InteractableItem : MonoBehaviour
 
     void PickUp(GameObject player)
     {
-        if (!canBePickedUp || isTransitioning || player == null) return;
+        if (!canBePickedUp || isTransitioning || player == null || isBeingDestroyed) return;
 
-        // 立即设置基础状态，避免逻辑错误
         isBeingHeld = true;
         currentHolder = player;
         originalScale = transform.localScale;
 
         ResetExchangeLock();
 
-        // 禁用物理效果
         if (rb != null)
         {
             rb.isKinematic = true;
@@ -149,13 +185,11 @@ public class InteractableItem : MonoBehaviour
             itemCollider.enabled = false;
         }
 
-        // 显示UI提示
         if (isKeyItem && showPickupMessage)
         {
             ShowPickupUI(player);
         }
 
-        // 开始过渡动画
         if (transitionCoroutine != null)
             StopCoroutine(transitionCoroutine);
 
@@ -167,72 +201,52 @@ public class InteractableItem : MonoBehaviour
     // 显示拾取UI提示
     private void ShowPickupUI(GameObject player)
     {
-        // 如果已经有UI在显示，先停止之前的协程
+        if (isBeingDestroyed || player == null) return;
+
         if (playerUICoroutines.ContainsKey(player) && playerUICoroutines[player] != null)
         {
             StopCoroutine(playerUICoroutines[player]);
         }
 
-        // 创建或获取UI实例
         GameObject uiInstance = GetOrCreateUIInstance(player);
 
         if (uiInstance != null)
         {
-            // 开始显示UI的协程
             playerUICoroutines[player] = StartCoroutine(ShowPickupMessageRoutine(player, uiInstance));
         }
     }
 
-    // 获取或创建UI实例
+    // 获取或创建UI实例 - 添加更多安全检查
     private GameObject GetOrCreateUIInstance(GameObject player)
     {
-        // 清理已销毁的引用
-        if (playerUIInstances.ContainsKey(player) && playerUIInstances[player] == null)
+        if (isBeingDestroyed || player == null)
         {
-            playerUIInstances.Remove(player);
+            return null;
         }
 
-        if (playerUICoroutines.ContainsKey(player) && playerUICoroutines[player] == null)
-        {
-            playerUICoroutines.Remove(player);
-        }
+        // 安全的字典清理
+        SafeCleanupDictionaries();
 
         if (!playerUIInstances.ContainsKey(player) || playerUIInstances[player] == null)
         {
             if (pickupUIPrefab != null)
             {
-                // 创建新的UI实例
                 GameObject uiInstance = Instantiate(pickupUIPrefab);
 
-                // 设置UI的父对象为Canvas
                 Canvas canvas = FindObjectOfType<Canvas>();
                 if (canvas != null)
                 {
                     uiInstance.transform.SetParent(canvas.transform, false);
                 }
+                else
+                {
+                    Debug.LogWarning("场景中未找到 Canvas，UI 提示可能无法正确显示");
+                }
 
-                // 设置UI位置和锚点
                 RectTransform rectTransform = uiInstance.GetComponent<RectTransform>();
                 if (rectTransform != null)
                 {
-                    int playerIndex = GetPlayerIndex(player);
-
-                    if (playerIndex == 0) // 玩家1 - 左屏
-                    {
-                        // 左屏底部居中：水平0-50%，垂直底部
-                        rectTransform.anchorMin = new Vector2(0f, 0f);
-                        rectTransform.anchorMax = new Vector2(0.5f, 0f);
-                        rectTransform.pivot = new Vector2(0.5f, 0f);
-                        rectTransform.anchoredPosition = new Vector2(0, uiVerticalPosition * 100);
-                    }
-                    else // 玩家2 - 右屏
-                    {
-                        // 右屏底部居中：水平50%-100%，垂直底部
-                        rectTransform.anchorMin = new Vector2(0.5f, 0f);
-                        rectTransform.anchorMax = new Vector2(1f, 0f);
-                        rectTransform.pivot = new Vector2(0.5f, 0f);
-                        rectTransform.anchoredPosition = new Vector2(0, uiVerticalPosition * 100);
-                    }
+                    SetupUIPosition(player, rectTransform);
                 }
 
                 playerUIInstances[player] = uiInstance;
@@ -247,10 +261,98 @@ public class InteractableItem : MonoBehaviour
         return playerUIInstances[player];
     }
 
+    // 安全的字典清理方法
+    private void SafeCleanupDictionaries()
+    {
+        // 使用临时列表记录需要移除的键
+        List<GameObject> keysToRemove = new List<GameObject>();
+
+        // 清理 UI 实例字典
+        foreach (var pair in playerUIInstances)
+        {
+            if (pair.Value == null)
+                keysToRemove.Add(pair.Key);
+        }
+        foreach (var key in keysToRemove)
+        {
+            playerUIInstances.Remove(key);
+        }
+
+        keysToRemove.Clear();
+
+        // 清理协程字典
+        foreach (var pair in playerUICoroutines)
+        {
+            if (pair.Value == null)
+                keysToRemove.Add(pair.Key);
+        }
+        foreach (var key in keysToRemove)
+        {
+            playerUICoroutines.Remove(key);
+        }
+    }
+
+    // 设置UI位置的方法
+    private void SetupUIPosition(GameObject player, RectTransform rectTransform)
+    {
+        int playerIndex = GetPlayerIndex(player);
+        Canvas canvas = rectTransform.GetComponentInParent<Canvas>();
+        float canvasHeight = canvas != null ? canvas.GetComponent<RectTransform>().rect.height : Screen.height;
+
+        // 计算基础垂直位置
+        float baseVerticalPos = verticalBaseOffset * canvasHeight;
+
+        // 计算调整范围
+        float adjustRange = verticalAdjustRange * canvasHeight;
+
+        // 计算最终垂直位置
+        float finalVerticalPos = baseVerticalPos + (uiVerticalPosition * adjustRange);
+
+        // 自动根据玩家位置微调
+        if (autoAdjustByPlayer && player != null)
+        {
+            float playerScreenY = GetPlayerScreenPosition(player).y;
+            float screenAdjust = (playerScreenY - 0.5f) * autoAdjustStrength * canvasHeight;
+            finalVerticalPos += screenAdjust;
+
+            // 限制在合理范围内
+            finalVerticalPos = Mathf.Clamp(finalVerticalPos, 50f, canvasHeight * 0.8f);
+        }
+
+        if (playerIndex == 0) // 玩家1 - 左屏
+        {
+            rectTransform.anchorMin = new Vector2(0f, 0f);
+            rectTransform.anchorMax = new Vector2(0.5f, 0f);
+            rectTransform.pivot = new Vector2(0.5f, 0f);
+            rectTransform.anchoredPosition = new Vector2(uiHorizontalOffset, finalVerticalPos);
+        }
+        else // 玩家2 - 右屏
+        {
+            rectTransform.anchorMin = new Vector2(0.5f, 0f);
+            rectTransform.anchorMax = new Vector2(1f, 0f);
+            rectTransform.pivot = new Vector2(0.5f, 0f);
+            rectTransform.anchoredPosition = new Vector2(uiHorizontalOffset, finalVerticalPos);
+        }
+    }
+
+    // 获取玩家屏幕位置
+    private Vector2 GetPlayerScreenPosition(GameObject player)
+    {
+        if (player == null) return new Vector2(0.5f, 0.5f);
+
+        Camera camera = Camera.main;
+        if (camera != null)
+        {
+            Vector3 screenPos = camera.WorldToViewportPoint(player.transform.position);
+            return new Vector2(screenPos.x, screenPos.y);
+        }
+
+        return new Vector2(0.5f, 0.5f);
+    }
+
     // 获取玩家索引
     private int GetPlayerIndex(GameObject player)
     {
-        // 根据玩家对象的名称或标签判断是哪个玩家
         if (player.name.Contains("Player1") || player.CompareTag("Player1"))
             return 0;
         else if (player.name.Contains("Player2") || player.CompareTag("Player2"))
@@ -265,30 +367,25 @@ public class InteractableItem : MonoBehaviour
     // 生成提示消息
     private string GeneratePickupMessage()
     {
-        // 如果有自定义消息，优先使用
         if (!string.IsNullOrEmpty(customPickupMessage))
         {
             return customPickupMessage;
         }
 
-        // 否则使用格式化消息
         if (!string.IsNullOrEmpty(pickupMessageFormat))
         {
             return string.Format(pickupMessageFormat, itemName);
         }
 
-        // 默认消息
         return $"找到了 {itemName}";
     }
 
-    // 显示拾取消息的协程
+    // 显示拾取消息的协程 - 核心修复：添加销毁检查
     private IEnumerator ShowPickupMessageRoutine(GameObject player, GameObject uiInstance)
     {
-        // 立即检查对象是否有效
-        if (uiInstance == null || player == null)
+        if (uiInstance == null || player == null || isBeingDestroyed)
             yield break;
 
-        // 获取文本组件
         TextMeshProUGUI textComponent = uiInstance.GetComponentInChildren<TextMeshProUGUI>();
         if (textComponent == null)
         {
@@ -296,25 +393,27 @@ public class InteractableItem : MonoBehaviour
             yield break;
         }
 
-        // 设置文本内容
         textComponent.text = GeneratePickupMessage();
-
-        // 立即显示（不透明）
         textComponent.color = new Color(textComponent.color.r, textComponent.color.g, textComponent.color.b, 1f);
         uiInstance.SetActive(true);
 
-        // 等待显示时间
-        yield return new WaitForSeconds(displayTime);
+        // 使用计时器而不是 WaitForSeconds，以便每帧检查销毁状态
+        float displayTimer = 0f;
+        while (displayTimer < displayTime)
+        {
+            if (uiInstance == null || textComponent == null || isBeingDestroyed)
+                yield break;
 
-        // 淡出效果
+            displayTimer += Time.deltaTime;
+            yield return null;
+        }
+
         float elapsedTime = 0f;
         Color startColor = textComponent.color;
-        Color targetColor = new Color(startColor.r, startColor.g, startColor.b, 0f);
 
         while (elapsedTime < fadeDuration)
         {
-            // 每帧都检查对象是否仍然有效
-            if (uiInstance == null || textComponent == null)
+            if (uiInstance == null || textComponent == null || isBeingDestroyed)
                 yield break;
 
             elapsedTime += Time.deltaTime;
@@ -323,25 +422,22 @@ public class InteractableItem : MonoBehaviour
             yield return null;
         }
 
-        // 完全透明后隐藏UI，检查对象是否仍然有效
-        if (uiInstance != null && textComponent != null)
+        if (uiInstance != null && textComponent != null && !isBeingDestroyed)
         {
-            textComponent.color = targetColor;
+            textComponent.color = new Color(startColor.r, startColor.g, startColor.b, 0f);
             uiInstance.SetActive(false);
         }
 
-        // 清理协程引用
-        if (playerUICoroutines.ContainsKey(player))
+        // 只有在物品没有被销毁时才修改字典
+        if (!isBeingDestroyed && playerUICoroutines.ContainsKey(player))
         {
             playerUICoroutines[player] = null;
         }
     }
 
-    // 创建默认UI预制体（如果没有设置的话）
+    // 创建默认UI预制体
     private void CreateDefaultUIPrefab()
     {
-        // 这里可以创建一个简单的UI预制体
-        // 在实际项目中，建议在编辑器中设置好UI预制体
         Debug.Log("请设置Pickup UI Prefab或在编辑器中创建UI元素");
     }
 
@@ -349,30 +445,26 @@ public class InteractableItem : MonoBehaviour
     {
         isTransitioning = true;
 
-        // 保存初始状态
         Vector3 startPosition = transform.position;
         Quaternion startRotation = transform.rotation;
 
         float elapsedTime = 0f;
 
-        while (elapsedTime < pickUpTransitionTime && currentHolder != null)
+        while (elapsedTime < pickUpTransitionTime && currentHolder != null && !isBeingDestroyed)
         {
             elapsedTime += Time.deltaTime;
             float t = pickUpCurve.Evaluate(elapsedTime / pickUpTransitionTime);
 
-            // 计算当前帧的目标位置
             Vector3 targetPosition = GetTargetHoldPosition();
             Quaternion targetRotation = GetTargetHoldRotation();
 
-            // 平滑插值
             transform.position = Vector3.Lerp(startPosition, targetPosition, t);
             transform.rotation = Quaternion.Slerp(startRotation, targetRotation, t);
 
             yield return null;
         }
 
-        // 确保最终位置准确
-        if (currentHolder != null)
+        if (currentHolder != null && !isBeingDestroyed)
         {
             transform.position = GetTargetHoldPosition();
             transform.rotation = GetTargetHoldRotation();
@@ -383,6 +475,8 @@ public class InteractableItem : MonoBehaviour
 
     public void ResetItemState()
     {
+        if (isBeingDestroyed) return;
+
         isBeingHeld = false;
         isInExchangeProcess = false;
         canBePickedUp = true;
@@ -402,24 +496,21 @@ public class InteractableItem : MonoBehaviour
 
     public void PutDown()
     {
-        if (!isBeingHeld) return; // 如果已经不是持有状态，直接返回
+        if (!isBeingHeld || isBeingDestroyed) return;
 
         isBeingHeld = false;
 
-        // 恢复物理效果
         if (rb != null)
         {
             rb.isKinematic = false;
             rb.useGravity = true;
         }
 
-        // 恢复碰撞体
         if (itemCollider != null)
         {
             itemCollider.enabled = true;
         }
 
-        // 最终确认缩放
         transform.localScale = originalScale;
 
         Debug.Log($"{currentHolder?.name} 放下了 {itemName}");
@@ -428,9 +519,8 @@ public class InteractableItem : MonoBehaviour
 
     void FollowHolder()
     {
-        if (currentHolder == null || isTransitioning) return;
+        if (currentHolder == null || isTransitioning || isBeingDestroyed) return;
 
-        // 直接设置位置，没有延迟
         transform.position = GetTargetHoldPosition();
         transform.rotation = GetTargetHoldRotation();
         transform.localScale = originalScale;
@@ -452,10 +542,9 @@ public class InteractableItem : MonoBehaviour
     [Header("调试选项")]
     public bool showDebugInfo = false;
 
-    // 检查是否离开了交换区域
     void CheckIfLeftZone()
     {
-        if (currentZone != null && !isBeingHeld)
+        if (currentZone != null && !isBeingHeld && !isBeingDestroyed)
         {
             float distance = Vector3.Distance(transform.position, currentZone.transform.position);
             if (distance > currentZone.detectionRadius * 1.2f)
@@ -465,10 +554,9 @@ public class InteractableItem : MonoBehaviour
         }
     }
 
-    // 当物品离开区域时调用
     void OnLeftZone()
     {
-        if (currentZone != null)
+        if (currentZone != null && !isBeingDestroyed)
         {
             Debug.Log($"物品 {itemName} 离开了区域 {currentZone.zoneID}");
             currentZone.OnItemLeft(this.gameObject);
@@ -477,19 +565,18 @@ public class InteractableItem : MonoBehaviour
         }
     }
 
-    // 标记物品已被交换
     public void MarkAsExchanged(string fromZoneID)
     {
+        if (isBeingDestroyed) return;
+
         isExchangeLocked = true;
         lastExchangeZone = fromZoneID;
 
-        // 增加交换次数
         if (limitExchangeTimes)
         {
             currentExchangeTimes++;
             Debug.Log($"物品 {itemName} 被标记为已交换，来自区域 {fromZoneID}，交换次数: {currentExchangeTimes}/{maxExchangeTimes}");
 
-            // 检查是否达到交换次数限制
             if (currentExchangeTimes >= maxExchangeTimes)
             {
                 canBeExchanged = false;
@@ -502,10 +589,9 @@ public class InteractableItem : MonoBehaviour
         }
     }
 
-    // 重置交换锁定
     public void ResetExchangeLock()
     {
-        if (isExchangeLocked)
+        if (isExchangeLocked && !isBeingDestroyed)
         {
             isExchangeLocked = false;
             lastExchangeZone = "";
@@ -513,10 +599,10 @@ public class InteractableItem : MonoBehaviour
         }
     }
 
-    // 检查是否可以交换到指定区域
     public bool CanExchangeTo(string targetZoneID)
     {
-        // 检查交换次数限制
+        if (isBeingDestroyed) return false;
+
         if (limitExchangeTimes && currentExchangeTimes >= maxExchangeTimes)
         {
             if (showDebugInfo) Debug.Log($"物品 {itemName} 已达到最大交换次数，无法交换");
@@ -532,15 +618,16 @@ public class InteractableItem : MonoBehaviour
         return true;
     }
 
-    // 设置当前所在的区域
     public void SetCurrentZone(ExchangeZone zone)
     {
+        if (isBeingDestroyed) return;
         currentZone = zone;
     }
 
-    // 重置物品到原始位置
     public void ResetItem()
     {
+        if (isBeingDestroyed) return;
+
         PutDown();
         transform.position = originalPosition;
         transform.rotation = originalRotation;
@@ -549,33 +636,35 @@ public class InteractableItem : MonoBehaviour
         ResetExchangeLock();
     }
 
-    // 重置交换次数（用于特殊情况下重置物品状态）
     public void ResetExchangeTimes()
     {
+        if (isBeingDestroyed) return;
+
         currentExchangeTimes = 0;
         canBeExchanged = true;
         Debug.Log($"物品 {itemName} 的交换次数已重置");
     }
 
-    // 设置交换次数限制
     public void SetExchangeLimit(int maxTimes)
     {
+        if (isBeingDestroyed) return;
+
         maxExchangeTimes = maxTimes;
         limitExchangeTimes = true;
         Debug.Log($"物品 {itemName} 的交换次数限制设置为: {maxTimes}");
     }
 
-    // 移除交换次数限制
     public void RemoveExchangeLimit()
     {
+        if (isBeingDestroyed) return;
+
         limitExchangeTimes = false;
         Debug.Log($"物品 {itemName} 的交换次数限制已移除");
     }
 
-    // 重置物理状态
     public void ResetPhysics()
     {
-        if (rb != null)
+        if (rb != null && !isBeingDestroyed)
         {
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
@@ -584,9 +673,8 @@ public class InteractableItem : MonoBehaviour
 
     public void ForceRelease()
     {
-        if (isBeingHeld)
+        if (isBeingHeld && !isBeingDestroyed)
         {
-            // 停止过渡动画
             if (transitionCoroutine != null)
             {
                 StopCoroutine(transitionCoroutine);
@@ -610,9 +698,11 @@ public class InteractableItem : MonoBehaviour
             Debug.Log($"强制释放物品: {itemName}");
         }
     }
-    // 修改 OnDestroy 方法
+
+    // 核心修复：安全的销毁方法
     void OnDestroy()
     {
+        isBeingDestroyed = true;
         SafeStopAllCoroutines();
         SafeDestroyAllUI();
 
@@ -620,23 +710,27 @@ public class InteractableItem : MonoBehaviour
         playerUICoroutines.Clear();
     }
 
-    // 添加物品被禁用时的清理
+    // 修复 OnDisable 方法 - 使用副本遍历字典
     void OnDisable()
     {
-        // 停止所有协程但不销毁UI，因为物品可能只是暂时禁用
-        foreach (var pair in playerUICoroutines)
+        if (isBeingDestroyed) return;
+
+        // 使用副本遍历避免修改字典时的异常
+        var coroutineEntries = new List<KeyValuePair<GameObject, Coroutine>>(playerUICoroutines);
+        foreach (var entry in coroutineEntries)
         {
-            if (pair.Value != null)
+            if (entry.Value != null)
             {
-                StopCoroutine(pair.Value);
-                playerUICoroutines[pair.Key] = null;
+                StopCoroutine(entry.Value);
+                playerUICoroutines[entry.Key] = null;
             }
         }
     }
-    // 新增：安全的协程停止方法
+
+    // 安全的协程停止方法
     private void SafeStopAllCoroutines()
     {
-        // 使用ToList()创建副本，避免枚举时修改
+        // 使用副本遍历避免修改字典时的异常
         var coroutineEntries = new List<KeyValuePair<GameObject, Coroutine>>(playerUICoroutines);
 
         foreach (var entry in coroutineEntries)
@@ -644,15 +738,21 @@ public class InteractableItem : MonoBehaviour
             if (entry.Value != null)
             {
                 StopCoroutine(entry.Value);
-                // 不立即从字典中移除，只是设置为null
-                playerUICoroutines[entry.Key] = null;
             }
+        }
+
+        // 停止物品自身的过渡协程
+        if (transitionCoroutine != null)
+        {
+            StopCoroutine(transitionCoroutine);
+            transitionCoroutine = null;
         }
     }
 
-    // 新增：安全的UI清理方法
+    // 安全的UI清理方法
     private void SafeDestroyAllUI()
     {
+        // 使用副本遍历避免修改字典时的异常
         var uiEntries = new List<KeyValuePair<GameObject, GameObject>>(playerUIInstances);
 
         foreach (var entry in uiEntries)
@@ -660,11 +760,9 @@ public class InteractableItem : MonoBehaviour
             if (entry.Value != null)
             {
                 Destroy(entry.Value);
-                playerUIInstances[entry.Key] = null;
             }
         }
     }
-
 
     void OnDrawGizmosSelected()
     {
@@ -684,7 +782,6 @@ public class InteractableItem : MonoBehaviour
             Gizmos.DrawWireCube(transform.position, Vector3.one * 1.2f);
         }
 
-        // 显示交换次数信息
         if (limitExchangeTimes && showDebugInfo)
         {
 #if UNITY_EDITOR

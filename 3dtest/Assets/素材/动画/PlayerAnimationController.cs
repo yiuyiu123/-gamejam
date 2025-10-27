@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 using UnityEngine;
 
 public class PlayerAnimationController : MonoBehaviour
@@ -12,7 +11,6 @@ public class PlayerAnimationController : MonoBehaviour
 
     [Header("动画组件")]
     public Animator playerAnimator;
-    public SpriteRenderer spriteRenderer;
 
     [Header("玩家引用")]
     public PlayerController playerController;
@@ -24,9 +22,7 @@ public class PlayerAnimationController : MonoBehaviour
 
     [Header("方向设置")]
     public bool invertFlipDirection = false;
-    public bool useCameraRelativeFlip = true;
-    public bool useInputBasedFlip = true;
-    public float flipDeadZone = 0.3f;
+    public float flipDeadZone = 0.1f;
 
     [Header("拾取动画设置")]
     public float pickUpAnimationLockTime = 0.8f;
@@ -39,37 +35,32 @@ public class PlayerAnimationController : MonoBehaviour
     private bool wasMoving = false;
     private bool isHoldingItem = false;
     private bool forceStateUpdate = false;
-    private Camera playerCamera;
-    private Vector3 lastStableDirection = Vector3.forward;
     private float lastFlipTime = 0f;
-    private float flipCooldown = 0.2f;
+    private float flipCooldown = 0.1f;
 
     // 动画锁定相关变量
     private bool isAnimationLocked = false;
     private float animationLockEndTime = 0f;
     private Coroutine animationLockCoroutine;
 
-    // 新增：方向优先级管理
-    private float lastHorizontalInput = 0f;
-    private float lastVerticalInput = 0f;
-    private bool preferHorizontal = true; // 水平方向优先
-
     private string playerName = "Player";
+
+    // 存储原始缩放值
+    private Vector3 originalScale;
 
     void Start()
     {
         InitializeComponents();
         lastPosition = transform.position;
-        FindPlayerCamera();
+
+        // 记录原始缩放
+        originalScale = transform.localScale;
     }
 
     void InitializeComponents()
     {
         if (playerAnimator == null)
             playerAnimator = GetComponent<Animator>();
-
-        if (spriteRenderer == null)
-            spriteRenderer = GetComponent<SpriteRenderer>();
 
         if (playerController == null)
             playerController = GetComponent<PlayerController>();
@@ -79,39 +70,6 @@ public class PlayerAnimationController : MonoBehaviour
 
         if (dualPlayerController == null)
             dualPlayerController = FindObjectOfType<DualPlayerController>();
-    }
-
-    void FindPlayerCamera()
-    {
-        if (dualPlayerController != null)
-        {
-            if (gameObject.CompareTag("Player1") || gameObject.name.Contains("Player1"))
-            {
-                playerCamera = dualPlayerController.player1Camera;
-            }
-            else if (gameObject.CompareTag("Player2") || gameObject.name.Contains("Player2"))
-            {
-                playerCamera = dualPlayerController.player2Camera;
-            }
-        }
-
-        if (playerCamera == null)
-        {
-            Camera[] cameras = FindObjectsOfType<Camera>();
-            foreach (Camera cam in cameras)
-            {
-                if (cam.name.Contains("Player1") && (gameObject.CompareTag("Player1") || gameObject.name.Contains("Player1")))
-                {
-                    playerCamera = cam;
-                    break;
-                }
-                else if (cam.name.Contains("Player2") && (gameObject.CompareTag("Player2") || gameObject.name.Contains("Player2")))
-                {
-                    playerCamera = cam;
-                    break;
-                }
-            }
-        }
     }
 
     void Update()
@@ -195,110 +153,28 @@ public class PlayerAnimationController : MonoBehaviour
 
     void UpdateSpriteDirection()
     {
-        if (spriteRenderer == null) return;
-
-        if (useInputBasedFlip && dualPlayerController != null)
+        if (dualPlayerController != null)
         {
-            UpdateInputBasedFlipStable();
-        }
-        else if (useCameraRelativeFlip && playerCamera != null)
-        {
-            UpdateCameraRelativeFlipStable();
-        }
-        else if (playerRigidbody != null)
-        {
-            UpdateVelocityBasedFlipStable();
+            UpdateInputBasedFlip();
         }
     }
 
-    void UpdateInputBasedFlipStable()
+    void UpdateInputBasedFlip()
     {
         Vector3 inputDirection = GetPlayerInputDirection();
-
-        // 记录当前输入
         float currentHorizontal = inputDirection.x;
-        float currentVertical = inputDirection.z;
 
-        // 检查是否有对角线输入
-        bool hasDiagonalInput = Mathf.Abs(currentHorizontal) > 0.1f && Mathf.Abs(currentVertical) > 0.1f;
-
-        if (inputDirection.magnitude > movementThreshold)
+        // 只有当有有效水平输入时才翻转
+        if (Mathf.Abs(currentHorizontal) > flipDeadZone)
         {
-            Vector3 worldDirection = GetCameraRelativeDirection(inputDirection, playerCamera);
+            // 直接根据水平输入决定翻转方向
+            bool shouldFlip = currentHorizontal < 0;
+            ApplyFlipWithCooldown(shouldFlip);
 
-            // 处理对角线输入：优先水平方向
-            if (hasDiagonalInput)
+            if (showDebugInfo && inputDirection.magnitude > movementThreshold)
             {
-                // 当同时按下WD或WA时，以水平方向为主
-                bool hasSignificantHorizontalInput = Mathf.Abs(currentHorizontal) > flipDeadZone;
-
-                if (hasSignificantHorizontalInput)
-                {
-                    // 使用水平方向决定翻转
-                    bool shouldFlip = currentHorizontal < 0;
-                    ApplyFlipWithCooldown(shouldFlip);
-                    lastStableDirection = worldDirection;
-
-                    if (showDebugInfo)
-                    {
-                        Debug.Log($"{playerName} 对角线输入，使用水平方向: {currentHorizontal}, 翻转: {shouldFlip}");
-                    }
-                }
-            }
-            else
-            {
-                // 正常情况：使用世界方向
-                bool hasSignificantHorizontalInput = Mathf.Abs(inputDirection.x) > flipDeadZone;
-
-                if (hasSignificantHorizontalInput)
-                {
-                    bool shouldFlip = worldDirection.x < 0;
-                    ApplyFlipWithCooldown(shouldFlip);
-                    lastStableDirection = worldDirection;
-                }
-            }
-
-            // 更新最后输入记录
-            lastHorizontalInput = currentHorizontal;
-            lastVerticalInput = currentVertical;
-        }
-    }
-
-
-    void UpdateCameraRelativeFlipStable()
-    {
-        Vector3 moveDirection = GetMoveDirection();
-
-        if (moveDirection.magnitude > movementThreshold)
-        {
-            Vector3 screenPos = playerCamera.WorldToViewportPoint(transform.position);
-            Vector3 worldTarget = transform.position + moveDirection;
-            Vector3 screenTarget = playerCamera.WorldToViewportPoint(worldTarget);
-
-            bool hasSignificantHorizontalMovement = Mathf.Abs(screenTarget.x - screenPos.x) > flipDeadZone * 0.1f;
-
-            if (hasSignificantHorizontalMovement)
-            {
-                bool shouldFlip = screenTarget.x < screenPos.x;
-                ApplyFlipWithCooldown(shouldFlip);
-                lastStableDirection = moveDirection;
-            }
-        }
-    }
-
-    void UpdateVelocityBasedFlipStable()
-    {
-        Vector3 horizontalVelocity = new Vector3(playerRigidbody.velocity.x, 0, playerRigidbody.velocity.z);
-
-        if (horizontalVelocity.magnitude > movementThreshold)
-        {
-            bool hasSignificantHorizontalVelocity = Mathf.Abs(horizontalVelocity.x) > flipDeadZone;
-
-            if (hasSignificantHorizontalVelocity)
-            {
-                bool shouldFlip = horizontalVelocity.x < 0;
-                ApplyFlipWithCooldown(shouldFlip);
-                lastStableDirection = horizontalVelocity.normalized;
+                string diagonalInfo = (Mathf.Abs(inputDirection.z) > 0.1f) ? "对角线" : "水平";
+                Debug.Log($"{playerName} {diagonalInfo}输入 - 水平: {currentHorizontal}, 翻转: {shouldFlip}");
             }
         }
     }
@@ -312,25 +188,20 @@ public class PlayerAnimationController : MonoBehaviour
 
         bool newFlipState = invertFlipDirection ? !shouldFlip : shouldFlip;
 
-        if (spriteRenderer.flipX != newFlipState)
+        // 使用缩放来实现翻转
+        Vector3 newScale = originalScale;
+        newScale.x = newFlipState ? -originalScale.x : originalScale.x;
+
+        if (transform.localScale != newScale)
         {
-            spriteRenderer.flipX = newFlipState;
+            transform.localScale = newScale;
             lastFlipTime = Time.time;
 
             if (showDebugInfo)
             {
-                Debug.Log($"{playerName} 翻转方向: {newFlipState}");
+                Debug.Log($"{playerName} 翻转方向: {newFlipState}, 新缩放: {newScale}");
             }
         }
-    }
-
-    Vector3 GetMoveDirection()
-    {
-        if (playerRigidbody != null)
-        {
-            return new Vector3(playerRigidbody.velocity.x, 0, playerRigidbody.velocity.z);
-        }
-        return (transform.position - lastPosition).normalized;
     }
 
     Vector3 GetPlayerInputDirection()
@@ -347,16 +218,6 @@ public class PlayerAnimationController : MonoBehaviour
         }
 
         return Vector3.zero;
-    }
-
-    Vector3 GetCameraRelativeDirection(Vector3 inputDirection, Camera cam)
-    {
-        if (cam == null) return inputDirection;
-
-        Vector3 cameraForward = Vector3.ProjectOnPlane(cam.transform.forward, Vector3.up).normalized;
-        Vector3 cameraRight = Vector3.ProjectOnPlane(cam.transform.right, Vector3.up).normalized;
-
-        return cameraForward * inputDirection.z + cameraRight * inputDirection.x;
     }
 
     public void SetHoldingState(bool holding)
@@ -449,15 +310,17 @@ public class PlayerAnimationController : MonoBehaviour
         }
 
         ForceEndAnimationLock();
+
+        // 重置为原始缩放
+        transform.localScale = originalScale;
     }
 
     public void SetFlipDirection(bool flipX)
     {
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.flipX = flipX;
-            lastStableDirection = flipX ? Vector3.left : Vector3.right;
-        }
+        // 使用缩放来实现翻转
+        Vector3 newScale = originalScale;
+        newScale.x = flipX ? -originalScale.x : originalScale.x;
+        transform.localScale = newScale;
     }
 
     void OnEnable()
@@ -470,6 +333,6 @@ public class PlayerAnimationController : MonoBehaviour
 
     public string GetStateRecoveryInfo()
     {
-        return $"动画锁定: {isAnimationLocked}, 持有状态: {isHoldingItem}";
+        return $"动画锁定: {isAnimationLocked}, 持有状态: {isHoldingItem}, 当前缩放: {transform.localScale}";
     }
 }
