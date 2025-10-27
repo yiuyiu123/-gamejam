@@ -31921,7 +31921,7 @@ MonoBehaviour:
       isSequenceEndLine: 0
     - player1Text: "\u8001\u677F\uFF1A\u5F00\u4F1A\u8981\u7528\u7684\u6587\u6863U
         \u76D8\u8D76\u7D27\u62FF\u8FC7\u6765\uFF0C\u9A6C\u4E0A\u5C31\u8981\u5F00\u59CB\u4E86\u3002"
-      player2Text: "\uFF08\u6742\u97F3\uFF09\u2026\u597D\u7684.....\u7A0D\u7B49......"
+      player2Text: "\uFF08\u6742\u97F3\uFF09***\u597D\u7684*****\u7A0D\u7B49*****"
       speakerName: 
       speakerIcon: {fileID: 0}
       voiceClip: {fileID: 0}
@@ -31965,7 +31965,7 @@ MonoBehaviour:
       inputRequirement: 0
       isSequenceEndLine: 0
     - player1Text: "\u7B97\u4E86\uFF0C\u6765\u90FD\u6765\u4E86"
-      player2Text: "......\u6587\u6863U\u76D8......"
+      player2Text: "\uFF08\u6742\u97F3\uFF09*****\u6587\u6863U\u76D8***"
       speakerName: 
       speakerIcon: {fileID: 0}
       voiceClip: {fileID: 0}

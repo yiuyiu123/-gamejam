@@ -544,6 +544,10 @@ MonoBehaviour:
   fadeDuration: 0.5
   uiVerticalPosition: 0.3
   uiHorizontalOffset: 0
+  verticalBaseOffset: 0.1
+  verticalAdjustRange: 0.2
+  autoAdjustByPlayer: 1
+  autoAdjustStrength: 0.05
   pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
   customPickupMessage: 
   holdRotationOffset: {x: 19.29, y: 180, z: 0}
@@ -6832,6 +6836,10 @@ MonoBehaviour:
   fadeDuration: 0.5
   uiVerticalPosition: 0.3
   uiHorizontalOffset: 0
+  verticalBaseOffset: 0.1
+  verticalAdjustRange: 0.2
+  autoAdjustByPlayer: 1
+  autoAdjustStrength: 0.05
   pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
   customPickupMessage: 
   holdRotationOffset: {x: 19.29, y: 180, z: 0}
@@ -7050,6 +7058,10 @@ MonoBehaviour:
   fadeDuration: 0.5
   uiVerticalPosition: 0.3
   uiHorizontalOffset: 0
+  verticalBaseOffset: 0.1
+  verticalAdjustRange: 0.2
+  autoAdjustByPlayer: 1
+  autoAdjustStrength: 0.05
   pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
   customPickupMessage: 
   holdRotationOffset: {x: 0, y: 0, z: 0}
@@ -9699,6 +9711,10 @@ MonoBehaviour:
   fadeDuration: 0.5
   uiVerticalPosition: 0.3
   uiHorizontalOffset: 0
+  verticalBaseOffset: 0.1
+  verticalAdjustRange: 0.2
+  autoAdjustByPlayer: 1
+  autoAdjustStrength: 0.05
   pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
   customPickupMessage: 
   holdRotationOffset: {x: -111.2, y: 358.9, z: 0}
@@ -9930,7 +9946,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 48c32cdf742ebf2458bdc137be23133d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8a6bf1f8b79e47e438a9ad08aae5b79e, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -10110,14 +10126,11 @@ MonoBehaviour:
   holdParameter: IsHolding
   pickUpParameter: PickUp
   playerAnimator: {fileID: 1623030695}
-  spriteRenderer: {fileID: 1623030700}
   playerController: {fileID: 1623030697}
   playerRigidbody: {fileID: 1623030698}
   dualPlayerController: {fileID: 0}
   movementThreshold: 0
   invertFlipDirection: 1
-  useCameraRelativeFlip: 1
-  useInputBasedFlip: 1
   flipDeadZone: 0.3
   pickUpAnimationLockTime: 0.8
   enableAnimationLock: 1
