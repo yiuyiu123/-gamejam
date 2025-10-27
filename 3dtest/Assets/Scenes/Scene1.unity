@@ -1733,7 +1733,7 @@ MonoBehaviour:
     - {fileID: 8300000, guid: f2317bbb1577a7846adf1e35e796284d, type: 3}
   - groupID: "\u629B\u63B7\u7269\u54C1"
     clips:
-    - {fileID: 8300000, guid: f2317bbb1577a7846adf1e35e796284d, type: 3}
+    - {fileID: 8300000, guid: 8386861e22742f44e9c2f6d0986c5bf8, type: 3}
   - groupID: "\u534F\u4F5C\u6210\u529F"
     clips:
     - {fileID: 8300000, guid: 096f55cb24a93c94bbb7d9b93cf7d235, type: 3}
@@ -11947,7 +11947,7 @@ MonoBehaviour:
   autoAdjustByPlayer: 1
   autoAdjustStrength: 0.05
   pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
-  customPickupMessage: "\u518D\u6B21\u6441 F \u5C06\u7269\u54C1\u653E\u5230\u5408\u6210\u533A"
+  customPickupMessage: "\u518D\u6B21\u6309 F \u5C06\u7269\u54C1\u653E\u5230\u5408\u6210\u533A"
   holdRotationOffset: {x: -111.2, y: 358.9, z: 0}
   canBeExchanged: 1
   isExchangeLocked: 0
@@ -19478,7 +19478,7 @@ MonoBehaviour:
   autoAdjustByPlayer: 1
   autoAdjustStrength: 0.05
   pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
-  customPickupMessage: "\u518D\u6B21\u6441 H \u5C06\u7269\u54C1\u653E\u5230\u5408\u6210\u533A"
+  customPickupMessage: "\u518D\u6B21\u6309 H \u5C06\u7269\u54C1\u653E\u5230\u5408\u6210\u533A"
   holdRotationOffset: {x: 19.29, y: 180, z: 0}
   canBeExchanged: 1
   isExchangeLocked: 0
