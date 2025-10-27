@@ -19,6 +19,9 @@ public class GlobalSynthesisManager : MonoBehaviour
     public float globalFailEjectionForce = 10f;
     public float globalFailEjectionHeight = 2.5f;
 
+    [Header("全局合成特效设置")]
+    public bool enableGlobalSynthesisEffects = true; // 是否启用全局合成特效
+
     public enum SynthesisResultSpawnMode
     {
         FirstZone,
@@ -129,6 +132,12 @@ public class GlobalSynthesisManager : MonoBehaviour
                 }
             }
 
+            // 播放全局合成特效
+            if (enableGlobalSynthesisEffects)
+            {
+                PlayGlobalSynthesisEffects();
+            }
+
             Vector3 spawnPosition = GetGlobalSpawnPosition();
             yield return StartCoroutine(SpawnResultItem(matchedRecipe.resultItemPrefab, spawnPosition));
         }
@@ -142,7 +151,19 @@ public class GlobalSynthesisManager : MonoBehaviour
         isGlobalCombining = false;
     }
 
-    // 新增：全局失败物品弹出
+    // 新增：播放全局合成特效
+    public void PlayGlobalSynthesisEffects()
+    {
+        foreach (SynthesisZone zone in allZones)
+        {
+            if (zone != null)
+            {
+                zone.PlaySynthesisEffect();
+            }
+        }
+        Debug.Log("播放全局合成特效 - 所有区域");
+    }
+
     IEnumerator EjectGlobalFailedItems(List<InteractableItem> itemsToEject)
     {
         foreach (var item in itemsToEject)
@@ -164,7 +185,6 @@ public class GlobalSynthesisManager : MonoBehaviour
                 {
                     item.Rb.isKinematic = false;
 
-                    // 全局弹出使用更强的力
                     Vector3 ejectionDirection = new Vector3(
                         Random.Range(-1f, 1f),
                         Random.Range(0.5f, 1f),
@@ -173,7 +193,6 @@ public class GlobalSynthesisManager : MonoBehaviour
 
                     item.Rb.AddForce(ejectionDirection * globalFailEjectionForce, ForceMode.Impulse);
 
-                    // 添加旋转
                     Vector3 randomTorque = new Vector3(
                         Random.Range(-1f, 1f),
                         Random.Range(-1f, 1f),
@@ -280,6 +299,12 @@ public class GlobalSynthesisManager : MonoBehaviour
             StartCoroutine(EjectGlobalFailedItems(testItems));
             Debug.Log($"测试全局弹出 {testItems.Count} 个物品");
         }
+    }
+
+    [ContextMenu("测试全局特效")]
+    public void TestGlobalEffects()
+    {
+        PlayGlobalSynthesisEffects();
     }
 
     [ContextMenu("紧急修复：解锁所有物品")]
