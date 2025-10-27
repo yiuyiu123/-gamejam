@@ -24,6 +24,7 @@ public class Ending : MonoBehaviour
     public VideoPlayer video_Ending2; // No
 
     [Header("音效")]
+    public GameObject XH_music;
     public AudioSource audioSource;
     public AudioClip sureSound;
 
@@ -186,6 +187,7 @@ public class Ending : MonoBehaviour
     private IEnumerator PlayEndingVideo()
     {
         Debug.Log("开始播放结局视频");
+        XH_music.SetActive(false);
 
         // 隐藏选择按钮
         I_Yes?.SetActive(false);
@@ -213,7 +215,7 @@ public class Ending : MonoBehaviour
         }
 
         // 延迟2秒再切场
-        yield return new WaitForSeconds(9f);
+        yield return new WaitForSeconds(16f);
 
         // 跳转scene5
         UnityEngine.SceneManagement.SceneManager.LoadScene("scene5");
