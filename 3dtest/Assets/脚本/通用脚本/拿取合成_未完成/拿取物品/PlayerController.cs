@@ -27,20 +27,9 @@ public class PlayerController : MonoBehaviour
     public bool showInputDebug = false;
     public bool showInteractionDebug = true;
 
-    [Header("张奕忻：是否是scene5")]
+    [Header("张奕忻：结局监听引用")]
     public bool isScene5 = false;
-
-    // 张奕忻：新增 UI & Video 引用
-    [Header("Scene5 结局 UI & 视频")]
-    public GameObject UI_mask1; // Yes选项UI
-    public GameObject UI_mask2; // No选项UI
-    public VideoPlayer video_Ending1; // Yes 结局
-    public VideoPlayer video_Ending2; // No 结局
-    private bool isHoldingSpace = false;
-    private float spaceHoldTime = 0f;
-    private bool isPlayingEnding = false;
-    private bool UI_mask1WasActive = false;
-    private bool UI_mask2WasActive = false;
+    public newmanage newManager;
 
     private Rigidbody rb;
     private Vector3 movement;
@@ -68,33 +57,62 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        //张奕忻
+        if (newManager == null) FindObjectOfType<newmanage>();
+
         if (rb != null)
         {
             rb.freezeRotation = true;
         }
-        // 张奕忻初始化scene5遮罩选项
-        if (UI_mask1 != null) UI_mask1.SetActive(false);
-        if (UI_mask2 != null) UI_mask2.SetActive(false);
     }
 
     void Update()
     {
         if (isTemporarilyLocked) return; // 如果被临时锁定，不处理输入
-        //张奕忻
-        /*if (isScene5)
-        {
-            HandleScene5Input(); // ✅ 替换为Scene5逻辑
-        }
-        else
-        {
-            HandleInteraction(); // ✅ 其他场景维持原逻辑
-        }*/
         HandleInteraction();
+        
         if (showInputDebug && movement.magnitude > 0.1f)
         {
             Debug.Log($"{playerName} 移动输入: {movement}");
         }
     }
+
+    #region 结局监听禁用输入
+    //张奕忻：结局禁用玩家移动
+    void EndingHandleInput()
+    {
+        isTemporarilyLocked = true;
+    }
+    void OnEnable()
+    {
+        if (newManager != null)
+            newManager.OnStartEnding += HandleEndingStart;
+
+        Ending.OnScene5Loaded += HandleScene5Loaded;
+    }
+
+    void OnDisable()
+    {
+        if (newManager != null)
+            newManager.OnStartEnding -= HandleEndingStart;
+
+        Ending.OnScene5Loaded -= HandleScene5Loaded;
+    }
+    void HandleEndingStart()
+    {
+        if (isTemporarilyLocked) return;
+
+        Debug.Log("结局开始，禁用玩家输入");
+        isTemporarilyLocked = true;
+    }
+
+    void HandleScene5Loaded()
+    {
+        Debug.Log("Scene5 加载完成，恢复玩家输入");
+        isTemporarilyLocked = false;
+    }
+#endregion
+
 
     void HandleInteraction()
     {
@@ -315,116 +333,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
-    #region 张奕忻scene5输入
-    /*
-    // 新增：Scene5 专属交互逻辑
-    void HandleScene5Input()
-    {
-        if (isPlayingEnding) return; // 防止重复触发播放
-
-        // 玩家1选Yes（F键）
-        if (CompareTag("Player1") && Input.GetKeyDown(KeyCode.F))
-        {
-            if (UI_mask1 != null) UI_mask1.SetActive(true);
-            if (UI_mask2 != null) UI_mask2.SetActive(false);
-            Debug.Log("玩家1选择了 YES");
-        }
-
-        // 玩家2选No（H键）
-        if (CompareTag("Player2") && Input.GetKeyDown(KeyCode.H))
-        {
-            if (UI_mask2 != null) UI_mask2.SetActive(true);
-            if (UI_mask1 != null) UI_mask1.SetActive(false);
-            Debug.Log("玩家2选择了 NO");
-        }
-
-        // 如果有任意UI激活，则可以触发按空格倒计时
-        if ((UI_mask1 != null && UI_mask1.activeSelf) || (UI_mask2 != null && UI_mask2.activeSelf))
-        {
-            if (Input.GetKey(KeyCode.Space))
-            {
-                spaceHoldTime += Time.deltaTime;
-
-                if (!isHoldingSpace && spaceHoldTime > 0.5f)
-                {
-                    Debug.Log("正在按住空格...");
-                    isHoldingSpace = true;
-                }
-
-                if (spaceHoldTime >= 5f && !isPlayingEnding)
-                {
-                    isPlayingEnding = true;
-                    StartCoroutine(PlayEndingVideo());
-                }
-            }
-            else
-            {
-                if (isHoldingSpace)
-                    Debug.Log("松开空格，重置计时");
-
-                isHoldingSpace = false;
-                spaceHoldTime = 0f;
-            }
-        }
-    }
-
-    // 新增：播放结局视频
-    IEnumerator PlayEndingVideo()
-    {
-        Debug.Log("检测到空格按住5秒，开始播放结局视频");
-        // 隐藏选择UI
-        if (UI_mask1 != null) UI_mask1.SetActive(false);
-        if (UI_mask2 != null) UI_mask2.SetActive(false);
-
-        // 等待一点时间以避免UI隐藏和视频激活冲突
-        yield return new WaitForSeconds(0.2f);
-
-        // 判断播放哪一个结局
-        bool isYesSelected = (UI_mask1 != null && UI_mask1WasActive);
-        bool isNoSelected = (UI_mask2 != null && UI_mask2WasActive);
-
-        if (isYesSelected && video_Ending1 != null)
-        {
-            video_Ending1.gameObject.SetActive(true);
-            video_Ending1.Play();
-            Debug.Log("播放 YES 结局视频");
-        }
-        else if (isNoSelected && video_Ending2 != null)
-        {
-            video_Ending2.gameObject.SetActive(true);
-            video_Ending2.Play();
-            Debug.Log("播放 NO 结局视频");
-        }
-        else
-        {
-            Debug.LogWarning("未检测到结局选项，默认播放 YES 结局");
-            if (video_Ending1 != null)
-            {
-                video_Ending1.gameObject.SetActive(true);
-                video_Ending1.Play();
-            }
-        }
-
-        yield return null;
-    }
-    public void OnSelectYes()
-    {
-        UI_mask1WasActive = true;
-        UI_mask2WasActive = false;
-        UI_mask1.SetActive(true);
-        UI_mask2.SetActive(false);
-        Debug.Log("玩家选择 YES 结局");
-    }
-    public void OnSelectNo()
-    {
-        UI_mask1WasActive = false;
-        UI_mask2WasActive = true;
-        UI_mask1.SetActive(false);
-        UI_mask2.SetActive(true);
-        Debug.Log("玩家选择 NO 结局");
-    }*/
-    #endregion
 
     // 尝试浇花 - 修复逻辑
     bool TryWateringFlowers()

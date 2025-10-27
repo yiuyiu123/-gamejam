@@ -1,124 +1,192 @@
+ï»¿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using UnityEngine.Video;
 
 public class Ending : MonoBehaviour
 {
-    [Header("ÒıÓÃ½Å±¾")]
+    [Header("å¼•ç”¨è„šæœ¬")]
     public newmanage newManager;
+    public static event Action OnScene5Loaded;
 
-    [Header("UI×é¼ş")]
+    [Header("UIç»„ä»¶")]
     public GameObject I_Yes;
     public GameObject I_No;
     public GameObject I_mask1;
     public GameObject I_mask2;
+    public GameObject panel_Ending;    // åä½œæˆåŠŸUI
+    public TMP_Text typewriterText;    // æ‰“å­—æç¤ºæ–‡æœ¬
 
-    [Header("Ñ¡¶¨½á¾ÖÒôĞ§")]
-    private AudioSource audioSource;             // ÒôÆµÔ´
+    [Header("ç»“å±€è§†é¢‘")]
+    public VideoPlayer video_Ending1; // Yes
+    public VideoPlayer video_Ending2; // No
+
+    [Header("éŸ³æ•ˆ")]
+    public AudioSource audioSource;
     public AudioClip sureSound;
 
-    [Header("Ñ¡¶¨½á¾Ö²Ù×÷")]
-    public float skipHoldTime = 5.0f;
-    private bool skipPressed = false;
-
+    [Header("æ“ä½œå‚æ•°")]
+    public float skipHoldTime = 5f;
+    private bool isHoldingSpace = false;
+    private float spaceHoldTime = 0f;
+    private bool isPlayingEnding = false;
+    private bool isChoiceMade = false;
 
     private void Start()
     {
-        if (I_Yes != null)I_Yes.SetActive(false);
-        if (I_No != null)I_No.SetActive(false);
-        if (I_mask1 != null)I_mask1.SetActive(false);
-        if (I_mask2 != null)I_mask2.SetActive(false);
-        else
-        {
-            Debug.Log("½á¾ÖÖĞUI×é¼şÓĞ¿Õ");
-        }
+        // åˆå§‹åŒ–UI
+        if (panel_Ending != null) panel_Ending.SetActive(false);
+        if (I_Yes != null) I_Yes.SetActive(false);
+        if (I_No != null) I_No.SetActive(false);
+        if (I_mask1 != null) I_mask1.SetActive(false);
+        if (I_mask2 != null) I_mask2.SetActive(false);
+
+        // è®¢é˜…äº‹ä»¶ï¼ˆä¸€æ¬¡æ€§ï¼‰
+        if (newManager != null)
+            newManager.OnStartEnding += OnChoose;
     }
-    void Update()
+
+    private void OnDestroy()
     {
-        if(newManager!=null)newManager.OnStartEnding += OnChoose;
-        else
-        {
-            FindObjectOfType<newmanage>();
-        }
+        if (newManager != null)
+            newManager.OnStartEnding -= OnChoose;
     }
 
     void OnChoose()
     {
-        newManager.OnStartEnding -= OnChoose;
-        StartCoroutine(StartChooseMask());
+        Debug.Log("ç›‘å¬åˆ°è¿›å…¥ç»“å±€UI");
+        StartCoroutine(ShowPanelAndTypewriter());
     }
 
-    IEnumerator StartChooseMask()
+    // æ·¡å…¥Panel + æ‰“å­—æç¤º + æ˜¾ç¤ºé€‰æ‹©æŒ‰é’®
+    private IEnumerator ShowPanelAndTypewriter()
     {
-        yield return new WaitForSeconds(1f);//µÈ´ıÍæ¼ÒÊäÈë½ûÓÃ
-        if (Input.GetKeyDown(KeyCode.F))
+        if (panel_Ending != null)
         {
-            I_mask1.SetActive(true);
-            I_mask2.SetActive(false);
+            //panel_Ending.SetActive(true);
+            yield return StartCoroutine(FadeInPanel(panel_Ending));
         }
-        if (Input.GetKeyDown(KeyCode.H))
+
+        if (typewriterText != null)
         {
-            I_mask1.SetActive(false);
-            I_mask2.SetActive(true);
+            string message = "æ˜¯å¦é€‰æ‹©äº¤æ¢ï¼Ÿ";
+            typewriterText.text = "";
+            foreach (char c in message)
+            {
+                typewriterText.text += c;
+                yield return new WaitForSeconds(0.05f); // æ‰“å­—é€Ÿåº¦
+            }
         }
-        else yield return null;
+
+        if (I_Yes != null) I_Yes.SetActive(true);
+        if (I_No != null) I_No.SetActive(true);
     }
 
-    IEnumerator SureTheChoice()
+    // ç®€å•æ·¡å…¥åç¨‹
+    private IEnumerator FadeInPanel(GameObject panel)
     {
-        // ²¥·ÅĞ­×÷³É¹¦ÒôĞ§ 
+        Image img = panel.GetComponent<Image>();
+        if (img == null) yield break;
+
+        Color startColor = img.color;
+        startColor.a = 0f;
+        img.color = startColor;
+
+        float duration = 1f;
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            img.color = new Color(startColor.r, startColor.g, startColor.b, Mathf.Clamp01(elapsed / duration));
+            yield return null;
+        }
+    }
+
+    private void Update()
+    {
+        if (!isChoiceMade)
+        {
+            // ç©å®¶1é€‰æ‹© Yes (Fé”®)
+            if (CompareTag("Player1") && Input.GetKeyDown(KeyCode.F))
+            {
+                MakeChoice(true);
+            }
+
+            // ç©å®¶2é€‰æ‹© No (Hé”®)
+            if (CompareTag("Player2") && Input.GetKeyDown(KeyCode.H))
+            {
+                MakeChoice(false);
+            }
+        }
+
+        // æŒ‰ä½ç©ºæ ¼æ’­æ”¾ç»“å±€é€»è¾‘ï¼ˆå¯é€‰ï¼‰
+        if ((I_Yes.activeSelf || I_No.activeSelf) && Input.GetKey(KeyCode.Space))
+        {
+            spaceHoldTime += Time.deltaTime;
+
+            if (spaceHoldTime >= skipHoldTime && !isPlayingEnding)
+            {
+                isPlayingEnding = true;
+                StartCoroutine(PlayEndingVideo());
+            }
+        }
+        else
+        {
+            spaceHoldTime = 0f;
+        }
+    }
+
+    private void MakeChoice(bool isYes)
+    {
+        isChoiceMade = true;
+
         if (sureSound != null)
             audioSource.PlayOneShot(sureSound);
 
-        Debug.Log($"");
+        if (I_mask1 != null) I_mask1.SetActive(isYes);
+        if (I_mask2 != null) I_mask2.SetActive(!isYes);
 
-        //Èç¹ûÊÇscene1£¬µÈ´ıÊıÃëµ¯³öPlay£¬Èç¹ûÍæ¼Ò³¤°´ÎåÃë»òµã»÷Play£¬ÔòÇĞ»»µÚ¶ş¹Ø 
-        if (!isNotScene1)
+        Debug.Log(isYes ? "ç©å®¶é€‰æ‹© YES" : "ç©å®¶é€‰æ‹© NO");
+
+        // ä¿å­˜é€‰æ‹©çŠ¶æ€ï¼Œç”¨äºæ’­æ”¾ä¸åŒè§†é¢‘
+        StartCoroutine(PlayEndingVideo());
+    }
+
+    private IEnumerator PlayEndingVideo()
+    {
+        Debug.Log("å¼€å§‹æ’­æ”¾ç»“å±€è§†é¢‘");
+
+        // éšè—é€‰æ‹©æŒ‰é’®
+        if (I_Yes != null) I_Yes.SetActive(false);
+        if (I_No != null) I_No.SetActive(false);
+
+        yield return null;
+
+        // åˆ¤æ–­æ’­æ”¾å“ªä¸€ä¸ªç»“å±€
+        if (CompareTag("Player1") && video_Ending1 != null)
         {
-            yield return new WaitForSeconds(2f);
-            if (UI_Play != null)
-            {
-                UI_Play.SetActive(true);
-                while (true)
-                {
-                    if (Input.GetKey(KeyCode.Space))
-                    {
-                        skipPressed = true;
-                        Debug.Log("°´ÏÂ¿Õ¸ñ¼ü");
-                    }
-                    else
-                    {
-                        skipPressed = false;
-                    }
-
-                    if (skipPressed)
-                    {
-                        skipHoldTime -= Time.deltaTime;
-
-                        if (skipHoldTime <= 0)
-                        {
-                            Debug.Log("¿Õ¸ñ³¤´ïÎåÃë");
-                            ShowCollaborationUI(); // ÏÔÊ¾Ğ­×÷Íê³ÉUI 
-                            yield break; // Ìø³öµ±Ç°Ğ­³Ì 
-                        }
-                    }
-                    else
-                    {
-                        skipHoldTime = 5.0f; // ÖØÖÃµ¹¼ÆÊ± 
-                    }
-
-                    yield return null; // Ã¿Ö¡µÈ´ıÒ»´Î 
-                }
-            }
+            video_Ending1.gameObject.SetActive(true);
+            video_Ending1.Play();
         }
-        //Èç¹û²»ÊÇscene1£¬°´»½ÑóµÄ³ÌĞòºÏ³ÉºóµÈ´ıÁ½ÃëÏÔÊ¾UI 
-        else
+        else if (CompareTag("Player2") && video_Ending2 != null)
         {
-            // µÈ´ıÒ»¶ÎÊ±¼ä 
-            yield return new WaitForSeconds(uiDisplayDelay);
-
-            // ÏÔÊ¾Ğ­×÷Íê³ÉUI 
-            ShowCollaborationUI();
+            video_Ending2.gameObject.SetActive(true);
+            video_Ending2.Play();
         }
+
+        // ç­‰å¾…è§†é¢‘æ’­æ”¾å®Œæ¯•
+        while ((video_Ending1 != null && video_Ending1.isPlaying) || (video_Ending2 != null && video_Ending2.isPlaying))
+        {
+            yield return null;
+        }
+
+        // å»¶è¿Ÿ2ç§’å†åˆ‡åœº
+        yield return new WaitForSeconds(2f);
+
+        // è·³è½¬scene5
+        UnityEngine.SceneManagement.SceneManager.LoadScene("scene5");
+        OnScene5Loaded?.Invoke();
     }
 }

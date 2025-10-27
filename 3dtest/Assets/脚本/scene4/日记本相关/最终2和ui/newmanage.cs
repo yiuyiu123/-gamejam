@@ -1,28 +1,32 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.XR;
 
 public class newmanage : MonoBehaviour
 {
     public static newmanage Instance;
 
-    [Header("Íæ¼ÒÇøÓòÉèÖÃ")]
+    [Header("ç©å®¶åŒºåŸŸè®¾ç½®")]
     public item1 player1Zone;
     public item1 player2Zone;
 
-    [Header("Ğ­×÷Íê³ÉUI")]
-    public Image panel_Ending; // Ğ­×÷³É¹¦ºóÏÔÊ¾µÄUIÍ¼Æ¬ 
-    public float uiDisplayDelay = 2f; // UIÏÔÊ¾ÑÓ³Ù 
+    [Header("åä½œå®ŒæˆUI")]
+    public GameObject panel_Ending; // åä½œæˆåŠŸåæ˜¾ç¤ºçš„UIå›¾ç‰‡ 
+    public GameObject I_Yes;
+    public GameObject I_No;
+    public float uiDisplayDelay = 2f; // UIæ˜¾ç¤ºå»¶è¿Ÿ 
 
-    [Header("Ğ­×÷³É¹¦ÒôĞ§")]
+    [Header("åä½œæˆåŠŸéŸ³æ•ˆ")]
     public AudioSource audioSource;
     public AudioClip collaborationClip;
 
-    [Header("Ôö¼Ó¼àÌıÊÂ¼ş")]
+    [Header("å¢åŠ ç›‘å¬äº‹ä»¶")]
     public bool canStartEnding = false;
-    public event Action OnStartEnding;//¿ªÊ¼½ûÓÃÍæ¼Ò¿ØÖÆÆ÷½Å±¾²¢¿ªÆô½á¾ÖÑ¡Ôñ
+    public event Action OnStartEnding;//å¼€å§‹ç¦ç”¨ç©å®¶æ§åˆ¶å™¨è„šæœ¬å¹¶å¼€å¯ç»“å±€é€‰æ‹©
 
     private bool player1Ready = false;
     private bool player2Ready = false;
@@ -42,26 +46,26 @@ public class newmanage : MonoBehaviour
 
     void Start()
     {
-        // ×¢²áÇøÓò»Øµ÷ 
+        // æ³¨å†ŒåŒºåŸŸå›è°ƒ 
         if (player1Zone != null)
             player1Zone.OnItemStateChanged += OnPlayer1ZoneUpdated;
         if (player2Zone != null)
             player2Zone.OnItemStateChanged += OnPlayer2ZoneUpdated;
-        // ³õÊ¼»¯Ğ­×÷Íê³ÉUI 
+        // åˆå§‹åŒ–åä½œå®ŒæˆUI 
         if (panel_Ending != null) panel_Ending.gameObject.SetActive(false);
     }
 
     void OnPlayer1ZoneUpdated(bool hasRequiredItem)
     {
         player1Ready = hasRequiredItem;
-        Debug.Log($"Íæ¼Ò1ÇøÓò×´Ì¬: {(hasRequiredItem ? "¾ÍĞ÷" : "Î´¾ÍĞ÷")}");
+        Debug.Log($"ç©å®¶1åŒºåŸŸçŠ¶æ€: {(hasRequiredItem ? "å°±ç»ª" : "æœªå°±ç»ª")}");
         CheckCollaborationStatus();
     }
 
     void OnPlayer2ZoneUpdated(bool hasRequiredItem)
     {
         player2Ready = hasRequiredItem;
-        Debug.Log($"Íæ¼Ò2ÇøÓò×´Ì¬: {(hasRequiredItem ? "¾ÍĞ÷" : "Î´¾ÍĞ÷")}");
+        Debug.Log($"ç©å®¶2åŒºåŸŸçŠ¶æ€: {(hasRequiredItem ? "å°±ç»ª" : "æœªå°±ç»ª")}");
         CheckCollaborationStatus();
     }
 
@@ -72,73 +76,88 @@ public class newmanage : MonoBehaviour
         bool bothReady = player1Ready && player2Ready;
         bool oneReady = player1Ready || player2Ready;
        
-        // Èç¹ûË«·½¶¼×¼±¸ºÃÁË£¬¿ªÊ¼Íê³ÉÁ÷³Ì 
+        // å¦‚æœåŒæ–¹éƒ½å‡†å¤‡å¥½äº†ï¼Œå¼€å§‹å®Œæˆæµç¨‹ 
         if (bothReady)
         {
             StartCoroutine(CompleteCollaboration());
         }
     }
-    //½øÈë½á¾ÖUI
+    //è¿›å…¥ç»“å±€UI
     IEnumerator CompleteCollaboration()
     {
         isTransitioning = true;
-        Debug.Log("×îÖÕµÀ¾ßºÏ³É³É¹¦£¡×¼±¸½øÈë½á¾Ö");
+        Debug.Log("æœ€ç»ˆé“å…·åˆæˆæˆåŠŸï¼å‡†å¤‡è¿›å…¥ç»“å±€");
         audioSource.PlayOneShot(collaborationClip);
 
-        Debug.Log($"newmanage: ½«ÔÚ {uiDisplayDelay} ÃëºóÏÔÊ¾Ğ­×÷Íê³ÉUI");
-
-        // µÈ´ıÒ»¶ÎÊ±¼ä 
+        Debug.Log($"newmanage: å°†åœ¨ {uiDisplayDelay} ç§’åæ˜¾ç¤ºåä½œå®ŒæˆUI");
         yield return new WaitForSeconds(uiDisplayDelay);
 
+        // å…ˆæ˜¾ç¤º Panel å¹¶æ·¡å…¥
+        if (panel_Ending != null)
+        {
+            panel_Ending.SetActive(true);
+            yield return StartCoroutine(FadeInCollaborationUI(panel_Ending));
+        }
+
+        // æ‰“å­—æœºæ˜¾ç¤ºé—®é¢˜æç¤º
+        TMP_Text typewriterText = panel_Ending.GetComponentInChildren<TMP_Text>();
+        if (typewriterText != null)
+        {
+            string message = "æ˜¯å¦é€‰æ‹©äº¤æ¢ï¼Ÿ";
+            typewriterText.text = "";
+            foreach (char c in message)
+            {
+                typewriterText.text += c;
+                yield return new WaitForSeconds(0.05f); // æ‰“å­—é—´éš”
+            }
+        }
+
+        // æ˜¾ç¤ºé€‰æ‹©æŒ‰é’®
+        if (I_Yes != null) I_Yes.SetActive(true);
+        if (I_No != null) I_No.SetActive(true);
+
+        // âœ… æ‰“å­—å’ŒæŒ‰é’®æ˜¾ç¤ºå®Œæ¯•ï¼Œå†è§¦å‘äº‹ä»¶ï¼Œè®© Ending.cs æ¥ç®¡è¾“å…¥é€»è¾‘
         OnStartEnding?.Invoke();
-
-        // ÏÔÊ¾Ğ­×÷Íê³ÉUI 
-        ShowCollaborationUI();
     }
-
     void ShowCollaborationUI()
     {
         if (panel_Ending != null)
         {
             panel_Ending.gameObject.SetActive(true);
-            Debug.Log($"ÏÔÊ¾Ğ­×÷Íê³ÉUIÍ¼Æ¬: {panel_Ending.name}");
+            Debug.Log($"æ˜¾ç¤ºåä½œå®ŒæˆUIå›¾ç‰‡: {panel_Ending.name}");
 
-            // Ìí¼Óµ­ÈëĞ§¹û 
-            StartCoroutine(FadeInCollaborationUI());
+            // æ·»åŠ æ·¡å…¥æ•ˆæœ 
+            StartCoroutine(FadeInCollaborationUI(panel_Ending));
         }
         else
         {
-            Debug.LogWarning("Î´·ÖÅäĞ­×÷Íê³ÉUIÍ¼Æ¬£¡");
+            Debug.LogWarning("æœªåˆ†é…åä½œå®ŒæˆUIå›¾ç‰‡ï¼");
         }
     }
 
-    IEnumerator FadeInCollaborationUI()
+    IEnumerator FadeInCollaborationUI(GameObject panel)
     {
-        if (panel_Ending == null) yield break;
+        if (panel == null) yield break;
+
+        Image img = panel.GetComponent<Image>();
+        if (img == null) yield break;
+
+        Color startColor = img.color;
+        startColor.a = 0f;
+        img.color = startColor;
 
         float duration = 1f;
         float elapsed = 0f;
-        Color startColor = panel_Ending.color;
-        Color targetColor = new Color(startColor.r, startColor.g, startColor.b, 1f);
-
-        panel_Ending.color = new Color(startColor.r, startColor.g, startColor.b, 0f);
-
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
-            panel_Ending.color = Color.Lerp(
-                new Color(startColor.r, startColor.g, startColor.b, 0f),
-                targetColor,
-                elapsed / duration
-            );
+            img.color = new Color(startColor.r, startColor.g, startColor.b, Mathf.Clamp01(elapsed / duration));
             yield return null;
         }
-
-        panel_Ending.color = targetColor;
     }
 
-    // µ÷ÊÔ·½·¨ 
-    [ContextMenu("Ç¿ÖÆÍê³ÉĞ­×÷")]
+    // è°ƒè¯•æ–¹æ³• 
+    [ContextMenu("å¼ºåˆ¶å®Œæˆåä½œ")]
     public void ForceCompleteCollaboration()
     {
         if (!isTransitioning)
@@ -149,25 +168,25 @@ public class newmanage : MonoBehaviour
         }
     }
 
-    [ContextMenu("ÖØÖÃĞ­×÷×´Ì¬")]
+    [ContextMenu("é‡ç½®åä½œçŠ¶æ€")]
     public void ResetCollaboration()
     {
         player1Ready = false;
         player2Ready = false;
         isTransitioning = false;
 
-        // ÖØÖÃĞ­×÷Íê³ÉUI 
+        // é‡ç½®åä½œå®ŒæˆUI 
         if (panel_Ending != null)
         {
             panel_Ending.gameObject.SetActive(false);
         }
 
-        Debug.Log("Ğ­×÷×´Ì¬ÒÑÖØÖÃ");
+        Debug.Log("åä½œçŠ¶æ€å·²é‡ç½®");
     }
 
     void OnDestroy()
     {
-        // È¡Ïû×¢²á»Øµ÷ 
+        // å–æ¶ˆæ³¨å†Œå›è°ƒ 
         if (player1Zone != null)
             player1Zone.OnItemStateChanged -= OnPlayer1ZoneUpdated;
 
