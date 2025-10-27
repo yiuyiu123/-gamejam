@@ -1519,7 +1519,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 1
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -9681,7 +9681,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 1
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -21733,7 +21733,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 1
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -27157,7 +27157,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 1
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -32300,8 +32300,11 @@ MonoBehaviour:
   player2Zone: {fileID: 846193422}
   targetSceneName: Scene2
   sceneTransitionDelay: 2
-  collaborationEffect: {fileID: 862040897}
+  collaborationEffect: {fileID: 0}
   collaborationLight: {fileID: 0}
+  player1SynthesisEffect: {fileID: 862040897}
+  player2SynthesisEffect: {fileID: 269492703}
+  synthesisEffectDuration: 3
   collaborationSoundGroupID: "\u534F\u4F5C\u6210\u529F"
   waitingPrompt: {fileID: 0}
   successPrompt: {fileID: 0}
