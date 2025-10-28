@@ -96041,7 +96041,7 @@ MonoBehaviour:
   isBeingHeld: 0
   isInExchangeProcess: 0
   currentHolder: {fileID: 0}
-  pickUpTransitionTime: 0.3
+  pickUpTransitionTime: 0.9
   pickUpCurve:
     serializedVersion: 2
     m_Curve:
@@ -96057,8 +96057,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
