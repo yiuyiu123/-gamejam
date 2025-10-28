@@ -9556,7 +9556,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   colliderArea1: {fileID: 1014643448}
   colliderArea2: {fileID: 1641452364}
-  collider1Size: {x: 786.9, y: 291.88, z: 1324.3}
+  collider1Size: {x: 1051, y: 272.7, z: 1050}
   collider2Size: {x: 981.9, y: 250, z: 967.3}
   targetTag1: upan
   targetTag2: yunduo
@@ -24017,8 +24017,8 @@ Transform:
   m_GameObject: {fileID: 986799412}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -22.37, y: -60.79, z: 23.78}
-  m_LocalScale: {x: 0.29734, y: 0.29734, z: 0.29734}
+  m_LocalPosition: {x: -22.37, y: -60.22, z: 23.78}
+  m_LocalScale: {x: 0.2593289, y: 0.2593289, z: 0.2593289}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2043898187}
@@ -24177,10 +24177,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.57
-  m_Height: 12.44
+  m_Radius: 1.5
+  m_Height: 13.22
   m_Direction: 1
-  m_Center: {x: 0, y: 0.6, z: 0}
+  m_Center: {x: 0, y: -1.4, z: 0}
 --- !u!212 &986799421
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -24222,7 +24222,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1296659891, guid: 7936393f047b4b24cbd191a9d471e33b, type: 3}
+  m_Sprite: {fileID: -2018856848, guid: c5cd7a9b44c2719468aee7fc12261059, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -27630,71 +27630,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &1247476370
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1247476357}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e4db78b98f27e804eb70d016468cf412, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemName: "\u7269\u54C1"
-  itemDescription: 
-  canBePickedUp: 1
-  holdOffset: {x: 0, y: 1, z: 1}
-  isKeyItem: 0
-  showPickupMessage: 1
-  pickupUIPrefab: {fileID: 0}
-  displayTime: 3
-  fadeDuration: 0.5
-  uiVerticalPosition: 0.3
-  uiHorizontalOffset: 0
-  verticalBaseOffset: 0.1
-  verticalAdjustRange: 0.2
-  autoAdjustByPlayer: 1
-  autoAdjustStrength: 0.05
-  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
-  customPickupMessage: 
-  holdRotationOffset: {x: 0, y: 0, z: 0}
-  canBeExchanged: 1
-  isExchangeLocked: 0
-  lastExchangeZone: 
-  limitExchangeTimes: 1
-  maxExchangeTimes: 1
-  currentExchangeTimes: 0
-  isBeingHeld: 0
-  isInExchangeProcess: 0
-  currentHolder: {fileID: 0}
-  pickUpTransitionTime: 0.3
-  pickUpCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  showDebugInfo: 0
 --- !u!1 &1255208160 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -445546320363285547, guid: 38ae9112a6465ce41861de088bad210a, type: 3}
@@ -33675,71 +33610,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &1317114883
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1317114870}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e4db78b98f27e804eb70d016468cf412, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemName: "\u7269\u54C1"
-  itemDescription: 
-  canBePickedUp: 1
-  holdOffset: {x: 0, y: 1, z: 1}
-  isKeyItem: 0
-  showPickupMessage: 1
-  pickupUIPrefab: {fileID: 0}
-  displayTime: 3
-  fadeDuration: 0.5
-  uiVerticalPosition: 0.3
-  uiHorizontalOffset: 0
-  verticalBaseOffset: 0.1
-  verticalAdjustRange: 0.2
-  autoAdjustByPlayer: 1
-  autoAdjustStrength: 0.05
-  pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
-  customPickupMessage: 
-  holdRotationOffset: {x: 0, y: 0, z: 0}
-  canBeExchanged: 1
-  isExchangeLocked: 0
-  lastExchangeZone: 
-  limitExchangeTimes: 1
-  maxExchangeTimes: 1
-  currentExchangeTimes: 0
-  isBeingHeld: 0
-  isInExchangeProcess: 0
-  currentHolder: {fileID: 0}
-  pickUpTransitionTime: 0.3
-  pickUpCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  showDebugInfo: 0
 --- !u!1 &1320225389
 GameObject:
   m_ObjectHideFlags: 0
@@ -36878,16 +36748,10 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8192894588234727118, guid: 4e4a88912a1a17e4e9ca27a559dcecf1, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1317114883}
-    - targetCorrespondingSourceObject: {fileID: 8192894588234727118, guid: 4e4a88912a1a17e4e9ca27a559dcecf1, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 1317114874}
     - targetCorrespondingSourceObject: {fileID: 8192894588234727118, guid: 4e4a88912a1a17e4e9ca27a559dcecf1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1317114878}
-    - targetCorrespondingSourceObject: {fileID: -989953384949104967, guid: 4e4a88912a1a17e4e9ca27a559dcecf1, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1247476370}
     - targetCorrespondingSourceObject: {fileID: -989953384949104967, guid: 4e4a88912a1a17e4e9ca27a559dcecf1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1247476361}
