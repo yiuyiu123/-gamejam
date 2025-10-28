@@ -938,7 +938,7 @@ MonoBehaviour:
   isBeingHeld: 0
   isInExchangeProcess: 0
   currentHolder: {fileID: 0}
-  pickUpTransitionTime: 0.3
+  pickUpTransitionTime: 0.9
   pickUpCurve:
     serializedVersion: 2
     m_Curve:
@@ -954,8 +954,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -1124,8 +1124,8 @@ Transform:
   m_GameObject: {fileID: 89620793}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0.00491038, y: -0.004730911, z: 0.026019791}
-  m_LocalScale: {x: 0.09054871, y: 0.250331, z: 0.090548724}
+  m_LocalPosition: {x: -0.0017, y: -0.0035, z: 0.026}
+  m_LocalScale: {x: 0.028748093, y: 0.250331, z: 0.04308176}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 506303820}
@@ -1347,7 +1347,7 @@ MonoBehaviour:
   isBeingHeld: 0
   isInExchangeProcess: 0
   currentHolder: {fileID: 0}
-  pickUpTransitionTime: 0.3
+  pickUpTransitionTime: 0.9
   pickUpCurve:
     serializedVersion: 2
     m_Curve:
@@ -1363,8 +1363,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -1678,7 +1678,7 @@ MonoBehaviour:
   isBeingHeld: 0
   isInExchangeProcess: 0
   currentHolder: {fileID: 0}
-  pickUpTransitionTime: 0.3
+  pickUpTransitionTime: 0.9
   pickUpCurve:
     serializedVersion: 2
     m_Curve:
@@ -1694,8 +1694,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -7990,7 +7990,7 @@ MonoBehaviour:
   isBeingHeld: 0
   isInExchangeProcess: 0
   currentHolder: {fileID: 0}
-  pickUpTransitionTime: 0.3
+  pickUpTransitionTime: 0.9
   pickUpCurve:
     serializedVersion: 2
     m_Curve:
@@ -8006,8 +8006,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -9352,7 +9352,7 @@ MonoBehaviour:
   isBeingHeld: 0
   isInExchangeProcess: 0
   currentHolder: {fileID: 0}
-  pickUpTransitionTime: 0.3
+  pickUpTransitionTime: 0.9
   pickUpCurve:
     serializedVersion: 2
     m_Curve:
@@ -9368,8 +9368,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -10220,7 +10220,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1414133785232774827, guid: 34e2e712da2067a499b3f48612501611, type: 3}
       propertyPath: customPickupMessage
-      value: "\u6C34\u58F6\n\u8FD9\u4E0B\u6709\u6C34\u4E86"
+      value: "\u6C34\u58F6\n\u6211\u7684\u82B1\u8BB8\u4E45\u6CA1\u6709\u6D47\u6C34\uFF0C\u5FEB\u5E72\u6B7B\u4E86"
+      objectReference: {fileID: 0}
+    - target: {fileID: 1414133785232774827, guid: 34e2e712da2067a499b3f48612501611, type: 3}
+      propertyPath: pickUpTransitionTime
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1414133785232774827, guid: 34e2e712da2067a499b3f48612501611, type: 3}
+      propertyPath: pickUpCurve.m_Curve.Array.data[1].inSlope
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1414133785232774827, guid: 34e2e712da2067a499b3f48612501611, type: 3}
+      propertyPath: pickUpCurve.m_Curve.Array.data[1].outSlope
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -10320,7 +10332,7 @@ MonoBehaviour:
   isBeingHeld: 0
   isInExchangeProcess: 0
   currentHolder: {fileID: 0}
-  pickUpTransitionTime: 0.3
+  pickUpTransitionTime: 0.9
   pickUpCurve:
     serializedVersion: 2
     m_Curve:
@@ -10336,8 +10348,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -10432,7 +10444,7 @@ MonoBehaviour:
   playerRigidbody: {fileID: 545825257}
   dualPlayerController: {fileID: 0}
   movementThreshold: 0
-  invertFlipDirection: 1
+  invertFlipDirection: 0
   flipDeadZone: 0.3
   pickUpAnimationLockTime: 0.8
   enableAnimationLock: 1
@@ -10667,7 +10679,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1470530617468921361, guid: 31dcf47123c341541bfe57027f5df007, type: 3}
       propertyPath: customPickupMessage
-      value: "\u7A7A\u6C34\u58F6\n\u5C0F\u65F6\u5019\u6D47\u82B1\u7528\u7684\u55B7\u58F6\uFF0C\u9501\u5728\u67DC\u5B50\u91CC\u5DF2\u7ECF\u843D\u7070\u4E86"
+      value: "\u7A7A\u55B7\u58F6\n\u5C0F\u65F6\u5019\u6D47\u82B1\u7528\u7684\u55B7\u58F6\uFF0C\u9501\u5728\u67DC\u5B50\u91CC\u5DF2\u7ECF\u843D\u7070\u4E86\n\u627E\u5230\u6C34\u6216\u8BB8\u8FD8\u80FD\u7528"
+      objectReference: {fileID: 0}
+    - target: {fileID: 1470530617468921361, guid: 31dcf47123c341541bfe57027f5df007, type: 3}
+      propertyPath: pickUpTransitionTime
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1470530617468921361, guid: 31dcf47123c341541bfe57027f5df007, type: 3}
+      propertyPath: pickUpCurve.m_Curve.Array.data[1].inSlope
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1470530617468921361, guid: 31dcf47123c341541bfe57027f5df007, type: 3}
+      propertyPath: pickUpCurve.m_Curve.Array.data[1].outSlope
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2344668547300939696, guid: 31dcf47123c341541bfe57027f5df007, type: 3}
       propertyPath: m_LocalPosition.x
@@ -11474,7 +11498,7 @@ MonoBehaviour:
   isBeingHeld: 0
   isInExchangeProcess: 0
   currentHolder: {fileID: 0}
-  pickUpTransitionTime: 0.3
+  pickUpTransitionTime: 0.9
   pickUpCurve:
     serializedVersion: 2
     m_Curve:
@@ -11490,8 +11514,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -12233,8 +12257,8 @@ Transform:
   m_GameObject: {fileID: 735528265}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -32.23, y: -57.25, z: 26.73}
-  m_LocalScale: {x: 1.0437286, y: 1.0437286, z: 1.0437286}
+  m_LocalPosition: {x: -33.12, y: -57.64, z: 27.69}
+  m_LocalScale: {x: 0.46159574, y: 0.46159574, z: 0.46159574}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 619892615}
@@ -12312,7 +12336,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactKey: 104
-  interactionRange: 2.79
+  interactionRange: 1.9
   throwRange: 4.27
   interactionCooldown: 0.5
   enableInteractionCooldown: 1
@@ -12375,8 +12399,8 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.42
-  m_Height: 6.12
+  m_Radius: 2.28
+  m_Height: 12.04
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!95 &735528273
@@ -12441,12 +12465,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 225994498, guid: a556ffd4bb6c75440bdd0d01341bf4d4, type: 3}
+  m_Sprite: {fileID: 214708785, guid: a556ffd4bb6c75440bdd0d01341bf4d4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 6.2820673, y: 8.190001}
+  m_Size: {x: 14.230974, y: 21.679998}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -12545,7 +12569,7 @@ MonoBehaviour:
   isBeingHeld: 0
   isInExchangeProcess: 0
   currentHolder: {fileID: 0}
-  pickUpTransitionTime: 0.3
+  pickUpTransitionTime: 0.9
   pickUpCurve:
     serializedVersion: 2
     m_Curve:
@@ -12561,8 +12585,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -13038,7 +13062,7 @@ MonoBehaviour:
   isBeingHeld: 0
   isInExchangeProcess: 0
   currentHolder: {fileID: 0}
-  pickUpTransitionTime: 0.3
+  pickUpTransitionTime: 0.9
   pickUpCurve:
     serializedVersion: 2
     m_Curve:
@@ -13054,8 +13078,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -18544,7 +18568,7 @@ MonoBehaviour:
   isBeingHeld: 0
   isInExchangeProcess: 0
   currentHolder: {fileID: 0}
-  pickUpTransitionTime: 0.3
+  pickUpTransitionTime: 0.9
   pickUpCurve:
     serializedVersion: 2
     m_Curve:
@@ -18560,8 +18584,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -18690,7 +18714,7 @@ MonoBehaviour:
   isBeingHeld: 0
   isInExchangeProcess: 0
   currentHolder: {fileID: 0}
-  pickUpTransitionTime: 0.3
+  pickUpTransitionTime: 0.9
   pickUpCurve:
     serializedVersion: 2
     m_Curve:
@@ -18706,8 +18730,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -20236,7 +20260,7 @@ MonoBehaviour:
   isBeingHeld: 0
   isInExchangeProcess: 0
   currentHolder: {fileID: 0}
-  pickUpTransitionTime: 0.3
+  pickUpTransitionTime: 0.9
   pickUpCurve:
     serializedVersion: 2
     m_Curve:
@@ -20252,8 +20276,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -20969,7 +20993,7 @@ MonoBehaviour:
   isBeingHeld: 0
   isInExchangeProcess: 0
   currentHolder: {fileID: 0}
-  pickUpTransitionTime: 0.3
+  pickUpTransitionTime: 0.9
   pickUpCurve:
     serializedVersion: 2
     m_Curve:
@@ -20985,8 +21009,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -21512,7 +21536,7 @@ MonoBehaviour:
   isBeingHeld: 0
   isInExchangeProcess: 0
   currentHolder: {fileID: 0}
-  pickUpTransitionTime: 0.3
+  pickUpTransitionTime: 0.9
   pickUpCurve:
     serializedVersion: 2
     m_Curve:
@@ -21528,8 +21552,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -27636,6 +27660,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 0.007
       objectReference: {fileID: 0}
+    - target: {fileID: -5807683626657217877, guid: a87d066a8f4c36f44aff1d32f0d50366, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.251
+      objectReference: {fileID: 0}
     - target: {fileID: -5526586355041495706, guid: a87d066a8f4c36f44aff1d32f0d50366, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.228
@@ -27669,16 +27697,28 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: 42eebb6361c4ba4498e59936777daef2, type: 2}
     - target: {fileID: -2969376254825465854, guid: a87d066a8f4c36f44aff1d32f0d50366, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.64244664
+      objectReference: {fileID: 0}
+    - target: {fileID: -2969376254825465854, guid: a87d066a8f4c36f44aff1d32f0d50366, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.6424467
+      objectReference: {fileID: 0}
+    - target: {fileID: -2969376254825465854, guid: a87d066a8f4c36f44aff1d32f0d50366, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.64244664
+      objectReference: {fileID: 0}
+    - target: {fileID: -2969376254825465854, guid: a87d066a8f4c36f44aff1d32f0d50366, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.851
+      value: -1.8507
       objectReference: {fileID: 0}
     - target: {fileID: -2969376254825465854, guid: a87d066a8f4c36f44aff1d32f0d50366, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.11
+      value: -0.022
       objectReference: {fileID: 0}
     - target: {fileID: -2969376254825465854, guid: a87d066a8f4c36f44aff1d32f0d50366, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.987
+      value: 0.98716
       objectReference: {fileID: 0}
     - target: {fileID: -2692787024934286082, guid: a87d066a8f4c36f44aff1d32f0d50366, type: 3}
       propertyPath: m_LocalScale.x
@@ -28783,7 +28823,7 @@ MonoBehaviour:
   isBeingHeld: 0
   isInExchangeProcess: 0
   currentHolder: {fileID: 0}
-  pickUpTransitionTime: 0.3
+  pickUpTransitionTime: 0.9
   pickUpCurve:
     serializedVersion: 2
     m_Curve:
@@ -28799,8 +28839,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -29755,7 +29795,7 @@ MonoBehaviour:
   isBeingHeld: 0
   isInExchangeProcess: 0
   currentHolder: {fileID: 0}
-  pickUpTransitionTime: 0.3
+  pickUpTransitionTime: 0.9
   pickUpCurve:
     serializedVersion: 2
     m_Curve:
@@ -29771,8 +29811,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -30860,7 +30900,7 @@ MonoBehaviour:
   isBeingHeld: 0
   isInExchangeProcess: 0
   currentHolder: {fileID: 0}
-  pickUpTransitionTime: 0.3
+  pickUpTransitionTime: 0.9
   pickUpCurve:
     serializedVersion: 2
     m_Curve:
@@ -30876,8 +30916,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -31424,6 +31464,18 @@ PrefabInstance:
     - target: {fileID: -3358675811155553916, guid: 2311ba6242470444bbe5377d21353648, type: 3}
       propertyPath: uiVerticalPosition
       value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: -3358675811155553916, guid: 2311ba6242470444bbe5377d21353648, type: 3}
+      propertyPath: pickUpTransitionTime
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: -3358675811155553916, guid: 2311ba6242470444bbe5377d21353648, type: 3}
+      propertyPath: pickUpCurve.m_Curve.Array.data[1].inSlope
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -3358675811155553916, guid: 2311ba6242470444bbe5377d21353648, type: 3}
+      propertyPath: pickUpCurve.m_Curve.Array.data[1].outSlope
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3526706168697025940, guid: 2311ba6242470444bbe5377d21353648, type: 3}
       propertyPath: m_LocalPosition.x
@@ -38145,7 +38197,7 @@ MonoBehaviour:
   isBeingHeld: 0
   isInExchangeProcess: 0
   currentHolder: {fileID: 0}
-  pickUpTransitionTime: 0.3
+  pickUpTransitionTime: 0.9
   pickUpCurve:
     serializedVersion: 2
     m_Curve:
@@ -38161,8 +38213,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -38264,7 +38316,7 @@ MonoBehaviour:
   isBeingHeld: 0
   isInExchangeProcess: 0
   currentHolder: {fileID: 0}
-  pickUpTransitionTime: 0.3
+  pickUpTransitionTime: 0.9
   pickUpCurve:
     serializedVersion: 2
     m_Curve:
@@ -38280,8 +38332,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -38808,7 +38860,7 @@ MonoBehaviour:
   isBeingHeld: 0
   isInExchangeProcess: 0
   currentHolder: {fileID: 0}
-  pickUpTransitionTime: 0.3
+  pickUpTransitionTime: 0.9
   pickUpCurve:
     serializedVersion: 2
     m_Curve:
@@ -38824,8 +38876,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -39391,7 +39443,7 @@ MonoBehaviour:
   isBeingHeld: 0
   isInExchangeProcess: 0
   currentHolder: {fileID: 0}
-  pickUpTransitionTime: 0.3
+  pickUpTransitionTime: 0.9
   pickUpCurve:
     serializedVersion: 2
     m_Curve:
@@ -39407,8 +39459,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -44977,7 +45029,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -1448509870471733382, guid: ba6faa00edd1d5b48aae00a419db3530, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.984
+      value: -6.816
       objectReference: {fileID: 0}
     - target: {fileID: -1448509870471733382, guid: ba6faa00edd1d5b48aae00a419db3530, type: 3}
       propertyPath: m_LocalPosition.y
@@ -45983,7 +46035,7 @@ MonoBehaviour:
   isBeingHeld: 0
   isInExchangeProcess: 0
   currentHolder: {fileID: 0}
-  pickUpTransitionTime: 0.3
+  pickUpTransitionTime: 0.9
   pickUpCurve:
     serializedVersion: 2
     m_Curve:
@@ -45999,8 +46051,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0

@@ -363,13 +363,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eeb523c549c5ac64bb44267c3ef12a98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _0_skip: {fileID: 0}
   _1_back: {fileID: 0}
   _1_set: {fileID: 0}
   _1_team: {fileID: 0}
-  victoryPanel: {fileID: 0}
-  losePanel: {fileID: 0}
-  restartPanel: {fileID: 0}
 --- !u!1001 &46643878
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7247,12 +7243,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 225994498, guid: a556ffd4bb6c75440bdd0d01341bf4d4, type: 3}
+  m_Sprite: {fileID: 214708785, guid: a556ffd4bb6c75440bdd0d01341bf4d4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 6.2820673, y: 8.190001}
+  m_Size: {x: 14.230974, y: 21.679998}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -7267,8 +7263,8 @@ Transform:
   m_GameObject: {fileID: 397185107}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 14.940002, y: -61.39, z: 77.890076}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 14.940002, y: -62.39, z: 77.890076}
+  m_LocalScale: {x: 0.36452577, y: 0.36452577, z: 0.36452577}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 58442966}
@@ -7409,8 +7405,8 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.42
-  m_Height: 6.12
+  m_Radius: 2.85
+  m_Height: 12.01
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &405904086
@@ -17108,7 +17104,7 @@ MonoBehaviour:
   isBeingHeld: 0
   isInExchangeProcess: 0
   currentHolder: {fileID: 1339699894}
-  pickUpTransitionTime: 0.3
+  pickUpTransitionTime: 0.9
   pickUpCurve:
     serializedVersion: 2
     m_Curve:
@@ -17124,8 +17120,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -17821,8 +17817,8 @@ Transform:
   m_GameObject: {fileID: 1339699894}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 8.161499, y: -60.69, z: -1.93}
-  m_LocalScale: {x: 0.53447, y: 0.53447, z: 0.53447}
+  m_LocalPosition: {x: 8.161499, y: -60.02, z: -1.93}
+  m_LocalScale: {x: 0.6509845, y: 0.6509845, z: 0.6509845}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1134905128}
@@ -17968,15 +17964,15 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1861198606, guid: d7d8f3ced615b7e4e8c1c2ac93ef6af6, type: 3}
+  m_Sprite: {fileID: 1296659891, guid: 7936393f047b4b24cbd191a9d471e33b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 2.05, y: 6.37}
+  m_Size: {x: 3.7799997, y: 11.64678}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &1339699901
@@ -19540,7 +19536,7 @@ MonoBehaviour:
   isBeingHeld: 0
   isInExchangeProcess: 0
   currentHolder: {fileID: 0}
-  pickUpTransitionTime: 0.8
+  pickUpTransitionTime: 0.9
   pickUpCurve:
     serializedVersion: 2
     m_Curve:
@@ -19556,8 +19552,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
