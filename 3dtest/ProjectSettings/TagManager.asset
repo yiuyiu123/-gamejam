@@ -11,6 +11,8 @@ TagManager:
   - Player2Camera
   - NEW1
   - NEW2
+  - upan
+  - yunduo
   layers:
   - Default
   - TransparentFX
