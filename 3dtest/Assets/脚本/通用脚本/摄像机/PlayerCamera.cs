@@ -671,7 +671,7 @@ public class PlayerCamera : MonoBehaviour
     public float wallOffset = 0.1f;    // 墙体偏移防止穿模
 
     [Header("状态")]
-    public float currentAngle = 45f;   // 当前角度（45度俯角）
+    public float currentAngle = 53.6f;   // 当前角度（45度俯角）
 
     [Header("其他设置")]
     public bool enableAutoRotation = false; // 禁用自动转向，使用专用按键
