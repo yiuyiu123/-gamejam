@@ -364,8 +364,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _1_back: {fileID: 0}
-  _1_set: {fileID: 0}
   _1_team: {fileID: 0}
+  Ending1: {fileID: 0}
+  Ending2: {fileID: 0}
+  ending: {fileID: 0}
 --- !u!1001 &46643878
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -975,7 +977,7 @@ MonoBehaviour:
   target: {fileID: 397185110}
   height: 6.92
   distance: 9.18
-  verticalOffset: 3
+  verticalOffset: 3.19
   enableVerticalOffset: 1
   rotationSpeed: 90
   rotateLeftKey: 111
@@ -987,7 +989,7 @@ MonoBehaviour:
     m_Bits: 256
   minDistance: 1
   wallOffset: 0.1
-  currentAngle: 45
+  currentAngle: 54.2
   enableAutoRotation: 1
 --- !u!4 &125820152
 Transform:
@@ -7263,7 +7265,7 @@ Transform:
   m_GameObject: {fileID: 397185107}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 14.940002, y: -62.39, z: 77.890076}
+  m_LocalPosition: {x: 11.77, y: -62.39, z: 75.01}
   m_LocalScale: {x: 0.36452577, y: 0.36452577, z: 0.36452577}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8938,7 +8940,7 @@ MonoBehaviour:
     m_Bits: 256
   minDistance: 1
   wallOffset: 0.1
-  currentAngle: 45
+  currentAngle: 39.4
   enableAutoRotation: 1
 --- !u!4 &764636334
 Transform:
@@ -17086,7 +17088,7 @@ MonoBehaviour:
   pickupUIPrefab: {fileID: 145161716}
   displayTime: 3
   fadeDuration: 0.5
-  uiVerticalPosition: 1
+  uiVerticalPosition: 0.423
   uiHorizontalOffset: 0
   verticalBaseOffset: 0.1
   verticalAdjustRange: 0.2
@@ -17817,7 +17819,7 @@ Transform:
   m_GameObject: {fileID: 1339699894}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 12.17, y: -60.02, z: 2.01}
+  m_LocalPosition: {x: 11.03, y: -60.02, z: -1.5}
   m_LocalScale: {x: 0.6509845, y: 0.6509845, z: 0.6509845}
   m_ConstrainProportionsScale: 0
   m_Children: []

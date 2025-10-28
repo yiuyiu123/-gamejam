@@ -7,10 +7,13 @@ using UnityEngine.Video;
 
 public class Ending : MonoBehaviour
 {
+    public static Ending Instance { get; private set; }
+
     [Header("引用脚本")]
     public newmanage newManager;
     public static event Action OnScene5Loaded;
-    public bool isChooseEnding1=true;
+    public static bool isChooseEnding1=true;
+    public static bool lastChoiceWasYes = true;
 
     [Header("UI组件")]
     public GameObject I_Yes;
@@ -42,7 +45,8 @@ public class Ending : MonoBehaviour
 
     private void Start()
     {
-        // 初始化UI
+        DontDestroyOnLoad(gameObject);
+    // 初始化UI
         panel_Ending?.SetActive(false);
         I_Yes?.SetActive(false);
         I_No?.SetActive(false);
@@ -181,6 +185,8 @@ public class Ending : MonoBehaviour
 
         I_mask1?.SetActive(isYes);
         I_mask2?.SetActive(!isYes);
+        isChooseEnding1 = isYes;
+        lastChoiceWasYes = isYes; // 关键：同步静态字段
 
         Debug.Log(isYes ? "玩家选择 YES" : "玩家选择 NO");
     }
@@ -198,14 +204,12 @@ public class Ending : MonoBehaviour
         if (I_mask1.activeSelf && video_Ending1 != null)
         {
             I_mask1.SetActive(false);
-            isChooseEnding1 = true;
             video_Ending1.gameObject.SetActive(true);
             video_Ending1.Play();
         }
         else if (I_mask2.activeSelf && video_Ending2 != null)
         {
             I_mask2.SetActive(false);
-            isChooseEnding1 = false;
             video_Ending2.gameObject.SetActive(true);
             video_Ending2.Play();
         }
