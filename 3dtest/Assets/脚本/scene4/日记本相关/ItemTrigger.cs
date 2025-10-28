@@ -46,10 +46,16 @@ public class ItemTrigger : MonoBehaviour
     public event Action OpenFirstDoor;
     public event Action OpenSecondDoor;
 
+    [Header("特效系统 - Player2专用")]
+    [SerializeField] private GameObject player2Effect; // Player2的特效对象
+    [SerializeField] private float effectDisplayTime = 2f; // 特效显示时间
+    [SerializeField] private string correctItemSound = "正确物品音效"; // 正确物品的音效组ID
+
     private Collider _collider;
     private Collider2D _collider2D;
     private bool _isInCooldown = false;
     private HashSet<GameObject> _processedObjects = new HashSet<GameObject>();
+    private Coroutine _effectCoroutine; // 特效协程引用
 
     private void Awake()
     {
@@ -68,6 +74,18 @@ public class ItemTrigger : MonoBehaviour
                 capsuleCollider.contactOffset = contactOffset;
             else if (_collider is MeshCollider meshCollider)
                 meshCollider.contactOffset = contactOffset;
+        }
+
+        // 初始化特效状态
+        InitializeEffect();
+    }
+
+    // 初始化特效状态
+    private void InitializeEffect()
+    {
+        if (player2Effect != null)
+        {
+            player2Effect.SetActive(false);
         }
     }
 
@@ -93,18 +111,21 @@ public class ItemTrigger : MonoBehaviour
 
         if (!IsObjectValid(incomingObject)) return;
 
+        bool ruleMatched = false;
+
         foreach (var rule in triggerRules)
         {
             if (incomingObject.CompareTag(rule.requiredTag))
             {
                 if (debugMode)
                 {
-                    Debug.Log($"触发规则匹配: 物品[{incomingObject.name}]" +  $"标签[{rule.requiredTag}]", this);
+                    Debug.Log($"触发规则匹配: 物品[{incomingObject.name}]" + $"标签[{rule.requiredTag}]", this);
                 }
 
                 // 执行触发逻辑 
                 Debug.Log("11111111111111");
                 ExecuteTriggerRule(rule);
+                ruleMatched = true;
 
                 // 记录已触发的对象 
                 if (!canTriggerMultipleTimes)
@@ -120,6 +141,12 @@ public class ItemTrigger : MonoBehaviour
 
                 break;
             }
+        }
+
+        // 如果没有匹配任何规则，说明物品不正确
+        if (!ruleMatched)
+        {
+            if (debugMode) Debug.Log($"物品 [{incomingObject.name}] 不匹配任何规则，不触发特效", this);
         }
     }
 
@@ -159,6 +186,19 @@ public class ItemTrigger : MonoBehaviour
             AudioSource.PlayClipAtPoint(rule.soundEffect, transform.position);
         }
 
+        // 播放正确物品音效（通过AudioManager）
+        if (!string.IsNullOrEmpty(correctItemSound) && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayOneShot(
+                correctItemSound,
+                -1,
+                false, 0f,
+                false, 0f,
+                false,  // Player2使用右声道
+                true    // 3D音效
+            );
+        }
+
         // 执行自定义事件 
         rule.onTriggered?.Invoke();
 
@@ -180,6 +220,10 @@ public class ItemTrigger : MonoBehaviour
                 Destroy(rule.targetObject);
             }
         }
+
+        // 显示Player2特效（物品正确时）
+        ShowPlayer2Effect();
+
         //张奕忻：记录开门次数 
         OpenDoorNumber++;
         if (OpenDoorNumber == 1)
@@ -191,6 +235,46 @@ public class ItemTrigger : MonoBehaviour
             Debug.Log($"销毁第二扇门一次");
             OpenSecondDoor?.Invoke();
         }
+    }
+
+    /// <summary>
+    /// 显示Player2特效
+    /// </summary>
+    private void ShowPlayer2Effect()
+    {
+        if (player2Effect != null)
+        {
+            // 如果已经有特效在显示，先停止之前的协程
+            if (_effectCoroutine != null)
+            {
+                StopCoroutine(_effectCoroutine);
+            }
+
+            // 激活特效
+            player2Effect.SetActive(true);
+
+            // 启动隐藏特效的协程
+            _effectCoroutine = StartCoroutine(HideEffectAfterDelay());
+        }
+        else
+        {
+            if (debugMode) Debug.LogWarning("Player2特效未设置，无法显示特效", this);
+        }
+    }
+
+    /// <summary>
+    /// 延迟隐藏特效
+    /// </summary>
+    private IEnumerator HideEffectAfterDelay()
+    {
+        yield return new WaitForSeconds(effectDisplayTime);
+
+        if (player2Effect != null)
+        {
+            player2Effect.SetActive(false);
+        }
+
+        _effectCoroutine = null;
     }
 
     private IEnumerator DestroyWithDelay(GameObject target, float delay)
@@ -218,6 +302,9 @@ public class ItemTrigger : MonoBehaviour
         _isInCooldown = false;
         StopAllCoroutines();
 
+        // 重置特效状态
+        InitializeEffect();
+
         if (debugMode) Debug.Log("触发器状态已重置", this);
     }
 
@@ -232,6 +319,33 @@ public class ItemTrigger : MonoBehaviour
         {
             Debug.LogError($"无效的规则索引: {ruleIndex}", this);
         }
+    }
+
+    /// <summary>
+    /// 测试特效显示（用于调试）
+    /// </summary>
+    [ContextMenu("测试特效显示")]
+    public void TestEffect()
+    {
+        ShowPlayer2Effect();
+        if (debugMode) Debug.Log("测试特效显示", this);
+    }
+
+    /// <summary>
+    /// 设置Player2特效对象
+    /// </summary>
+    public void SetPlayer2Effect(GameObject effect)
+    {
+        player2Effect = effect;
+        InitializeEffect();
+    }
+
+    /// <summary>
+    /// 设置特效显示时间
+    /// </summary>
+    public void SetEffectDisplayTime(float time)
+    {
+        effectDisplayTime = time;
     }
 
     private void OnDrawGizmosSelected()
