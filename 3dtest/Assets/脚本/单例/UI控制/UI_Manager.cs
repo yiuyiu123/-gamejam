@@ -12,7 +12,7 @@ public class UI_Manager : MonoBehaviour
     public GameObject _1_team;  
     public VideoPlayer Ending1;
     public VideoPlayer Ending2;
-    public Ending ending;
+    public VideoPlayerController videoPlayerController;
 
     private void Awake()
     {
@@ -25,7 +25,7 @@ public class UI_Manager : MonoBehaviour
     }
     private void Start()
     {
-        if (ending == null) ending = FindObjectOfType<Ending>();
+        if (videoPlayerController == null) videoPlayerController = FindObjectOfType<VideoPlayerController>();
 
         HideAll();
 
@@ -44,30 +44,24 @@ public class UI_Manager : MonoBehaviour
 
     public void PlayTheOtherVideo()
     {
-        bool choiceYes;
-        if (ending != null)
-        {
-            choiceYes = Ending.isChooseEnding1;
-        }
-        else
-        {
-            // fallback 使用静态字段（如果你在 Ending 中设置了 lastChoiceWasYes）
-            choiceYes = Ending.lastChoiceWasYes;
-            // 如果你没有静态字段，这里可以设默认值： bool choiceYes = true;
-        }
+        // 直接使用静态字段
+        bool choiceYes = VideoPlayerController.isChooseEnding1;
 
-        // 播放对应视频（并防止 player 为 null）
+        // 如果上一个选择是 “Yes”，那么这里播放 “另一个结局”
         if (choiceYes)
         {
-            if (Ending1 != null) PlayVideo(Ending1);
-            else Debug.LogWarning("Ending1 未分配");
-        }
-        else
-        {
+            Debug.Log("上次选的是 YES，播放 Ending2（另一个结局）");
             if (Ending2 != null) PlayVideo(Ending2);
             else Debug.LogWarning("Ending2 未分配");
         }
+        else
+        {
+            Debug.Log("上次选的是 NO，播放 Ending1（另一个结局）");
+            if (Ending1 != null) PlayVideo(Ending1);
+            else Debug.LogWarning("Ending1 未分配");
+        }
     }
+
 
     private void PlayVideo(VideoPlayer player)
     {

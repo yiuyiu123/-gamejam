@@ -4,8 +4,6 @@ using UnityEngine.UI;
 
 public class over : MonoBehaviour
 {
-    
-
     [Header("碰撞器区域引用")]
     [Tooltip("第一个碰撞器区域的空物体引用")]
     public GameObject colliderArea1;
@@ -40,6 +38,8 @@ public class over : MonoBehaviour
     private BoxCollider collider2;
     private bool isObject1InArea = false;
     private bool isObject2InArea = false;
+    private bool hasTriggeredEnding = false; // 标记是否已经触发过结局UI
+
 
     void Start()
     {
@@ -194,27 +194,33 @@ public class over : MonoBehaviour
 
     void UpdateImageVisibility()
     {
-        
         if (targetImageObject == null)
         {
             Debug.LogWarning("targetImageObject为null，无法更新显示状态");
             return;
         }
 
-        bool shouldShow = isObject1InArea && isObject2InArea;
-
-        // 使用SetActive来控制整个GameObject的显示/隐藏 
-        targetImageObject.SetActive(shouldShow);
-
-        if (shouldShow)
+        // 当两个物体都进入区域时，触发一次结局
+        if (!hasTriggeredEnding && isObject1InArea && isObject2InArea)
         {
-            Debug.Log("两个目标物体都在区域内，显示UI Image");
+            hasTriggeredEnding = true;
+            targetImageObject.SetActive(true);
+            Debug.Log("? 结局条件满足，显示UI Image（锁定显示）");
         }
-        else
+
+        // 如果还未触发过结局，则维持原逻辑动态显示/隐藏
+        else if (!hasTriggeredEnding)
         {
-            Debug.Log($"至少有一个目标物体不在区域内，隐藏UI Image。区域1: {isObject1InArea}, 区域2: {isObject2InArea}");
+            bool shouldShow = isObject1InArea && isObject2InArea;
+            targetImageObject.SetActive(shouldShow);
+
+            if (shouldShow)
+                Debug.Log("两个目标物体都在区域内，显示UI Image");
+            else
+                Debug.Log($"至少有一个目标物体不在区域内，隐藏UI Image。区域1: {isObject1InArea}, 区域2: {isObject2InArea}");
         }
     }
+
 
     // 在Scene视图中绘制碰撞器区域的Gizmos 
     void OnDrawGizmos()

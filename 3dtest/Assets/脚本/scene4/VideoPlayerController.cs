@@ -6,7 +6,9 @@ using TMPro;
 
 public class VideoPlayerController : MonoBehaviour
 {
-
+    [Header("引用脚本")]
+    public static bool isChooseEnding1 = true;
+    public static bool lastChoiceWasYes = true;
     public TextMeshProUGUI T_Question;
     public GameObject XH_music;
 
@@ -54,8 +56,11 @@ public class VideoPlayerController : MonoBehaviour
         T_Question.gameObject.SetActive(false);
         XH_music.SetActive(false);
 
-        // 显示视频1 
-        videoDisplay1.gameObject.SetActive(true);
+        isChooseEnding1 = true;
+        lastChoiceWasYes = true;
+
+    // 显示视频1 
+    videoDisplay1.gameObject.SetActive(true);
 
         // 播放视频1 
         videoPlayer1.Play();
@@ -74,6 +79,9 @@ public class VideoPlayerController : MonoBehaviour
         StopAllVideos();
         T_Question.gameObject.SetActive(false);
         XH_music.SetActive(false);
+
+        isChooseEnding1 = false;
+        lastChoiceWasYes = false;
 
         // 显示视频2
         videoDisplay2.gameObject.SetActive(true);
