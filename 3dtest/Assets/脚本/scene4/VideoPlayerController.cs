@@ -2,9 +2,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class VideoPlayerController : MonoBehaviour
 {
+
+    public TextMeshProUGUI T_Question;
+    public GameObject XH_music;
+
     [Header("按钮设置")]
     public Button leftButton;      // 左边按钮 
     public Button rightButton;     // 右边按钮 
@@ -25,6 +30,10 @@ public class VideoPlayerController : MonoBehaviour
 
     void Start()
     {
+        if (T_Question == null)
+        {
+            Debug.Log("提问文字为空");
+        }
         // 初始化隐藏所有视频 
         HideAllVideos();
 
@@ -42,6 +51,8 @@ public class VideoPlayerController : MonoBehaviour
     {
         // 停止所有视频 
         StopAllVideos();
+        T_Question.gameObject.SetActive(false);
+        XH_music.SetActive(false);
 
         // 显示视频1 
         videoDisplay1.gameObject.SetActive(true);
@@ -61,6 +72,8 @@ public class VideoPlayerController : MonoBehaviour
     {
         // 停止所有视频 
         StopAllVideos();
+        T_Question.gameObject.SetActive(false);
+        XH_music.SetActive(false);
 
         // 显示视频2
         videoDisplay2.gameObject.SetActive(true);
@@ -120,12 +133,25 @@ public class VideoPlayerController : MonoBehaviour
     // 停止所有视频并隐藏 
     void StopAllVideos()
     {
-        // 停止视频播放 
-        videoPlayer1.Stop();
-        videoPlayer2.Stop();
+        // 安全停止视频播放
+        if (videoPlayer1 != null && !videoPlayer1.Equals(null))
+        {
+            if (videoPlayer1.isPlaying)
+                videoPlayer1.Stop();
+        }
 
-        // 隐藏所有视频显示 
-        HideAllVideos();
+        if (videoPlayer2 != null && !videoPlayer2.Equals(null))
+        {
+            if (videoPlayer2.isPlaying)
+                videoPlayer2.Stop();
+        }
+
+        // 隐藏视频显示
+        if (videoDisplay1 != null && !videoDisplay1.Equals(null))
+            videoDisplay1.gameObject.SetActive(false);
+
+        if (videoDisplay2 != null && !videoDisplay2.Equals(null))
+            videoDisplay2.gameObject.SetActive(false);
     }
 
     // 隐藏所有视频显示 
@@ -138,10 +164,22 @@ public class VideoPlayerController : MonoBehaviour
     // 可选：当脚本禁用时停止所有视频 
     void OnDisable()
     {
-        // 移除事件监听
-        videoPlayer1.loopPointReached -= OnVideoEnd;
-        videoPlayer2.loopPointReached -= OnVideoEnd;
+        // 移除事件监听（安全检查）
+        if (videoPlayer1 != null && !videoPlayer1.Equals(null))
+            videoPlayer1.loopPointReached -= OnVideoEnd;
 
-        StopAllVideos();
+        if (videoPlayer2 != null && !videoPlayer2.Equals(null))
+            videoPlayer2.loopPointReached -= OnVideoEnd;
+
+        // 尝试安全停止视频
+        try
+        {
+            StopAllVideos();
+        }
+        catch (MissingReferenceException)
+        {
+            Debug.LogWarning("OnDisable() 调用 StopAllVideos 时 VideoPlayer 已被销毁，跳过停止操作。");
+        }
+
     }
 }

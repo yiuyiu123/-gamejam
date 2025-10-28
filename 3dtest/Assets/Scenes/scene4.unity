@@ -25024,6 +25024,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afccc441b38a0f648acc78c91587dc2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  T_Question: {fileID: 653598616}
+  XH_music: {fileID: 1790268300}
   leftButton: {fileID: 1926509973}
   rightButton: {fileID: 1494577732}
   videoPlayer1: {fileID: 1529557034}

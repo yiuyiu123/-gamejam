@@ -1,8 +1,11 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class over : MonoBehaviour
 {
+    
+
     [Header("碰撞器区域引用")]
     [Tooltip("第一个碰撞器区域的空物体引用")]
     public GameObject colliderArea1;
@@ -191,6 +194,7 @@ public class over : MonoBehaviour
 
     void UpdateImageVisibility()
     {
+        
         if (targetImageObject == null)
         {
             Debug.LogWarning("targetImageObject为null，无法更新显示状态");
