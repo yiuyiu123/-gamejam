@@ -98,7 +98,7 @@ MonoBehaviour:
   itemName: "\u7AE5\u5E74\u7269\u54C1"
   itemDescription: 
   canBePickedUp: 1
-  holdOffset: {x: 0, y: 1, z: 1}
+  holdOffset: {x: 0, y: 1.9, z: 1}
   isKeyItem: 0
   showPickupMessage: 1
   pickupUIPrefab: {fileID: 0}
@@ -106,6 +106,10 @@ MonoBehaviour:
   fadeDuration: 0.5
   uiVerticalPosition: 0.3
   uiHorizontalOffset: 0
+  verticalBaseOffset: 0.1
+  verticalAdjustRange: 0.2
+  autoAdjustByPlayer: 1
+  autoAdjustStrength: 0.05
   pickupMessageFormat: "\u627E\u5230\u4E86 {0}"
   customPickupMessage: 
   holdRotationOffset: {x: 0, y: 0, z: 0}
@@ -118,7 +122,7 @@ MonoBehaviour:
   isBeingHeld: 0
   isInExchangeProcess: 0
   currentHolder: {fileID: 0}
-  pickUpTransitionTime: 0.3
+  pickUpTransitionTime: 0.9
   pickUpCurve:
     serializedVersion: 2
     m_Curve:
