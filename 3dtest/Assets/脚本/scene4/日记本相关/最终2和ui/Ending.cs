@@ -10,6 +10,7 @@ public class Ending : MonoBehaviour
     [Header("引用脚本")]
     public newmanage newManager;
     public static event Action OnScene5Loaded;
+    public bool isChooseEnding1=true;
 
     [Header("UI组件")]
     public GameObject I_Yes;
@@ -197,12 +198,14 @@ public class Ending : MonoBehaviour
         if (I_mask1.activeSelf && video_Ending1 != null)
         {
             I_mask1.SetActive(false);
+            isChooseEnding1 = true;
             video_Ending1.gameObject.SetActive(true);
             video_Ending1.Play();
         }
         else if (I_mask2.activeSelf && video_Ending2 != null)
         {
             I_mask2.SetActive(false);
+            isChooseEnding1 = false;
             video_Ending2.gameObject.SetActive(true);
             video_Ending2.Play();
         }
