@@ -9334,7 +9334,7 @@ MonoBehaviour:
   pickupUIPrefab: {fileID: 1013920474}
   displayTime: 3
   fadeDuration: 0.5
-  uiVerticalPosition: 1
+  uiVerticalPosition: 0.1
   uiHorizontalOffset: 0
   verticalBaseOffset: 0.1
   verticalAdjustRange: 0.2
