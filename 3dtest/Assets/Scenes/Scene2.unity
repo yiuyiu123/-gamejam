@@ -41575,8 +41575,8 @@ Transform:
   m_GameObject: {fileID: 378592489}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1011.63, y: 6.39, z: 430.45}
-  m_LocalScale: {x: 0.27668816, y: 0.27668816, z: 0.27668816}
+  m_LocalPosition: {x: 1011.63, y: 6.89, z: 430.45}
+  m_LocalScale: {x: 0.66411, y: 0.66411, z: 0.66411}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -41717,8 +41717,8 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 2.19
-  m_Height: 12.03
+  m_Radius: 1.42
+  m_Height: 6.12
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!95 &378592497
@@ -41783,15 +41783,15 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 214708785, guid: a556ffd4bb6c75440bdd0d01341bf4d4, type: 3}
+  m_Sprite: {fileID: 225994498, guid: a556ffd4bb6c75440bdd0d01341bf4d4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 14.230974, y: 21.679998}
+  m_Size: {x: 6.2820673, y: 8.190001}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &379176009
@@ -143647,8 +143647,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u4EFB\u52A1 :\u5408\u4F5C\u5408\u6210\u6709\u4FE1\u606F\u7684u\u76D8"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 64469f0c73e9d4e40a5c54b6ad033c03, type: 2}
-  m_sharedMaterial: {fileID: 3634058533457553109, guid: 64469f0c73e9d4e40a5c54b6ad033c03, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: f59ccf5a77072384ab9ca1fcabf5930a, type: 2}
+  m_sharedMaterial: {fileID: -7557160145461686264, guid: f59ccf5a77072384ab9ca1fcabf5930a, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -143708,7 +143708,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -29.60196, y: 0, z: -192.19308, w: -9.964539}
+  m_margin: {x: 0, y: 0, z: -142.3187, w: -9.964539}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
