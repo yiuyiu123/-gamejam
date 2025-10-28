@@ -22429,8 +22429,8 @@ MonoBehaviour:
   canTriggerMultipleTimes: 1
   cooldownTime: 0
   OpenDoorNumber: 0
-  player2Effect: {fileID: 649107431}
-  effectDisplayTime: 2
+  player2Effect: {fileID: 649107434}
+  effectDuration: 2
   correctItemSound: "\u6B63\u786E\u7269\u54C1\u97F3\u6548"
 --- !u!114 &886136592
 MonoBehaviour:
@@ -27499,7 +27499,7 @@ Transform:
   m_GameObject: {fileID: 1275689539}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -26.02, y: 2.63, z: 6.68}
+  m_LocalPosition: {x: -23.2, y: -29.3, z: 49.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -35234,6 +35234,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   newManager: {fileID: 1150990539}
+  isChooseEnding1: 1
   I_Yes: {fileID: 671327026}
   I_No: {fileID: 52452892}
   I_mask1: {fileID: 1921064143}

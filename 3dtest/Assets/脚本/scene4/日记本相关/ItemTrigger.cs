@@ -47,8 +47,8 @@ public class ItemTrigger : MonoBehaviour
     public event Action OpenSecondDoor;
 
     [Header("特效系统 - Player2专用")]
-    [SerializeField] private GameObject player2Effect; // Player2的特效对象
-    [SerializeField] private float effectDisplayTime = 2f; // 特效显示时间
+    [SerializeField] private ParticleSystem player2Effect; // 粒子系统特效
+    [SerializeField] private float effectDuration = 2f; // 特效持续时间
     [SerializeField] private string correctItemSound = "正确物品音效"; // 正确物品的音效组ID
 
     private Collider _collider;
@@ -76,16 +76,10 @@ public class ItemTrigger : MonoBehaviour
                 meshCollider.contactOffset = contactOffset;
         }
 
-        // 初始化特效状态
-        InitializeEffect();
-    }
-
-    // 初始化特效状态
-    private void InitializeEffect()
-    {
+        // 确保特效对象是激活状态
         if (player2Effect != null)
         {
-            player2Effect.SetActive(false);
+            player2Effect.gameObject.SetActive(true);
         }
     }
 
@@ -221,8 +215,8 @@ public class ItemTrigger : MonoBehaviour
             }
         }
 
-        // 显示Player2特效（物品正确时）
-        ShowPlayer2Effect();
+        // 播放Player2特效（物品正确时）
+        PlayPlayer2Effect();
 
         //张奕忻：记录开门次数 
         OpenDoorNumber++;
@@ -238,43 +232,47 @@ public class ItemTrigger : MonoBehaviour
     }
 
     /// <summary>
-    /// 显示Player2特效
+    /// 播放Player2特效
     /// </summary>
-    private void ShowPlayer2Effect()
+    private void PlayPlayer2Effect()
     {
         if (player2Effect != null)
         {
-            // 如果已经有特效在显示，先停止之前的协程
+            // 如果已经有特效在播放，先停止之前的协程
             if (_effectCoroutine != null)
             {
                 StopCoroutine(_effectCoroutine);
             }
 
-            // 激活特效
-            player2Effect.SetActive(true);
+            // 直接播放粒子系统特效
+            player2Effect.Play();
 
-            // 启动隐藏特效的协程
-            _effectCoroutine = StartCoroutine(HideEffectAfterDelay());
+            // 启动特效消失协程
+            _effectCoroutine = StartCoroutine(StopEffectAfterDelay());
+
+            if (debugMode) Debug.Log("播放Player2特效", this);
         }
         else
         {
-            if (debugMode) Debug.LogWarning("Player2特效未设置，无法显示特效", this);
+            if (debugMode) Debug.LogWarning("Player2特效未设置，无法播放特效", this);
         }
     }
 
     /// <summary>
-    /// 延迟隐藏特效
+    /// 延迟停止特效
     /// </summary>
-    private IEnumerator HideEffectAfterDelay()
+    private IEnumerator StopEffectAfterDelay()
     {
-        yield return new WaitForSeconds(effectDisplayTime);
+        yield return new WaitForSeconds(effectDuration);
 
         if (player2Effect != null)
         {
-            player2Effect.SetActive(false);
+            player2Effect.Stop();
         }
 
         _effectCoroutine = null;
+
+        if (debugMode) Debug.Log("Player2特效已停止", this);
     }
 
     private IEnumerator DestroyWithDelay(GameObject target, float delay)
@@ -302,8 +300,12 @@ public class ItemTrigger : MonoBehaviour
         _isInCooldown = false;
         StopAllCoroutines();
 
-        // 重置特效状态
-        InitializeEffect();
+        // 停止特效
+        if (player2Effect != null)
+        {
+            player2Effect.Stop();
+        }
+        _effectCoroutine = null;
 
         if (debugMode) Debug.Log("触发器状态已重置", this);
     }
@@ -322,30 +324,35 @@ public class ItemTrigger : MonoBehaviour
     }
 
     /// <summary>
-    /// 测试特效显示（用于调试）
+    /// 测试特效播放（用于调试）
     /// </summary>
-    [ContextMenu("测试特效显示")]
+    [ContextMenu("测试特效播放")]
     public void TestEffect()
     {
-        ShowPlayer2Effect();
-        if (debugMode) Debug.Log("测试特效显示", this);
+        PlayPlayer2Effect();
+        if (debugMode) Debug.Log("测试特效播放", this);
     }
 
     /// <summary>
-    /// 设置Player2特效对象
+    /// 设置Player2特效
     /// </summary>
-    public void SetPlayer2Effect(GameObject effect)
+    public void SetPlayer2Effect(ParticleSystem effect)
     {
         player2Effect = effect;
-        InitializeEffect();
+
+        // 确保新设置的特效对象是激活状态
+        if (player2Effect != null)
+        {
+            player2Effect.gameObject.SetActive(true);
+        }
     }
 
     /// <summary>
-    /// 设置特效显示时间
+    /// 设置特效持续时间
     /// </summary>
-    public void SetEffectDisplayTime(float time)
+    public void SetEffectDuration(float duration)
     {
-        effectDisplayTime = time;
+        effectDuration = duration;
     }
 
     private void OnDrawGizmosSelected()
